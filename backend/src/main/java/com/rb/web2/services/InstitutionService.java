@@ -1,11 +1,12 @@
 package com.rb.web2.services;
 
-import com.rb.web2.domain.institution.Institution;
-import com.rb.web2.repositories.InstitutionRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.rb.web2.domain.institution.Institution;
+import com.rb.web2.repositories.InstitutionRepository;
 
 @Service
 public class InstitutionService {
@@ -38,7 +39,8 @@ public class InstitutionService {
   }
 
   public boolean deleteInstitution(String id) {
-    if (checkInstitutionExists(id)) {
+    var existingInstitution = this.getInstitutionById(id);
+    if (existingInstitution.isPresent()) {
       Institution institution = existingInstitution.get();
       institution.setAtivo(false); // Atualiza o campo ativo para false, marcando como inativa
 
