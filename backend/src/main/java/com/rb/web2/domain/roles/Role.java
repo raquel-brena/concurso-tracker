@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Table(name = "roles")
-@Entity(name = "roles")
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
