@@ -2,8 +2,6 @@ package com.rb.web2.domain.formacao;
 
 import java.util.Base64;
 
-import com.rb.web2.domain.documento.Documento;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,5 +28,5 @@ public class Formacao {
     private String nome;
     private String descricao;
     private int pontuacao;
-    private Documento documento;
+    // private Documento documento;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 
 import jakarta.persistence.CascadeType;
@@ -12,6 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -41,11 +44,19 @@ public class ProcessoSeletivo {
     private int validadeMeses;
 
     private boolean temporario;
-    
+
     private String linkEdital;
-    
+
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vaga> vagas;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "processo_criterios",
+        joinColumns = @JoinColumn(name = "processo_seletivo_id"),
+        inverseJoinColumns = @JoinColumn(name = "criterio_id")
+    )
+    private List<CriterioAvaliacao> criterios;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agenda_id", referencedColumnName = "id")
@@ -53,7 +64,12 @@ public class ProcessoSeletivo {
 
     private List<String> documentosNecessarios;
 
-    private String comissaoOrganizadora;
+    @ManyToMany
+    @JoinTable(name = "processo_comissao", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> comissaoOrganizadora;
 
-    private List<CriterioAvaliacao> criterios;
+    @ManyToMany
+    @JoinTable(name = "processo_participantes", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> participantes;
+
 }

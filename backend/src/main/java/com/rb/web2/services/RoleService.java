@@ -13,13 +13,12 @@ import java.util.List;
 @Service
 public class RoleService {
     
-    private final RoleRepository roleRepository;
-    private final PermissionRepository permissionRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    public RoleService(RoleRepository roleRepository, PermissionRepository permissionRepository) {
-        this.roleRepository = roleRepository;
-        this.permissionRepository = permissionRepository;
-    }
+    @Autowired
+    private PermissionRepository permissionRepository;
+
 
     public Role createRole(String name) {
         Role role = new Role();
