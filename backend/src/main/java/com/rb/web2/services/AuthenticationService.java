@@ -35,11 +35,8 @@ public class AuthenticationService implements UserDetailsService {
 
     public ResponseLoginDTO login(AuthenticatedDTO data) {
         var userNamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-
         var auth = this.authenticationManager.authenticate(userNamePassword);
-
         var token = tokenService.generateToken((User) auth.getPrincipal());
-
         return new ResponseLoginDTO(token);
 
     }
@@ -54,7 +51,7 @@ public class AuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userService.getUserById(username);
+        return this.userService.loadUserByUsername(username);
     }
 
     public void logout() {
