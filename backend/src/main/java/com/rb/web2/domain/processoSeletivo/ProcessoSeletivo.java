@@ -3,6 +3,7 @@ package com.rb.web2.domain.processoSeletivo;
 import java.util.List;
 
 import com.rb.web2.domain.agenda.Agenda;
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.vaga.Vaga;
 
 import jakarta.persistence.CascadeType;
@@ -19,6 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Entity
 @Table(name = "processos")
 @Getter
@@ -39,12 +41,18 @@ public class ProcessoSeletivo {
     private int validadeMeses;
 
     private boolean temporario;
-
+    private String linkEdital;
+    
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vaga> vagas;
 
     @OneToOne(cascade = CascadeType.ALL)
-@JoinColumn(name = "agenda_id", referencedColumnName = "id")
-private Agenda agenda;
-}
+    @JoinColumn(name = "agenda_id", referencedColumnName = "id")
+    private Agenda agenda;
 
+    private List<String> documentosNecessarios;
+
+    private String comissaoOrganizadora;
+
+    private List<CriterioAvaliacao> criterios;
+}

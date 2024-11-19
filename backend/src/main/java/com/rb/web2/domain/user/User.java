@@ -1,5 +1,6 @@
 package com.rb.web2.domain.user;
 
+import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.roles.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,8 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    private List<Documento> documentos;
+    
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;

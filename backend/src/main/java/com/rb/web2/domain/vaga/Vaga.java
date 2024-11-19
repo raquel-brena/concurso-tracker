@@ -47,4 +47,7 @@ public class Vaga {
     private float remuneracao;
 
     private String descricao;
+    
+    private float taxaInscricao;
 }
+
