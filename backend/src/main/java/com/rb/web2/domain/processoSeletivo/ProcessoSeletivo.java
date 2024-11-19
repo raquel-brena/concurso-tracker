@@ -41,6 +41,7 @@ public class ProcessoSeletivo {
     private int validadeMeses;
 
     private boolean temporario;
+    
     private String linkEdital;
     
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)

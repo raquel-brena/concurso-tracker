@@ -64,9 +64,8 @@ public class Agenda {
     @Future(message = "O prazo de convocação deve estar no futuro.")
     private LocalDate prazoConvocacao;
 
-    
     @OneToOne(mappedBy = "agenda")
-private ProcessoSeletivo processoSeletivo;
+    private ProcessoSeletivo processoSeletivo;
 
     public boolean isConsistent() {
         return inicioVigencia.isBefore(fimVigencia) &&
@@ -79,4 +78,4 @@ private ProcessoSeletivo processoSeletivo;
                 resultadoFinal.isBefore(prazoConvocacao);
     }
 
-   }
+}
