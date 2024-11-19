@@ -14,7 +14,8 @@ import java.util.Optional;
 @RequestMapping("/api/institutions")
 public class InstitutionController {
 
-    @TODO // Classe inteira. Por enquanto, apenas o esqueleto das funções foi feito.
+    // @TODO // Classe inteira. Por enquanto, apenas o esqueleto das funções foi
+    // feito.
 
     @Autowired
     private InstitutionService institutionService;
@@ -22,7 +23,7 @@ public class InstitutionController {
     // Criar nova instituição
     @PostMapping
     public ResponseEntity<Institution> createInstitution(@RequestBody Institution institution) {
-        Institution createdInstitution = institutionService.createInstitution(institution);
+        Institution createdInstitution = institutionService.create(institution);
         return new ResponseEntity<>(createdInstitution, HttpStatus.CREATED);
     }
 
@@ -42,7 +43,8 @@ public class InstitutionController {
 
     // Atualizar instituição
     @PutMapping("/{id}")
-    public ResponseEntity<Institution> updateInstitution(@PathVariable String id, @RequestBody Institution updatedInstitution) {
+    public ResponseEntity<Institution> updateInstitution(@PathVariable String id,
+            @RequestBody Institution updatedInstitution) {
         Institution institution = institutionService.updateInstitution(id, updatedInstitution);
         return institution != null ? ResponseEntity.ok(institution) : ResponseEntity.notFound().build();
     }
@@ -50,6 +52,7 @@ public class InstitutionController {
     // Excluir instituição
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInstitution(@PathVariable String id) {
-        return institutionService.deleteInstitution(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        return institutionService.deleteInstitution(id) ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }

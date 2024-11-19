@@ -38,6 +38,7 @@ public class InstitutionService {
   }
 
   public boolean deleteInstitution(String id) {
+    Optional<Institution> existingInstitution = getInstitutionById(id);
     if (checkInstitutionExists(id)) {
       Institution institution = existingInstitution.get();
       institution.setAtivo(false); // Atualiza o campo ativo para false, marcando como inativa
