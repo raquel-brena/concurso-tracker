@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequestMapping("/api/institutions")
 public class InstitutionController {
 
-    @TODO // Classe inteira. Por enquanto, apenas o esqueleto das funções foi feito.
+   // @TODO // Classe inteira. Por enquanto, apenas o esqueleto das funções foi feito.
 
     @Autowired
     private InstitutionService institutionService;
@@ -22,7 +22,7 @@ public class InstitutionController {
     // Criar nova instituição
     @PostMapping
     public ResponseEntity<Institution> createInstitution(@RequestBody Institution institution) {
-        Institution createdInstitution = institutionService.createInstitution(institution);
+        Institution createdInstitution = institutionService.create(institution);
         return new ResponseEntity<>(createdInstitution, HttpStatus.CREATED);
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class User implements UserDetails { 
+public class Institution  { 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id; // Talvez mudar para o tipo UUID
