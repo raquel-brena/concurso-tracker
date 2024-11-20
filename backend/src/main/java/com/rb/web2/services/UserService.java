@@ -3,6 +3,7 @@ package com.rb.web2.services;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.repositories.UserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,15 +11,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
     
-    private final RoleService roleService;
-    private final UserRepository repository;
-
-    public UserService (RoleService roleService, UserRepository repository) { 
-        this.roleService = roleService;
-        this.repository = repository;
-    }
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private UserRepository repository;
 
     public User create (String login, String password) { 
         var role = roleService.findRoleByName("USER");

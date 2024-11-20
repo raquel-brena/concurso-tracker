@@ -13,7 +13,7 @@ import lombok.*;
 public class Institution { 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id; // Talvez mudar para o tipo UUID
+    private String id; 
 
     @Column(nullable = false)
     private String name;

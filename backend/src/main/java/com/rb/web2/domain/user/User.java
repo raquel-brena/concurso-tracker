@@ -1,10 +1,11 @@
 package com.rb.web2.domain.user;
 
-<<<<<<< Updated upstream
-=======
+
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
->>>>>>> Stashed changes
+
+import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.roles.Role;
 import jakarta.persistence.*;
 import lombok.*;
