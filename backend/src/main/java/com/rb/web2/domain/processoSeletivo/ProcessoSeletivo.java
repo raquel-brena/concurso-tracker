@@ -49,13 +49,9 @@ public class ProcessoSeletivo {
 
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vaga> vagas;
-    
+
     @ManyToMany
-    @JoinTable(
-        name = "processo_criterios",
-        joinColumns = @JoinColumn(name = "processo_seletivo_id"),
-        inverseJoinColumns = @JoinColumn(name = "criterio_id")
-    )
+    @JoinTable(name = "processo_criterios", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "criterio_id"))
     private List<CriterioAvaliacao> criterios;
 
     @OneToOne(cascade = CascadeType.ALL)
