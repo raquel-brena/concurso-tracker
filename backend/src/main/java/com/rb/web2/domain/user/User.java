@@ -1,5 +1,6 @@
 package com.rb.web2.domain.user;
 
+import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.roles.Role;
 import jakarta.persistence.*;
@@ -39,8 +40,8 @@ public class User implements UserDetails {
     private String telefone;
     private String cargo;
 
-    // @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Documento> documentos;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Documento> documentos;
 
     @ManyToMany(mappedBy = "comissaoOrganizadora")
     private List<ProcessoSeletivo> processosComissao;
