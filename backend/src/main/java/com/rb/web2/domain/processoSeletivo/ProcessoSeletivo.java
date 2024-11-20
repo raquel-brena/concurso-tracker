@@ -1,0 +1,71 @@
+package com.rb.web2.domain.processoSeletivo;
+
+import java.util.List;
+
+import com.rb.web2.domain.agenda.Agenda;
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.vaga.Vaga;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "processos")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
+public class ProcessoSeletivo {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    private String titulo;
+
+    private String descricao;
+
+    private int validadeMeses;
+
+    private boolean temporario;
+
+    private String linkEdital;
+
+    @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vaga> vagas;
+
+    @ManyToMany
+    @JoinTable(name = "processo_criterios", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "criterio_id"))
+    private List<CriterioAvaliacao> criterios;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "agenda_id", referencedColumnName = "id")
+    private Agenda agenda;
+
+    private List<String> documentosNecessarios;
+
+    @ManyToMany
+    @JoinTable(name = "processo_comissao", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> comissaoOrganizadora;
+
+    @ManyToMany
+    @JoinTable(name = "processo_participantes", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> participantes;
+
+}

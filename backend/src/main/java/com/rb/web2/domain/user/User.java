@@ -1,5 +1,10 @@
 package com.rb.web2.domain.user;
 
+<<<<<<< Updated upstream
+=======
+import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+>>>>>>> Stashed changes
 import com.rb.web2.domain.roles.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +39,20 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    private String email;
+    private String telefone;
+    private String cargo;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Documento> documentos;
+
+    @ManyToMany(mappedBy = "comissaoOrganizadora")
+    private List<ProcessoSeletivo> processosComissao;
+
+    @ManyToMany(mappedBy = "participantes")
+    private List<ProcessoSeletivo> processosParticipante;
+
+    
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
