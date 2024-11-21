@@ -1,7 +1,5 @@
 package com.rb.web2.domain.formacao;
 
-import java.util.Base64;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
