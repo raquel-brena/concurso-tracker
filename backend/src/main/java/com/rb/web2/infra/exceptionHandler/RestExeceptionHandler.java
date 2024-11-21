@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.rb.web2.infra.RestMessage.RestErrorMessage;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.ForbbidenException;
 import com.rb.web2.shared.exceptions.NotFoundException;
