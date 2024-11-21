@@ -3,6 +3,9 @@ package com.rb.web2.controllers;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.infra.properties.FileStorageProperties;
 import com.rb.web2.services.DocumentoService;
+import com.rb.web2.shared.exceptions.BadRequestException;
+import com.rb.web2.shared.exceptions.NotFoundException;
+
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
@@ -41,7 +44,7 @@ public class DocumentoController {
 
     public DocumentoController(FileStorageProperties fileStorageProperties, DocumentoService service) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-        .toAbsolutePath().normalize();
+                .toAbsolutePath().normalize();
 
         this.service = service;
     }
@@ -52,10 +55,10 @@ public class DocumentoController {
         var id = this.service.create(Documento);
 
         var location = ServletUriComponentsBuilder
-        .fromCurrentRequest()
-        .path("/{id}")
-        .buildAndExpand(id)
-        .toUri();
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(id)
+                .toUri();
 
         return ResponseEntity.created(location).build();
     }
@@ -63,9 +66,9 @@ public class DocumentoController {
     // Buscar instituição pelo ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getDocumentoById(@PathVariable Long id) {
-        try { 
+        try {
             var documento = service.getDocumentoById(id);
-            if (documento.isEmpty()) { 
+            if (documento.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
             return ResponseEntity.ok().body(documento.get());
@@ -81,69 +84,77 @@ public class DocumentoController {
         return ResponseEntity.ok(Documentos);
     }
 
-
     @PostMapping("path/{userId}")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String userId) throws IllegalStateException, IOException {
-       String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-       try {
-          Path userDirectory = fileStorageLocation.resolve(String.valueOf(userId)).normalize();
-        if (!Files.exists(userDirectory)) {
-            Files.createDirectories(userDirectory);
-        }
-        Path targetLocation = userDirectory.resolve(fileName);
-        file.transferTo(targetLocation);
-
-        String fileDonwloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-        .path("api/documentos/download/")
-        .path(fileName)
-        .toUriString();
-
-        return ResponseEntity.ok()
-        .body(fileDonwloadUri);
-       } catch (Error e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-       }
-    }
-    
-
-    @GetMapping("/download/{userId}/{filename:.+}")
-    public ResponseEntity downloadFile(@PathVariable String filename, @PathVariable String userId, HttpServletRequest request) throws IOException {
-
-       Path userDirectory = fileStorageLocation.resolve(String.valueOf(userId)).normalize();
-        if (!Files.exists(userDirectory)) {
-            return ResponseEntity.badRequest().body("invalid path name");
-        }
-        Path filePath = userDirectory.resolve(filename).normalize();
-
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String userId)
+            throws IllegalStateException, IOException {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
-            Resource resource = new UrlResource(filePath.toUri());
-            String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-
-            if (contentType == null) { 
-                contentType = "application/octet-stream";
+            Path userDirectory = fileStorageLocation.resolve(String.valueOf(userId)).normalize();
+            if (!Files.exists(userDirectory)) {
+                Files.createDirectories(userDirectory);
             }
+            Path targetLocation = userDirectory.resolve(fileName);
+            file.transferTo(targetLocation);
+
+            String fileDonwloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("api/documentos/download/")
+                    .path(fileName)
+                    .toUriString();
 
             return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(contentType))
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename =\""+resource.getFilename() +"\"")
-            .body(resource);
+                    .body(fileDonwloadUri);
         } catch (Error e) {
-            return ResponseEntity.badRequest().body("Invalid file path");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/download/{userId}/{filename:.+}")
+    public ResponseEntity downloadFile(@PathVariable String filename, @PathVariable String userId,
+            HttpServletRequest request) throws IOException {
+
+        Path userDirectory = fileStorageLocation.resolve(String.valueOf(userId)).normalize();
+        if (!Files.exists(userDirectory)) {
+            throw new NotFoundException("Diretório do usuário " + userId + " não encontrado.");
         }
 
+        Path filePath = userDirectory.resolve(filename).normalize();
+
+        if (!Files.exists(filePath)) {
+            throw new NotFoundException(
+                    "Arquivo " + filename + " não encontrado no diretório do usuário " + userId + ".");
+        }
+
+        Resource resource = new UrlResource(filePath.toUri());
+
+        if (!resource.exists() || !resource.isReadable()) {
+            throw new BadRequestException("Erro ao tentar acessar o arquivo " + filename + ".");
+        }
+
+        String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename =\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
-    
 
     // // Atualizar instituição
     // @PutMapping("/{id}")
-    // public ResponseEntity<Documento> updateDocumento(@PathVariable String id, @RequestBody Documento updatedDocumento) {
-    //     Documento Documento = service.updateDocumento(id, updatedDocumento);
-    //     return Documento != null ? ResponseEntity.ok(Documento) : ResponseEntity.notFound().build();
+    // public ResponseEntity<Documento> updateDocumento(@PathVariable String id,
+    // @RequestBody Documento updatedDocumento) {
+    // Documento Documento = service.updateDocumento(id, updatedDocumento);
+    // return Documento != null ? ResponseEntity.ok(Documento) :
+    // ResponseEntity.notFound().build();
     // }
 
     // // Excluir instituição
     // @DeleteMapping("/{id}")
     // public ResponseEntity<Void> deleteDocumento(@PathVariable String id) {
-    //     return service.deleteDocumento(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    // return service.deleteDocumento(id) ? ResponseEntity.noContent().build() :
+    // ResponseEntity.notFound().build();
     // }
 }

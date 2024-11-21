@@ -4,6 +4,8 @@ import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
 import com.rb.web2.repositories.RoleRepository;
 import com.rb.web2.repositories.UserRepository;
+import com.rb.web2.services.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    UserService service;
 
     @Autowired
     RoleRepository roleRepository;
@@ -28,7 +30,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity updateUser(@RequestBody @Validated UpdateUserDTO dto) {
-        var user = this.userRepository.findById(dto.userId()).orElseThrow(() -> new IllegalArgumentException("User doesnt exist"));
+        var user = this.service.getUserById(dto.userId());
 
         var role = user.getRole();
         if (!(dto.roleId() == null)) {
@@ -40,13 +42,12 @@ public class UserController {
         }
 
         user.setRole(role);
-        this.userRepository.save(user);
+        this.service.create(user);
 
         return ResponseEntity.ok().body("User updated with ID: " + user.getId());
     }
 
     public User getUserById(String id) {
-        return this.userRepository.findById(id)
-                .orElseThrow(() -> new Error("User doesnt exists"));
+        return this.service.getUserById(id);
     }
 }
