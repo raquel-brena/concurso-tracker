@@ -49,15 +49,29 @@ public class DocumentoController {
     // Criar nova instituição
     @PostMapping
     public ResponseEntity createDocumento(@RequestBody Documento Documento) {
-        Documento createdDocumento = service.create(Documento);
-        return ResponseEntity.ok().build();
+        var id = this.service.create(Documento);
+
+        var location = ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(id)
+        .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     // Buscar instituição pelo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Documento> getDocumentoById(@PathVariable Long id) {
-        Optional<Documento> Documento = service.getDocumentoById(id);
-        return Documento.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> getDocumentoById(@PathVariable Long id) {
+        try { 
+            var documento = service.getDocumentoById(id);
+            if (documento.isEmpty()) { 
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(documento.get());
+        } catch (Error e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // Listar todas as instituições
