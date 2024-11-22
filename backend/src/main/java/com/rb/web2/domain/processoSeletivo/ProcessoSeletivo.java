@@ -65,7 +65,7 @@ public class ProcessoSeletivo {
     private List<User> comissaoOrganizadora;
 
     @ManyToMany
-    @JoinTable(name = "processo_participantes", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "candidate_applications", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participantes;
 
 }
