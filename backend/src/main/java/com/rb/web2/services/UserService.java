@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+
 
 @Service
 public class UserService {
@@ -21,6 +24,7 @@ public class UserService {
     }
 
     public User getUserById(String id) {
+        System.out.println("id: " + id);
         return this.repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User doesn't exist"));
     }
@@ -34,6 +38,10 @@ public class UserService {
         if (this.repository.findByLogin(login).isPresent()) {
             throw new IllegalArgumentException("User already exists");
         }
+    }
+
+    public List<User> getAllUsers() {
+        return repository.findAll();
     }
 
 }

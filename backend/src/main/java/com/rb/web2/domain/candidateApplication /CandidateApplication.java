@@ -45,7 +45,6 @@ public class CandidateApplication {
     public CandidateApplication(User candidate, String jobPosition, String coverLetter, boolean isActive, ProcessoSeletivo processoSeletivo) {
         this.candidate = candidate;
         this.jobPosition = jobPosition;
-        this.coverLetter = coverLetter;
         this.isActive = isActive;
         this.applicationDate = LocalDateTime.now();
         this.processoSeletivo = processoSeletivo;

@@ -11,8 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import org.springframework.http.HttpStatus;
 
-@Controller
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -22,10 +23,31 @@ public class UserController {
 
     @Autowired
     RoleRepository roleRepository;
+    
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = service.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> createUser(@RequestBody @Validated User user) {
+        try {
+            service.create(user);
+            return ResponseEntity.ok("User created with ID: " + user.getId());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error creating user: " + e.getMessage());
+        }
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
-        return ResponseEntity.ok(getUserById(id));
+        User user = this.service.getUserById(id);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                .body(null);
+        }
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping
