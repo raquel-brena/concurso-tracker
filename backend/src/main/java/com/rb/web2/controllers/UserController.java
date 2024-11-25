@@ -5,6 +5,7 @@ import com.rb.web2.domain.user.dto.UpdateUserDTO;
 import com.rb.web2.repositories.RoleRepository;
 import com.rb.web2.repositories.UserRepository;
 import com.rb.web2.services.UserService;
+import com.rb.web2.shared.exceptions.NotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class UserController {
 
         var role = user.getRole();
         if (!(dto.roleId() == null)) {
-            role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new IllegalArgumentException("Role doesnt exist"));
+            role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new NotFoundException("Role doesnt exist"));
         }
 
         if (dto.login() != null) {

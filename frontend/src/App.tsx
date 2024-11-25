@@ -1,48 +1,15 @@
-// import { useState } from "react";
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import "./App.css";
-import { Routes, Route } from "react-router-dom";
-import Login from "./pages/Login.tsx";
-import NavBar from "./components/NavBar";
+import { Header } from "./components/header/Header";
+import MenubarDemo from "./components/MenuBarPrincipal/MenuBar";
+import { Separator } from "./components/separator/separator";
 
 function App() {
-  // const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div style={{ width: "100%" }}>
-        <NavBar /> {/* Exibe o menu em todas as páginas */}
-      </div>
-        <p>AAAAAAAA</p>
-        <Routes>
-          <Route path="/" element={<Login />} />{" "}
-        </Routes>
-    </>
-
-    // <>
-    //   <div>
-    //     <a href="https://vite.dev" target="_blank">
-    //       <img src={viteLogo} className="logo" alt="Vite logo" />
-    //     </a>
-    //     <a href="https://react.dev" target="_blank">
-    //       <img src={reactLogo} className="logo react" alt="React logo" />
-    //     </a>
-    //   </div>
-    //   <h1>Vite + React</h1>
-    //   <div className="card">
-    //     <button onClick={() => setCount((count) => count + 1)}>
-    //       count is {count}
-    //     </button>
-    //     <p>
-    //       Edit <code>src/App.tsx</code> and save to test HMR
-    //     </p>
-    //   </div>
-    //   <p className="read-the-docs">
-    //     Click on the Vite and React logos to learn more
-    //   </p>
-    // </>
+    <div className="flex flex-col relative w-screen h-screen">
+      <MenubarDemo />
+      <div className="flex h-1/4 w-full bg-[#FCF7F5]">.</div>
+      <Header />
+      <Separator />
+    </div>
   );
 }
-
 export default App;
