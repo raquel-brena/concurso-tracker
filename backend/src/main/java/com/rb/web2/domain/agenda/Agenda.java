@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.security.Timestamp;
 import java.time.LocalDate;
 
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -69,7 +68,6 @@ public class Agenda {
 
     @OneToOne(mappedBy = "agenda")
     private ProcessoSeletivo processoSeletivo;
-
 
     private LocalDate criadoEm;
     private LocalDate atualizadoEm;
