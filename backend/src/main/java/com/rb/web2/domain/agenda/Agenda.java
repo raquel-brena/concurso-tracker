@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.security.Timestamp;
 import java.time.LocalDate;
 
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -25,6 +26,8 @@ public class Agenda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private boolean ativo;
 
     @NotNull(message = "A data de início da vigência é obrigatória.")
     private LocalDate inicioVigencia;
@@ -66,6 +69,9 @@ public class Agenda {
 
     @OneToOne(mappedBy = "agenda")
     private ProcessoSeletivo processoSeletivo;
+
+    private Timestamp criadoEm;
+    private Timestamp atualizadoEm;
 
     public boolean isConsistent() {
         return inicioVigencia.isBefore(fimVigencia) &&
