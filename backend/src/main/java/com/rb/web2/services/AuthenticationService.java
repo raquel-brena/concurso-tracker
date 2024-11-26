@@ -1,5 +1,6 @@
 package com.rb.web2.services;
 
+import com.rb.web2.domain.enums.Role;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
 import com.rb.web2.domain.user.dto.RegisterDTO;
@@ -24,9 +25,6 @@ public class AuthenticationService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private RoleService roleService;
     
     public AuthenticationService(UserService userService, @Lazy AuthenticationManager authenticationManager,
             TokenService tokenService, PasswordEncoder passwordEncoder) {
@@ -49,9 +47,8 @@ public class AuthenticationService implements UserDetailsService {
 
         String encryptedPassword = passwordEncoder.encode(data.password());
 
-        var role = roleService.findRoleByName("USER");
 
-        return this.userService.create(new User (data.login(), encryptedPassword, role));
+        return this.userService.create(new User (data.login(), encryptedPassword, Role.USER));
     }
 
     @Override
