@@ -2,51 +2,61 @@ package com.rb.web2.controllers;
 
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
-import com.rb.web2.repositories.RoleRepository;
 import com.rb.web2.repositories.UserRepository;
+import com.rb.web2.services.UserService;
+import com.rb.web2.shared.exceptions.NotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import org.springframework.http.HttpStatus;
 
-@Controller
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
+    UserService service;
+    
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = service.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
-        return ResponseEntity.ok(getUserById(id));
+        User user = this.service.getUserById(id);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                .body(null);
+        }
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping
     public ResponseEntity updateUser(@RequestBody @Validated UpdateUserDTO dto) {
-        var user = this.userRepository.findById(dto.userId()).orElseThrow(() -> new IllegalArgumentException("User doesnt exist"));
+        var user = this.service.getUserById(dto.userId());
 
         var role = user.getRole();
-        if (!(dto.roleId() == null)) {
-            role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new IllegalArgumentException("Role doesnt exist"));
-        }
+        // if (!(dto.roleId() == null)) {
+        //     role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new NotFoundException("Role doesnt exist"));
+        // }
 
         if (dto.login() != null) {
             user.setLogin(dto.login());
         }
 
         user.setRole(role);
-        this.userRepository.save(user);
+        this.service.create(user);
 
         return ResponseEntity.ok().body("User updated with ID: " + user.getId());
     }
 
     public User getUserById(String id) {
-        return this.userRepository.findById(id)
-                .orElseThrow(() -> new Error("User doesnt exists"));
+        return this.service.getUserById(id);
     }
 }

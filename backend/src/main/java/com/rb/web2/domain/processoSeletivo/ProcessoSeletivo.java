@@ -47,6 +47,8 @@ public class ProcessoSeletivo {
 
     private String linkEdital;
 
+    private List<String> documentosNecessarios;
+
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vaga> vagas;
 
@@ -58,14 +60,11 @@ public class ProcessoSeletivo {
     @JoinColumn(name = "agenda_id", referencedColumnName = "id")
     private Agenda agenda;
 
-    private List<String> documentosNecessarios;
-
     @ManyToMany
     @JoinTable(name = "processo_comissao", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> comissaoOrganizadora;
 
     @ManyToMany
-    @JoinTable(name = "processo_participantes", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "candidate_applications", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participantes;
-
 }

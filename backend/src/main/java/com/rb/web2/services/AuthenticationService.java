@@ -1,10 +1,13 @@
 package com.rb.web2.services;
 
+import com.rb.web2.domain.enums.Role;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
 import com.rb.web2.domain.user.dto.RegisterDTO;
 import com.rb.web2.domain.user.dto.ResponseLoginDTO;
 import com.rb.web2.infra.security.TokenService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +25,7 @@ public class AuthenticationService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
-
+    
     public AuthenticationService(UserService userService, @Lazy AuthenticationManager authenticationManager,
             TokenService tokenService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -44,7 +47,8 @@ public class AuthenticationService implements UserDetailsService {
 
         String encryptedPassword = passwordEncoder.encode(data.password());
 
-        return this.userService.create(data.login(), encryptedPassword);
+
+        return this.userService.create(new User (data.login(), encryptedPassword, Role.USER));
     }
 
     @Override
