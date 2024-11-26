@@ -34,7 +34,6 @@ public class ProcessoSeletivoService {
 
   public Optional<ProcessoSeletivo> getProcessoSeletivoByTitulo(String titulo) {
     return repository.findByTitulo(titulo);
-   
   }
 
   public List<ProcessoSeletivo> getAllProcessoSeletivos() {

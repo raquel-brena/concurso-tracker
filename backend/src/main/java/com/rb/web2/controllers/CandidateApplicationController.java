@@ -1,6 +1,7 @@
 package com.rb.web2.controllers;
 
 import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.candidateApplication.CandidateApplication;
 import com.rb.web2.services.CandidateApplicationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,13 @@ public class CandidateApplicationController {
         CandidateApplicationService service;
     
         @GetMapping
-        public ResponseEntity<List<User>> getAllApplications() {
-            List<User> applications = service.getAllApplications();
+        public ResponseEntity<List<CandidateApplication>> getAllCandidateApplications() {
+            List<CandidateApplication> applications = service.getAllCandidateApplications();
             return ResponseEntity.ok(applications);
         }
     
         @PostMapping
-        public ResponseEntity<String> createApplication(@RequestBody @Validated User application) {
+        public ResponseEntity<String> createCandidateApplication(@RequestBody @Validated CandidateApplication application) {
             try {
                 service.create(application);
                 return ResponseEntity.ok("Application created with ID: " + application.getId());
@@ -36,18 +37,15 @@ public class CandidateApplicationController {
         }
     
         @GetMapping("/{id}")
-        public ResponseEntity<User> getApplication(@PathVariable String id) {
-            User application = this.service.getApplicationById(id);
-            if (application == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                    .body(null);
-            }
-            return ResponseEntity.ok(application);
+        public ResponseEntity<CandidateApplication> getCandidateApplication(@PathVariable String id) {
+            return this.service.getCandidateApplicationById(id)
+                    .map(ResponseEntity::ok) // Se o Optional tiver valor, retorna 200 OK com o valor
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)); // Se vazio, retorna 404 NOT FOUND
         }
     
-        @PutMapping
-        public ResponseEntity updateApplication(@RequestBody @Validated User application) {
-            var updatedApplication = this.service.updateApplication(application);
+        @PutMapping("/{id}")
+        public ResponseEntity updateCandidateApplication(@PathVariable String id, @RequestBody @Validated CandidateApplication application) {
+            var updatedApplication = this.service.updateCandidateApplication(id, application);
             if (updatedApplication == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                     .body(null);
@@ -57,7 +55,7 @@ public class CandidateApplicationController {
     
         // @TODO Implement this method
         @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteApplication(@PathVariable String id) {
+        public ResponseEntity<Void> deleteCandidateApplication(@PathVariable String id) {
             return null;
         }
 

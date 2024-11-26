@@ -24,7 +24,6 @@ public class UserService {
     }
 
     public User getUserById(String id) {
-        System.out.println("id: " + id);
         return this.repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User doesn't exist"));
     }
