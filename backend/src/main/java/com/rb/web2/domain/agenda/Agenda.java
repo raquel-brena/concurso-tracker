@@ -70,8 +70,9 @@ public class Agenda {
     @OneToOne(mappedBy = "agenda")
     private ProcessoSeletivo processoSeletivo;
 
-    private Timestamp criadoEm;
-    private Timestamp atualizadoEm;
+
+    private LocalDate criadoEm;
+    private LocalDate atualizadoEm;
 
     public boolean isConsistent() {
         return inicioVigencia.isBefore(fimVigencia) &&

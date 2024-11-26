@@ -18,7 +18,11 @@ public class AgendaService {
   private AgendaRepository repository;
 
   public Agenda create(AgendaDTO dto) {
+    if (dto == null) {
+      throw new IllegalArgumentException("AgendaDTO não pode ser nulo.");
+    }
     var novaAgenda = AgendaMapper.toEntity(dto);
+
     return repository.save(novaAgenda);
   }
 
@@ -28,7 +32,7 @@ public class AgendaService {
   }
 
   public List<Agenda> getAllAgendas() {
-    return repository.findAll();
+    return repository.findAllByAtivoTrue();
   }
 
   public void deleteAgenda(Long id) {

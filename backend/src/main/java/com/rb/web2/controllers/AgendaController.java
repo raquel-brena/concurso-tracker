@@ -3,6 +3,8 @@ package com.rb.web2.controllers;
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.services.AgendaService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,7 +27,9 @@ public class AgendaController {
     }
 
     @PostMapping("/")
-    public ResponseEntity createAgenda(@RequestBody AgendaDTO dto) {
+    public ResponseEntity createAgenda(@Valid @RequestBody AgendaDTO dto) {
+
+
         var agenda = service.create(dto);
 
         var location = ServletUriComponentsBuilder
