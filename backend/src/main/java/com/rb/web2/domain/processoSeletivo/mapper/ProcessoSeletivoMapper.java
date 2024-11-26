@@ -21,7 +21,8 @@ public class ProcessoSeletivoMapper {
             processo.getDescricao(),
             processo.getValidadeMeses(),
             processo.isTemporario(),
-            processo.getLinkEdital()
+            processo.getLinkEdital(),
+            processo.getDocumentosNecessarios()
         );
     }
 }
