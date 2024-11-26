@@ -5,6 +5,7 @@ public record RequestProcessoDTO (
     String descricao, 
     int validade, 
     boolean temporario, 
-    String linkEdital){
-    
+    String linkEdital,
+    List<String> documentosIds,
+    ){
 }

@@ -1,8 +1,10 @@
 package com.rb.web2.controllers;
 
+import com.rb.web2.domain.agenda.Agenda;
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
-import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
+import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.services.ProcessoSeletivoService;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
 
 @RestController
 @RequestMapping("/api/processo")
@@ -50,4 +51,11 @@ public class ProcessoSeletivoController {
         return ResponseEntity.ok().body(processo);
     }
     
+    // UPDATE
+    // vincular vagas
+    // vincular agenda
+    // vincular documentos
+    // vincular criterios
+    // vincular comissao 
+    // vincular participantes
 }

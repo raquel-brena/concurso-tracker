@@ -1,6 +1,5 @@
 package com.rb.web2.domain.vaga;
 
-import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.formacao.Formacao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
@@ -10,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

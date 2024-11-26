@@ -2,7 +2,6 @@ package com.rb.web2.controllers;
 
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
-import com.rb.web2.repositories.RoleRepository;
 import com.rb.web2.repositories.UserRepository;
 import com.rb.web2.services.UserService;
 import com.rb.web2.shared.exceptions.NotFoundException;
@@ -21,9 +20,6 @@ public class UserController {
     @Autowired
     UserService service;
 
-    @Autowired
-    RoleRepository roleRepository;
-
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
         return ResponseEntity.ok(getUserById(id));
@@ -34,9 +30,9 @@ public class UserController {
         var user = this.service.getUserById(dto.userId());
 
         var role = user.getRole();
-        if (!(dto.roleId() == null)) {
-            role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new NotFoundException("Role doesnt exist"));
-        }
+        // if (!(dto.roleId() == null)) {
+        //     role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new NotFoundException("Role doesnt exist"));
+        // }
 
         if (dto.login() != null) {
             user.setLogin(dto.login());

@@ -1,12 +1,9 @@
 package com.rb.web2.domain.user;
 
-
 import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.enums.Role;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
-import com.rb.web2.domain.documento.Documento;
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.roles.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,7 +33,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
     @JoinColumn(name = "role_id")
     private Role role;
 
@@ -53,7 +50,6 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "participantes")
     private List<ProcessoSeletivo> processosParticipante;
 
-    
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
@@ -65,8 +61,8 @@ public class User implements UserDetails {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
         this.role.getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority("ROLE_" + permission.getName().toUpperCase()))
-                .forEach(authorities::add);
+                .map(permission -> new SimpleGrantedAuthority("ROLE_" + permission.name().toUpperCase()))
+                .forEach(authorities::add); 
 
         return authorities;
     }
