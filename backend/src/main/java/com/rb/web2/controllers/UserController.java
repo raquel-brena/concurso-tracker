@@ -31,16 +31,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody @Validated User user) {
-        try {
-            service.create(user);
-            return ResponseEntity.ok("User created with ID: " + user.getId());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error creating user: " + e.getMessage());
-        }
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
         User user = this.service.getUserById(id);
