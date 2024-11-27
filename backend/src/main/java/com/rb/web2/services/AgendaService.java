@@ -1,0 +1,123 @@
+package com.rb.web2.services;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.rb.web2.domain.agenda.Agenda;
+import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.mapper.AgendaMapper;
+import com.rb.web2.repositories.AgendaRepository;
+import com.rb.web2.shared.exceptions.BadRequestException;
+import com.rb.web2.shared.exceptions.NotFoundException;
+
+@Service
+public class AgendaService {
+
+  @Autowired
+  private AgendaRepository repository;
+
+  public Agenda create(AgendaDTO dto) {
+    if (dto == null) {
+      throw new IllegalArgumentException("AgendaDTO não pode ser nulo.");
+    }
+
+    var novaAgenda = AgendaMapper.toEntity(dto);
+    this.isConsistent(novaAgenda);
+    return repository.save(novaAgenda);
+  }
+
+  public Agenda getAgendaById(Long id) {
+    return repository.findById(id).orElseThrow(
+        () -> new NotFoundException("Agenda com o ID " + id + " não encontrado."));
+  }
+
+  public List<AgendaDTO> getAllAgendas() {
+    List<Agenda> agendas = repository.findAllByAtivoTrue();
+    List<AgendaDTO> agendasDTO = agendas.stream().map(AgendaMapper::toDTO).collect(Collectors.toList());
+    return agendasDTO;
+  }
+
+  public void deleteAgenda(Long id) {
+    var agenda = getAgendaById(id);
+    agenda.setAtivo(false);
+    repository.save(agenda);
+  }
+
+  public AgendaDTO updateAgenda(Long id, AgendaDTO dto) {
+    Agenda agenda = getAgendaById(id);
+    Agenda agendaAtualizada = AgendaMapper.toEntity(dto);
+    agendaAtualizada.setId(agenda.getId());
+    this.isConsistent(agendaAtualizada);
+
+    repository.save(agendaAtualizada);
+    AgendaDTO agendaAtualizadaDTO = AgendaMapper.toDTO(agendaAtualizada);
+    return agendaAtualizadaDTO;
+  }
+
+  public boolean isConsistent(Agenda agenda) {
+
+    if (agenda.getInicioVigencia().isAfter(agenda.getFimVigencia())) {
+        throw new BadRequestException("A data de início da vigência deve ser anterior à data de fim da vigência.");
+    }
+
+    if (agenda.getInicioInscricao().isAfter(agenda.getFimInscricao())) {
+        throw new BadRequestException("A data de início das inscrições deve ser anterior à data de fim das inscrições.");
+    }
+
+    if (agenda.getFimInscricao().isAfter(agenda.getHomologacao())) {
+        throw new BadRequestException("A data de fim das inscrições deve ser anterior à data de homologação.");
+    }
+
+    if (agenda.getHomologacao().isAfter(agenda.getInicioRecurso())) {
+        throw new BadRequestException("A data de homologação deve ser anterior à data de início do recurso.");
+    }
+
+    if (agenda.getInicioRecurso().isAfter(agenda.getFimRecurso())) {
+        throw new BadRequestException("A data de início do recurso deve ser anterior à data de fim do recurso.");
+    }
+
+    if (agenda.getFimRecurso().isAfter(agenda.getResultadoPreliminar())) {
+        throw new BadRequestException("A data de fim do recurso deve ser anterior ao resultado preliminar.");
+    }
+
+    if (agenda.getResultadoPreliminar().isAfter(agenda.getResultadoFinal())) {
+        throw new BadRequestException("O resultado preliminar deve ser anterior ao resultado final.");
+    }
+
+    if (agenda.getResultadoFinal().isAfter(agenda.getPrazoConvocacao())) {
+        throw new BadRequestException("O resultado final deve ser anterior ao prazo de convocação.");
+    }
+
+    return true;
+}
+
+  // public Agenda updateAgenda(
+  // String id,
+  // Agenda updatedAgenda
+  // ) {
+  // if (checkAgendaExists(id)) {
+  // updatedAgenda.setId(id);
+  // return repository.save(updatedAgenda);
+  // }
+
+  // return null;
+  // }
+
+  // public boolean deleteInstitution(String id) {
+  // Optional<Agenda> existingInstitution = getInstitutionById(id);
+  // if (checkInstitutionExists(id)) {
+  // Institution institution = existingInstitution.get();
+  // institution.setAtivo(false); // Atualiza o campo ativo para false, marcando
+  // como inativa
+
+  // repository.save(institution);
+  // return true;
+  // }
+
+  // return false;
+  // }
+}

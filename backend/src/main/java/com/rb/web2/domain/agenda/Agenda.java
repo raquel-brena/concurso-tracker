@@ -30,49 +30,30 @@ public class Agenda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "A data de início da vigência é obrigatória.")
+    @Column(nullable = false)
+    private boolean ativo;
+
     private LocalDate inicioVigencia;
 
-    @NotNull(message = "A data de fim da vigência é obrigatória.")
     private LocalDate fimVigencia;
 
-    @NotNull(message = "A data de início das inscrições é obrigatória.")
-    @Future(message = "A data de início das inscrições deve estar no futuro.")
     private LocalDate inicioInscricao;
 
-    @NotNull(message = "A data de término das inscrições é obrigatória.")
-    @Future(message = "A data de término das inscrições deve estar no futuro.")
     private LocalDate fimInscricao;
 
-    @NotNull(message = "A data de homologação é obrigatória.")
-    @Future(message = "A data de homologação deve estar no futuro.")
     private LocalDate homologacao;
 
-    @NotNull(message = "A data de início do recurso é obrigatória.")
-    @Future(message = "A data de início do recurso deve estar no futuro.")
     private LocalDate inicioRecurso;
 
-    @NotNull(message = "A data de término do recurso é obrigatória.")
-    @Future(message = "A data de término do recurso deve estar no futuro.")
     private LocalDate fimRecurso;
 
-    @NotNull(message = "A data do resultado preliminar é obrigatória.")
-    @Future(message = "A data do resultado preliminar deve estar no futuro.")
     private LocalDate resultadoPreliminar;
-
-    @NotNull(message = "A data do resultado final é obrigatória.")
-    @Future(message = "A data do resultado final deve estar no futuro.")
     private LocalDate resultadoFinal;
 
-    @NotNull(message = "O prazo de convocação é obrigatório.")
-    @Future(message = "O prazo de convocação deve estar no futuro.")
     private LocalDate prazoConvocacao;
 
     @OneToOne(mappedBy = "agenda")
     private ProcessoSeletivo processoSeletivo;
-
-    @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
@@ -81,16 +62,5 @@ public class Agenda {
     @Column(name = "atualizado_em")
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
-
-    public boolean isConsistent() {
-        return inicioVigencia.isBefore(fimVigencia) &&
-                inicioInscricao.isBefore(fimInscricao) &&
-                fimInscricao.isBefore(homologacao) &&
-                homologacao.isBefore(inicioRecurso) &&
-                inicioRecurso.isBefore(fimRecurso) &&
-                fimRecurso.isBefore(resultadoPreliminar) &&
-                resultadoPreliminar.isBefore(resultadoFinal) &&
-                resultadoFinal.isBefore(prazoConvocacao);
-    }
 
 }
