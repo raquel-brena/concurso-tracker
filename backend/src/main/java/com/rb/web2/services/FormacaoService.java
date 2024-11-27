@@ -35,13 +35,15 @@ public class FormacaoService {
         return formacaoRepository.findById(id);
     }
 
-    public Formacao atualizar(Long id, Formacao formacaoAtualizada) {
+    public Formacao atualizar(Long id, FormacaoRequestDTO formacaoAtualizada) {
         // Verifica se a formação existe
-        if (!formacaoRepository.existsById(id)) {
-            throw new RuntimeException("Formação não encontrada.");
-        }
-        formacaoAtualizada.setId(id);  // Garante que o ID da formação será mantido
-        return formacaoRepository.save(formacaoAtualizada);
+        Formacao formacaoExistente = formacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Formação não encontrada."));
+    
+        formacaoExistente.setNome(formacaoAtualizada.nome());
+        formacaoExistente.setDescricao(formacaoAtualizada.descricao());
+
+        return formacaoRepository.save(formacaoExistente);
     }
 
     // @TODO: Método para excluir uma formação

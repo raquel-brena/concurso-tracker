@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/formacoes")
@@ -23,38 +24,33 @@ public class FormacaoController {
 
     // Endpoint para criar uma nova formação
     @PostMapping
-    public ResponseEntity<Formacao> criarFormacao(@RequestBody FormacaoRequestDTO dto) {
+    public ResponseEntity<Formacao> criarFormacao(@RequestBody FormacaoRequestDTO dto) {    
         Formacao createdFormacao = formacaoService.salvar(dto);
         return new ResponseEntity<>(createdFormacao, HttpStatus.CREATED);
     }
 
-    /* 
-
-    // Endpoint para listar todas as formações
     @GetMapping
-    public ResponseEntity<List<FormacaoDTO>> listarFormacoes() {
-        List<FormacaoDTO> formacoes = formacaoService.listarFormacoes();
+    public ResponseEntity<List<Formacao>> listarFormacoes() {
+        List<Formacao> formacoes = formacaoService.listarTodas();
         return new ResponseEntity<>(formacoes, HttpStatus.OK);
     }
 
-    // Endpoint para buscar uma formação por ID
     @GetMapping("/{id}")
-    public ResponseEntity<FormacaoDTO> buscarFormacaoPorId(@PathVariable Long id) {
-        FormacaoDTO formacao = formacaoService.buscarFormacaoPorId(id);
-        return formacao != null ? new ResponseEntity<>(formacao, HttpStatus.OK) 
-                                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Formacao> buscarFormacaoPorId(@PathVariable Long id) {
+        Optional<Formacao> optionalFormacao = formacaoService.buscarPorId(id);
+        return optionalFormacao.map(formacao -> new ResponseEntity<>(formacao, HttpStatus.OK))
+                           .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Endpoint para atualizar uma formação
     @PutMapping("/{id}")
-    public ResponseEntity<FormacaoDTO> atualizarFormacao(@PathVariable Long id, 
-                                                         @RequestBody FormacaoDTO formacaoDTO) {
-        FormacaoDTO updatedFormacao = formacaoService.atualizarFormacao(id, formacaoDTO);
+    public ResponseEntity<Formacao> atualizarFormacao(@PathVariable Long id, 
+                                                            @RequestBody FormacaoRequestDTO dto) {
+        Formacao updatedFormacao = formacaoService.atualizar(id, dto);
         return updatedFormacao != null ? new ResponseEntity<>(updatedFormacao, HttpStatus.OK) 
-                                       : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }*/
+                                        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
-    // Endpoint para deletar uma formação
+    // Endpoint para deletar uma formação @TODO: Implementar
     /* 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarFormacao(@PathVariable Long id) {
