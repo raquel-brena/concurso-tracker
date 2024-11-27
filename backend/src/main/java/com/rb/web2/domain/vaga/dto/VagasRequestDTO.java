@@ -1,6 +1,6 @@
 package com.rb.web2.domain.vaga.dto;
 
-public record VagaRequestDTO(
+public record VagasRequestDTO(
     String processoSeletivoId, 
     Long formacaoId, 
     int quantidade, 

@@ -28,6 +28,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore; 
 
 @Entity
 @Table(name = "processos")
@@ -54,6 +55,7 @@ public class ProcessoSeletivo {
 
     private List<String> documentosNecessarios;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vaga> vagas;
 
