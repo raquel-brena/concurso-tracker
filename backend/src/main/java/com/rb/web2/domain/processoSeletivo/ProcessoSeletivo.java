@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Column;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
@@ -23,6 +24,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "processos")
@@ -67,4 +72,15 @@ public class ProcessoSeletivo {
     @ManyToMany
     @JoinTable(name = "candidate_applications", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participantes;
+
+    @Column(nullable = false)
+    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+
+    @Column(name = "criado_em", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime criado_em;
+
+    @Column(name = "atualizado_em")
+    @UpdateTimestamp
+    private LocalDateTime atualizado_em;
 }

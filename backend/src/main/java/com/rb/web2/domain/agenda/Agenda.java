@@ -9,6 +9,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDate;
 
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -51,9 +55,12 @@ public class Agenda {
     @OneToOne(mappedBy = "agenda")
     private ProcessoSeletivo processoSeletivo;
 
-    @Column(updatable = false)
-    private LocalDate criadoEm;
+    @Column(name = "criado_em", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime criado_em;
 
-    private LocalDate atualizadoEm;
+    @Column(name = "atualizado_em")
+    @UpdateTimestamp
+    private LocalDateTime atualizado_em;
 
 }
