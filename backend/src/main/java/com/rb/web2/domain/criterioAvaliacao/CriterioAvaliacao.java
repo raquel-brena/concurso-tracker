@@ -32,15 +32,16 @@ public class CriterioAvaliacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
+
+    @Column(nullable = false)
+    private boolean ativo = true; 
+
     private String nome;
     private int peso;
 
     @ManyToMany(mappedBy = "criterios")
     private List<ProcessoSeletivo> processos;
-
-    @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

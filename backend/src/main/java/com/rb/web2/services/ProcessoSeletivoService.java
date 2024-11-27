@@ -23,7 +23,7 @@ public class ProcessoSeletivoService {
   public ProcessoSeletivo create(RequestProcessoDTO dto) {
     var existeProcesso = this.getProcessoSeletivoByTitulo(dto.titulo());
 
-    if(existeProcesso.isPresent()) {
+    if (existeProcesso.isPresent()) {
       throw new NotFoundException("Processo seletivo com o nome " + dto.titulo() + " já existe");
     }
 
@@ -43,47 +43,53 @@ public class ProcessoSeletivoService {
     return repository.findAll();
   }
 
-  
-     public ProcessoSeletivo update(String processoId) {
-        ProcessoSeletivo processo = repository.findById(processoId)
-                .orElseThrow(() -> new NotFoundException("Processo não encontrado"));
+  public ProcessoSeletivo atualizar(String id, RequestProcessoDTO dto) {
+    ProcessoSeletivo processo = repository.findById(id)
+        .orElseThrow(() -> new NotFoundException("Processo não encontrado"));
 
-        // Atualizar vagas
-        // if (dto.getVagasIds() != null) {
-        //     List<Vaga> vagas = vagaRepository.findAllById(dto.getVagasIds());
-        //     processo.setVagas(vagas);
-        // }
-
-        // // Atualizar agenda
-        // if (dto.getAgendaId() != null) {
-        //     Agenda agenda = agendaRepository.findById(dto.getAgendaId())
-        //             .orElseThrow(() -> new NotFoundException("Agenda não encontrada"));
-        //     processo.setAgenda(agenda);
-        // }
-
-        // Atualizar documentos
-        // if (dto.getDocumentosNecessarios() != null) {
-        //     processo.setDocumentosNecessarios(dto.getDocumentosNecessarios());
-        // }
-
-        // // Atualizar critérios
-        // if (dto.getCriteriosIds() != null) {
-        //     List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllById(dto.getCriteriosIds());
-        //     processo.setCriterios(criterios);
-        // }
-
-        // // Atualizar comissão organizadora
-        // if (dto.getComissaoIds() != null) {
-        //     List<User> comissao = userRepository.findAllById(dto.getComissaoIds());
-        //     processo.setComissaoOrganizadora(comissao);
-        // }
-
-        // // Atualizar participantes
-        // if (dto.getParticipantesIds() != null) {
-        //     List<User> participantes = userRepository.findAllById(dto.getParticipantesIds());
-        //     processo.setParticipantes(participantes);
-        // }
-
-        return repository.save(processo);
+    if (dto.temporario() != processo.isTemporario()) {
+      processo.setTemporario(dto.temporario());
     }
+    // Atualizar vagas
+    // if (dto.getVagasIds() != null) {
+    // List<Vaga> vagas = vagaRepository.findAllById(dto.getVagasIds());
+    // processo.setVagas(vagas);
+    // }
+
+    // // Atualizar agenda
+    // if (dto.getAgendaId() != null) {
+    // Agenda agenda = agendaRepository.findById(dto.getAgendaId())
+    // .orElseThrow(() -> new NotFoundException("Agenda não encontrada"));
+    // processo.setAgenda(agenda);
+    // }
+
+    // Atualizar documentos
+    // if (dto.getDocumentosNecessarios() != null) {
+    // processo.setDocumentosNecessarios(dto.getDocumentosNecessarios());
+    // }
+
+    // // Atualizar critérios
+    // if (dto.getCriteriosIds() != null) {
+    // List<CriterioAvaliacao> criterios =
+    // criterioAvaliacaoRepository.findAllById(dto.getCriteriosIds());
+    // processo.setCriterios(criterios);
+    // }
+
+    // // Atualizar comissão organizadora
+    // if (dto.getComissaoIds() != null) {
+    // List<User> comissao = userRepository.findAllById(dto.getComissaoIds());
+    // processo.setComissaoOrganizadora(comissao);
+    // }
+
+    // // Atualizar participantes
+    // if (dto.getParticipantesIds() != null) {
+    // List<User> participantes =
+    // userRepository.findAllById(dto.getParticipantesIds());
+    // processo.setParticipantes(participantes);
+    // }
+
+    
+
+    return repository.save(processo);
+  }
 }

@@ -2,12 +2,17 @@ package com.rb.web2.domain.processoSeletivo.dto;
 
 import java.util.List;
 
-public record RequestProcessoDTO (
-    String titulo, 
-    String descricao, 
-    int validade, 
-    boolean temporario, 
-    String linkEdital,
-    List<String> documentosIds
-    ){
+import jakarta.validation.constraints.NotNull;
+
+public record RequestProcessoDTO(
+        @NotNull String titulo,
+        String descricao,
+        @NotNull int validade,
+        @NotNull boolean temporario,
+        String linkEdital,
+        List<Long> criteriosIds,
+        Long agendaId,
+        List<String> documentoNecessarios,
+        List<String> comissaoOrganizadoraIds,
+        List<String> participantesIds) {
 }
