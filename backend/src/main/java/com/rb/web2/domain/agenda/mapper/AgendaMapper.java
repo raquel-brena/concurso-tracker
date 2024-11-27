@@ -52,6 +52,7 @@ public class AgendaMapper {
 
     public static AgendaDTO toDTO(Agenda agenda) {
         return new AgendaDTO(
+            agenda.isAtivo(),
                 agenda.getInicioVigencia(),
                 agenda.getFimVigencia(),
                 agenda.getInicioInscricao(),

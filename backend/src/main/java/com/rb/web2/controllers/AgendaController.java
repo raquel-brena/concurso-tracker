@@ -2,6 +2,7 @@ package com.rb.web2.controllers;
 
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.services.AgendaService;
+import com.rb.web2.shared.response.RestSuccessMessage;
 
 import jakarta.validation.Valid;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
@@ -28,8 +30,6 @@ public class AgendaController {
 
     @PostMapping("/")
     public ResponseEntity createAgenda(@Valid @RequestBody AgendaDTO dto) {
-
-
         var agenda = service.create(dto);
 
         var location = ServletUriComponentsBuilder
@@ -61,8 +61,8 @@ public class AgendaController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity updateAgenda(@PathVariable Long id, @RequestBody AgendaDTO dto) {
+    public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable Long id, @RequestBody AgendaDTO dto) {
         var agenda = this.service.updateAgenda(id, dto);
-        return ResponseEntity.ok().body(agenda);
+        return ResponseEntity.ok().body(new RestSuccessMessage("Agenda atualizada com sucesso.", agenda));
     }
 }
