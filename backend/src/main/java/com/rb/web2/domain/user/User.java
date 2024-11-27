@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Table(name = "users")
 @Entity
 @Getter
@@ -34,7 +38,6 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "role_id")
     private Role role;
 
     private String email;
@@ -49,6 +52,17 @@ public class User implements UserDetails {
 
     @ManyToMany(mappedBy = "participantes")
     private List<ProcessoSeletivo> processosParticipante;
+
+    @Column(nullable = false)
+    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+
+    @Column(name = "criado_em", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime criado_em;
+
+    @Column(name = "atualizado_em")
+    @UpdateTimestamp
+    private LocalDateTime atualizado_em;
 
     public User(String login, String password, Role role) {
         this.login = login;
