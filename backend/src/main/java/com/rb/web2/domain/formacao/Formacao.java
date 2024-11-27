@@ -30,7 +30,6 @@ public class Formacao {
     private Long id;
     private String nome;
     private String descricao;
-    private int pontuacao;
     // private Documento documento;
 
     @Column(nullable = false)
@@ -43,4 +42,5 @@ public class Formacao {
     @Column(name = "atualizado_em")
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
+
 }
