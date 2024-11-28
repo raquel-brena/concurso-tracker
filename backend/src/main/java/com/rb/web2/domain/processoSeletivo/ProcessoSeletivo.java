@@ -39,7 +39,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class ProcessoSeletivo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

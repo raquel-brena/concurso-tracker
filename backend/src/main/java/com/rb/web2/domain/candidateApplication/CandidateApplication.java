@@ -6,6 +6,10 @@ import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.candidateApplication.CandidateApplicationId;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -38,18 +42,22 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class CandidateApplication implements Serializable  {
-    @EmbeddedId
-    private CandidateApplicationId id;  // Chave composta
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    //@EmbeddedId
+    //private CandidateApplicationId id;  // Chave composta
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    @MapsId("user_id") // Mapeia a chave primária compartilhada
     private User candidate;  // Associando com a classe User
+    //@MapsId("user_id") // Mapeia a chave primária compartilhada
 
     @ManyToOne
     @JoinColumn(name = "processo_seletivo_id", referencedColumnName = "id", nullable = false)
-    @MapsId("processo_seletivo_id") // Mapeia a chave primária compartilhada
     private ProcessoSeletivo processoSeletivo;  // Agora vinculado ao Processo Seletivo
+    //@MapsId("processo_seletivo_id") // Mapeia a chave primária compartilhada
 
     @Column(nullable = false)
     private String jobPosition;  // Cargo desejado

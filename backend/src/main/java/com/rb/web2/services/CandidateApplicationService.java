@@ -1,5 +1,3 @@
-/* 
-
 package com.rb.web2.services;
 
 import java.util.List;
@@ -79,4 +77,3 @@ public class CandidateApplicationService {
     return;
   }
 }
- */

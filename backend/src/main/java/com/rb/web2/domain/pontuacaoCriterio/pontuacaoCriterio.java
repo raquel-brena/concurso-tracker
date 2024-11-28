@@ -45,10 +45,7 @@ public class pontuacaoCriterio {
     private CriterioAvaliacao criterio;  // Associando com a classe CriterioAvaliacao
 
     @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name = "candidate_id", referencedColumnName = "user_id", nullable = false),
-        @JoinColumn(name = "processo_seletivo_id", referencedColumnName = "processo_seletivo_id", nullable = false)
-    })
+    @JoinColumn(name = "incricao_id", nullable = false)
     private CandidateApplication candidateApplication;
 
     @Column(nullable = false)
