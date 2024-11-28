@@ -6,6 +6,7 @@ import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
+// import com.rb.web2.domain.candidateApplication.CandidateApplication;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

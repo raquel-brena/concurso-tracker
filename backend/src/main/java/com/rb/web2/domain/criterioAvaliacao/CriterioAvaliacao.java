@@ -42,9 +42,8 @@ public class CriterioAvaliacao {
     @ManyToMany(mappedBy = "criterios")
     private List<ProcessoSeletivo> processos;
 
-    @ManyToMany(mappedBy = "incricoes")
-    @JoinTable(name = "pontuacao_criterio", joinColumns = @JoinColumn(name = "criterio_avaliacao_id"), inverseJoinColumns = @JoinColumn(name = "candidate_application_id"))
-    private List<CandidateApplication> incricoes;
+    @ManyToMany(mappedBy = "avaliacoes")
+    private List<CandidateApplication> participantes;
 
     @Column(nullable = false)
     private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados

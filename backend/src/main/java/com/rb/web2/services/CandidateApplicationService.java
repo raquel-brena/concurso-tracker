@@ -1,3 +1,5 @@
+/* 
+
 package com.rb.web2.services;
 
 import java.util.List;
@@ -68,8 +70,7 @@ public class CandidateApplicationService {
                   .orElseThrow(() -> new RuntimeException("Processo Seletivo not found with id " + updatedCandidateApplication.getProcessoSeletivo().getId()));
           existingCandidateApplication.setProcessoSeletivo(processoSeletivo);
       }
-
-      existingCandidateApplication.setActive(updatedCandidateApplication.isActive());
+      
       return candidateApplicationRepository.save(existingCandidateApplication);
   }
 
@@ -78,3 +79,4 @@ public class CandidateApplicationService {
     return;
   }
 }
+ */

@@ -1,14 +1,30 @@
+ 
 package com.rb.web2.domain.candidateApplication;
 
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.candidateApplication.CandidateApplicationId;
 import java.time.LocalDateTime;
-import jakarta.persistence.*;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.MapsId;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+
+import java.util.List;
 
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,27 +37,22 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class CandidateApplication {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;  // Chave composta
-
+public class CandidateApplication implements Serializable  {
+    @EmbeddedId
+    private CandidateApplicationId id;  // Chave composta
+    
     @ManyToOne
-    @JoinColumn(name = "candidate_id", nullable = false)
-    @MapsId // Mapeia a chave primária compartilhada
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @MapsId("user_id") // Mapeia a chave primária compartilhada
     private User candidate;  // Associando com a classe User
 
     @ManyToOne
-    @JoinColumn(name = "processo_seletivo_id", nullable = false)
-    @MapsId // Mapeia a chave primária compartilhada
+    @JoinColumn(name = "processo_seletivo_id", referencedColumnName = "id", nullable = false)
+    @MapsId("processo_seletivo_id") // Mapeia a chave primária compartilhada
     private ProcessoSeletivo processoSeletivo;  // Agora vinculado ao Processo Seletivo
 
     @Column(nullable = false)
     private String jobPosition;  // Cargo desejado
-
-    @Column(nullable = false)
-    private boolean isActive;  // Indica se a candidatura está ativa
 
     @Column(nullable = false)
     private LocalDateTime applicationDate;  // Data de inscrição
@@ -57,10 +68,20 @@ public class CandidateApplication {
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
 
+    @ManyToMany
+    @JoinTable(
+        name = "pontuacao_criterio",
+        joinColumns = {
+            @JoinColumn(name = "candidate_id", referencedColumnName = "user_id"),
+            @JoinColumn(name = "processo_seletivo_id", referencedColumnName = "processo_seletivo_id")
+        },
+        inverseJoinColumns = @JoinColumn(name = "criterio_id")
+    )
+    private List<CriterioAvaliacao> avaliacoes;
+
     public CandidateApplication(User candidate, String jobPosition, String coverLetter, boolean isActive, ProcessoSeletivo processoSeletivo) {
         this.candidate = candidate;
         this.jobPosition = jobPosition;
-        this.isActive = isActive;
         this.applicationDate = LocalDateTime.now();
         this.processoSeletivo = processoSeletivo;
     }

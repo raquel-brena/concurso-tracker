@@ -3,6 +3,7 @@ package com.rb.web2.domain.user;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.enums.Role;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+//import com.rb.web2.domain.candidateApplication.CandidateApplication;
 
 import jakarta.persistence.*;
 import lombok.*;

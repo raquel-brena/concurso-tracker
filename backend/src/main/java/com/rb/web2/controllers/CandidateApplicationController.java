@@ -1,3 +1,5 @@
+/*
+
 package com.rb.web2.controllers;
 
 import com.rb.web2.domain.user.User;
@@ -59,4 +61,4 @@ public class CandidateApplicationController {
             return null;
         }
 
-}
+} */

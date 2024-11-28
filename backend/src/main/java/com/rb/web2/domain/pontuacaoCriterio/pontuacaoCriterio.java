@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MapsId;
@@ -34,21 +35,21 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class pontuacaoCriterio {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private BigDecimal nota;
 
     @ManyToOne
-    @JoinColumn(name = "criterio_avaliacao_id", nullable = false)
-    @MapsId // Mapeia a chave primária compartilhada
+    @JoinColumn(name = "criterio_id", nullable = false)
     private CriterioAvaliacao criterio;  // Associando com a classe CriterioAvaliacao
 
     @ManyToOne
-    @JoinColumn(name = "candidate_application_id", nullable = false)
-    @MapsId // Mapeia a chave primária compartilhada
-    private CandidateApplication incricao;  // Agora vinculado ao CandidateApplication
+    @JoinColumns({
+        @JoinColumn(name = "candidate_id", referencedColumnName = "user_id", nullable = false),
+        @JoinColumn(name = "processo_seletivo_id", referencedColumnName = "processo_seletivo_id", nullable = false)
+    })
+    private CandidateApplication candidateApplication;
 
     @Column(nullable = false)
     private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
