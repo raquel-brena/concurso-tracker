@@ -2,15 +2,21 @@ package com.rb.web2.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.candidateApplication.CandidateApplication;
+import com.rb.web2.domain.candidateApplication.dto.RequestInscricaoDTO;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.repositories.CandidateApplicationRepository;
 import com.rb.web2.services.UserService;
+import com.rb.web2.services.ProcessoSeletivoService;
+import com.rb.web2.domain.candidateApplication.mapper.RequestInscricaoMapper;
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 
 @Service
 public class CandidateApplicationService {
@@ -29,8 +35,17 @@ public class CandidateApplicationService {
         this.processoSeletivoService = processoSeletivoService;
     }
 
-  public CandidateApplication create(CandidateApplication candidateApplication) {
-    return candidateApplicationRepository.save(candidateApplication);
+  public CandidateApplication create(RequestInscricaoDTO dto) {
+    User candidate = userService.getUserById(dto.candidateId());
+    if (candidate == null) {
+        throw new RuntimeException("User not found");
+    }
+
+    ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
+        .orElseThrow(() -> new RuntimeException("Processo Seletivo not found"));
+
+    CandidateApplication application = RequestInscricaoMapper.toEntity(dto, candidate, processoSeletivo);
+    return candidateApplicationRepository.save(application);
   }
 
   public Optional<CandidateApplication> getCandidateApplicationById(String id) {
@@ -38,39 +53,53 @@ public class CandidateApplicationService {
   }
 
   public List<CandidateApplication> getAllCandidateApplications() {
-    return candidateApplicationRepository.findAll();
+    List<CandidateApplication> applications = candidateApplicationRepository.findAll();
+    System.out.println("Applications retrieved: " + applications.size());  // Log para verificar o número de elementos
+    return applications;
   }
 
-  public CandidateApplication updateCandidateApplication(String id, CandidateApplication updatedCandidateApplication) {
-    // Check if the CandidateApplication exists
+  public CandidateApplication updateCandidateApplication(String id, RequestInscricaoDTO dto){
     CandidateApplication existingCandidateApplication = candidateApplicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Candidate Application not found with id " + id));
 
-      // Update properties of the existing entity
-      if (updatedCandidateApplication.getJobPosition() != null) {
-          existingCandidateApplication.setJobPosition(updatedCandidateApplication.getJobPosition());
-      }
+    existingCandidateApplication = updateWithDTO(existingCandidateApplication, dto);
 
-      if (updatedCandidateApplication.getApplicationDate() != null) {
-          existingCandidateApplication.setApplicationDate(updatedCandidateApplication.getApplicationDate());
-      }
+    return candidateApplicationRepository.save(existingCandidateApplication);
+}
 
-      if (updatedCandidateApplication.getCandidate() != null) {
-        User candidate = userService.getUserById(updatedCandidateApplication.getCandidate().getId());
+// Método auxiliar para mapear o DTO para a entidade CandidateApplication
+private CandidateApplication updateWithDTO(CandidateApplication existingCandidateApplication, RequestInscricaoDTO dto) {
+    if (dto.jobPosition() != null) {
+        existingCandidateApplication.setJobPosition(dto.jobPosition());
+    }
+
+    if (dto.applicationDate() != null) {
+        existingCandidateApplication.setApplicationDate(dto.applicationDate());
+    }
+
+    if (dto.candidateId() != null) {
+        User candidate = userService.getUserById(dto.candidateId());
         if (candidate == null) {
-          throw new RuntimeException("User not found with id " + updatedCandidateApplication.getCandidate().getId());
-      }
-      existingCandidateApplication.setCandidate(candidate);
-      }
+            throw new RuntimeException("User not found with id " + dto.candidateId());
+        }
+        existingCandidateApplication.setCandidate(candidate);
+    }
 
-      if (updatedCandidateApplication.getProcessoSeletivo() != null) {
-          ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(updatedCandidateApplication.getProcessoSeletivo().getId())
-                  .orElseThrow(() -> new RuntimeException("Processo Seletivo not found with id " + updatedCandidateApplication.getProcessoSeletivo().getId()));
-          existingCandidateApplication.setProcessoSeletivo(processoSeletivo);
-      }
-      
-      return candidateApplicationRepository.save(existingCandidateApplication);
-  }
+    if (dto.processoSeletivoId() != null) {
+        ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
+                .orElseThrow(() -> new RuntimeException("Processo Seletivo not found with id " + dto.processoSeletivoId()));
+        existingCandidateApplication.setProcessoSeletivo(processoSeletivo);
+    }
+
+    // @TODO: Atualizando as avaliações (caso necessário)
+    /*
+    if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
+        List<CriterioAvaliacao> avaliacoes = criterioAvaliacaoService.getAvaliacoesByIds(dto.avaliacoes());
+        existingCandidateApplication.setAvaliacoes(avaliacoes);
+    } */
+
+    return existingCandidateApplication;
+}
 
   // @TODO Implement this method
   public void deleteCandidateApplication(String id) {

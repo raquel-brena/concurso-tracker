@@ -5,6 +5,7 @@ import com.rb.web2.domain.enums.Role;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 //import com.rb.web2.domain.candidateApplication.CandidateApplication;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -58,6 +59,7 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "comissaoOrganizadora")
     private List<ProcessoSeletivo> processosComissao;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "participantes")
     private List<ProcessoSeletivo> processosParticipante;
 

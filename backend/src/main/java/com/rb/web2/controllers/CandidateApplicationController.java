@@ -2,6 +2,8 @@ package com.rb.web2.controllers;
 
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.candidateApplication.CandidateApplication;
+import com.rb.web2.domain.candidateApplication.dto.RequestInscricaoDTO;
+import com.rb.web2.domain.candidateApplication.mapper.RequestInscricaoMapper;
 import com.rb.web2.services.CandidateApplicationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/application")
+@RequestMapping("/api/inscricoes")
 public class CandidateApplicationController {
     
         @Autowired
@@ -27,14 +29,15 @@ public class CandidateApplicationController {
         }
     
         @PostMapping
-        public ResponseEntity<String> createCandidateApplication(@RequestBody @Validated CandidateApplication application) {
-            try {
-                service.create(application);
-                return ResponseEntity.ok("Application created with ID: " + application.getId());
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().body("Error creating application: " + e.getMessage());
-            }
+    public ResponseEntity<String> createCandidateApplication(@RequestBody @Validated RequestInscricaoDTO dto) {
+        try {
+            service.create(dto); 
+        return ResponseEntity.ok("Application created successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error creating application: " + e.getMessage());
         }
+    }
+
     
         @GetMapping("/{id}")
         public ResponseEntity<CandidateApplication> getCandidateApplication(@PathVariable String id) {
@@ -44,8 +47,8 @@ public class CandidateApplicationController {
         }
     
         @PutMapping("/{id}")
-        public ResponseEntity updateCandidateApplication(@PathVariable String id, @RequestBody @Validated CandidateApplication application) {
-            var updatedApplication = this.service.updateCandidateApplication(id, application);
+        public ResponseEntity updateCandidateApplication(@PathVariable String id, @RequestBody @Validated RequestInscricaoDTO dto) {
+            var updatedApplication = this.service.updateCandidateApplication(id, dto);
             if (updatedApplication == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                     .body(null);
@@ -54,9 +57,12 @@ public class CandidateApplicationController {
         }
     
         // @TODO Implement this method
+        /*
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> deleteCandidateApplication(@PathVariable String id) {
             return null;
         }
+         */
+        
 
 }

@@ -32,10 +32,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class CriterioAvaliacao {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     private String nome;
     private int peso;
 

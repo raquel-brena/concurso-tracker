@@ -87,7 +87,7 @@ public class CandidateApplication implements Serializable  {
     )
     private List<CriterioAvaliacao> avaliacoes;
 
-    public CandidateApplication(User candidate, String jobPosition, String coverLetter, boolean isActive, ProcessoSeletivo processoSeletivo) {
+    public CandidateApplication(User candidate, String jobPosition, ProcessoSeletivo processoSeletivo) {
         this.candidate = candidate;
         this.jobPosition = jobPosition;
         this.applicationDate = LocalDateTime.now();

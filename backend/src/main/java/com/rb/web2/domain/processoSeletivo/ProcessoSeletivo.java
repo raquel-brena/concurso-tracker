@@ -6,6 +6,7 @@ import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 // import com.rb.web2.domain.candidateApplication.CandidateApplication;
 
 import jakarta.persistence.CascadeType;
@@ -70,7 +71,8 @@ public class ProcessoSeletivo {
     @ManyToMany
     @JoinTable(name = "processo_comissao", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> comissaoOrganizadora;
-
+ 
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(name = "candidate_applications", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participantes;

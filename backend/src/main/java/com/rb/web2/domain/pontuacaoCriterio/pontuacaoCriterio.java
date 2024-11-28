@@ -36,8 +36,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 @EqualsAndHashCode(of = "id")
 public class pontuacaoCriterio {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     private BigDecimal nota;
 
     @ManyToOne
@@ -45,7 +45,7 @@ public class pontuacaoCriterio {
     private CriterioAvaliacao criterio;  // Associando com a classe CriterioAvaliacao
 
     @ManyToOne
-    @JoinColumn(name = "incricao_id", nullable = false)
+    @JoinColumn(name = "inscricao_id", nullable = false)
     private CandidateApplication candidateApplication;
 
     @Column(nullable = false)
