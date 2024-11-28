@@ -1,4 +1,4 @@
-package com.rb.web2.domain.criterioAvaliacao;
+package com.rb.web2.domain.pontuacaoCriterio;
 
 import java.util.List;
 
