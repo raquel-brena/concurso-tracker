@@ -12,8 +12,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinTable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,8 +40,10 @@ public class CriterioAvaliacao {
     private String nome;
     private int peso;
 
-    @ManyToMany(mappedBy = "criterios")
-    private List<ProcessoSeletivo> processos;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "processo_seletivo_id")
+    private ProcessoSeletivo processoSeletivo;
 
     @ManyToMany(mappedBy = "avaliacoes")
     private List<CandidateApplication> participantes;
