@@ -23,6 +23,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
@@ -62,4 +65,12 @@ public class PontuacaoCriterio {
     @Column(name = "atualizado_em")
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
+
+    @PrePersist
+    @PreUpdate
+    private void validarNota() {
+        if (nota.compareTo(BigDecimal.ZERO) < 0 || nota.compareTo(new BigDecimal(100)) > 0) {
+            throw new IllegalArgumentException("A nota deve estar entre 0 e 100.");
+        }
+    }
 }
