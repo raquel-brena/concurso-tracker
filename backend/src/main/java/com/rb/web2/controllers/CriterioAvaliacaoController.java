@@ -49,7 +49,7 @@ public class CriterioAvaliacaoController {
     @GetMapping("/{id}")
 public ResponseEntity<CriterioAvaliacao> buscarCriterioPorId(@PathVariable String id) {
     try {
-        Optional<CriterioAvaliacao> criterioOptional = criterioAvaliacaoService.findById(id);
+        Optional<CriterioAvaliacao> criterioOptional = criterioAvaliacaoService.getCriterioById(id);
         
         if (criterioOptional.isPresent()) {
             return new ResponseEntity<>(criterioOptional.get(), HttpStatus.OK);

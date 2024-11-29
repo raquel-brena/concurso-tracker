@@ -1,4 +1,4 @@
-package com.rb.web2.domain.candidateApplication.dto;
+package com.rb.web2.domain.inscricao.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

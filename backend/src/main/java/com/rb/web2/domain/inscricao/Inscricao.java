@@ -1,5 +1,5 @@
  
-package com.rb.web2.domain.candidateApplication;
+package com.rb.web2.domain.inscricao;
 
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -32,14 +32,14 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Table(name = "candidate_applications")
+@Table(name = "inscricoes")
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class CandidateApplication implements Serializable  {
+public class Inscricao implements Serializable  {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -77,7 +77,7 @@ public class CandidateApplication implements Serializable  {
     )
     private List<CriterioAvaliacao> avaliacoes;
 
-    public CandidateApplication(User candidate, String jobPosition, ProcessoSeletivo processoSeletivo) {
+    public Inscricao(User candidate, String jobPosition, ProcessoSeletivo processoSeletivo) {
         this.candidate = candidate;
         this.jobPosition = jobPosition;
         this.applicationDate = LocalDateTime.now();

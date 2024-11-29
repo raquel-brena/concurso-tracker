@@ -1,4 +1,4 @@
-package com.rb.web2.domain.institution;
+package com.rb.web2.domain.instituicao;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Table(name = "institutions")
-@Entity(name = "institutions")
+@Table(name = "instituicaos")
+@Entity(name = "instituicaos")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Institution { 
+public class Instituicao { 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id; 
@@ -45,7 +45,7 @@ public class Institution {
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
 
-    public Institution(String name, String location) {
+    public Instituicao(String name, String location) {
         this.name = name;
         this.location = location;
         this.ativo = true;

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.candidateApplication.CandidateApplication;
+import com.rb.web2.domain.inscricao.Inscricao;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,7 +48,7 @@ public class CriterioAvaliacao {
     private ProcessoSeletivo processoSeletivo;
 
     @ManyToMany(mappedBy = "avaliacoes")
-    private List<CandidateApplication> participantes;
+    private List<Inscricao> participantes;
 
     @Column(nullable = false)
     private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 import com.rb.web2.domain.pontuacaoCriterio.dto.RequestPontuacaoDTO;
 import com.rb.web2.repositories.PontuacaoCriterioRepository;
-import com.rb.web2.domain.candidateApplication.CandidateApplication;
+import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 
 @Service
@@ -25,7 +25,7 @@ public class PontuacaoCriterioService {
     private CriterioAvaliacaoService criterioAvaliacaoService;
 
     @Autowired
-    private CandidateApplicationService candidateApplicationService;
+    private InscricaoService inscricaoService;
 
     public PontuacaoCriterio create(RequestPontuacaoDTO dto) {
         if (dto.criterioId() == null) {
@@ -36,7 +36,7 @@ public class PontuacaoCriterioService {
         pontuacaoCriterio.setNota(dto.nota());
         pontuacaoCriterio.setCriterio(criterioAvaliacaoService.findById(dto.criterioId())
                 .orElseThrow(() -> new RuntimeException("Criterio not found")));
-        pontuacaoCriterio.setCandidateApplication(candidateApplicationService.getCandidateApplicationById(dto.candidateApplicationId())
+        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId())
                 .orElseThrow(() -> new RuntimeException("Inscrição not found")));
 
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
@@ -53,7 +53,7 @@ public class PontuacaoCriterioService {
         pontuacaoCriterio.setNota(dto.nota());
         pontuacaoCriterio.setCriterio(criterioAvaliacaoService.findById(dto.criterioId())
                 .orElseThrow(() -> new RuntimeException("Criterio not found")));
-        pontuacaoCriterio.setCandidateApplication(candidateApplicationService.getCandidateApplicationById(dto.candidateApplicationId())
+        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId())
                 .orElseThrow(() -> new RuntimeException("Inscrição not found")));
 
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
@@ -66,16 +66,16 @@ public class PontuacaoCriterioService {
     }
 
     public List<PontuacaoCriterio> findByInscricao(String inscricaoId) {
-        CandidateApplication inscricao = candidateApplicationService.getCandidateApplicationById(inscricaoId)
+        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId)
                 .orElseThrow(() -> new RuntimeException("Inscrição não encontrada"));
-        return pontuacaoCriterioRepository.findByCandidateApplication(inscricao);
+        return pontuacaoCriterioRepository.findByInscricao(inscricao);
     }
 
-    public BigDecimal calcularNotaTotal(String candidateApplicationId) {
-        CandidateApplication candidateApplication = candidateApplicationService.getCandidateApplicationById(candidateApplicationId)
+    public BigDecimal calcularNotaTotal(String inscricaoId) {
+        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId)
                 .orElseThrow(() -> new RuntimeException("Inscrição não encontrada"));
 
-        List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioRepository.findByCandidateApplication(candidateApplication);
+        List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioRepository.findByInscricao(inscricao);
 
         BigDecimal somaNotasPonderadas = pontuacoes.stream()
             .map(pontuacao -> pontuacao.getNota().multiply(BigDecimal.valueOf(pontuacao.getCriterio().getPeso())))

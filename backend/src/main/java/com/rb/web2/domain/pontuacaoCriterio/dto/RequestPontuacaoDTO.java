@@ -10,7 +10,7 @@ public record RequestPontuacaoDTO(
     @NotEmpty(message = "CriterioId cannot be empty")
     String criterioId,
 
-    @NotEmpty(message = "CandidateApplicationId cannot be empty")
-    String candidateApplicationId
+    @NotEmpty(message = "InscricaoId cannot be empty")
+    String inscricaoId
 ) {
 }

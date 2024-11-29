@@ -7,7 +7,7 @@ import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.candidateApplication.CandidateApplication;
+import com.rb.web2.domain.inscricao.Inscricao;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public class CriterioAvaliacaoService {
     private ProcessoSeletivoService processoSeletivoService;
 
     @Autowired
-    private CandidateApplicationService candidateApplicationService;
+    private InscricaoService inscricaoService;
 
     public CriterioAvaliacao create(RequestCriterioDTO dto) {
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
@@ -32,7 +32,7 @@ public class CriterioAvaliacaoService {
         return repository.save(criterioAvaliacao);
     }
 
-    public Optional<CriterioAvaliacao> findById(String id) {
+    public Optional<CriterioAvaliacao> getCriterioById(String id) {
         return repository.findById(id);
     }
 
@@ -53,9 +53,9 @@ public class CriterioAvaliacaoService {
         return repository.findByProcessoSeletivo(processoSeletivo);
     }
 
-    public List<CriterioAvaliacao> findAllByCandidateApplication(String candidateApplicationId) {
-        CandidateApplication candidateApplication = candidateApplicationService.getCandidateApplicationById(candidateApplicationId)
+    public List<CriterioAvaliacao> findAllByInscricao(String inscricaoId) {
+        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId)
                 .orElseThrow(() -> new RuntimeException("Inscrição não encontrada"));
-        return repository.findByParticipantes(candidateApplication);
+        return repository.findByParticipantes(inscricao);
     }
 }

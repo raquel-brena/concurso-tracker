@@ -1,7 +1,7 @@
 package com.rb.web2.controllers;
 
 import com.rb.web2.domain.vaga.dto.VagasRequestDTO;
-import com.rb.web2.services.VagasService;
+import com.rb.web2.services.VagaService;
 import com.rb.web2.domain.vaga.Vaga;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.List;
 public class VagaController {
 
     @Autowired
-    private VagasService vagasService;
+    private VagaService vagasService;
 
     @PostMapping
     public ResponseEntity<Vaga> criarVaga(@RequestBody VagasRequestDTO vagasRequestDTO) {

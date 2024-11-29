@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import com.rb.web2.domain.candidateApplication.CandidateApplication;
+import com.rb.web2.domain.inscricao.Inscricao;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,7 +51,7 @@ public class PontuacaoCriterio {
 
     @ManyToOne
     @JoinColumn(name = "inscricao_id", nullable = false)
-    private CandidateApplication candidateApplication;
+    private Inscricao inscricao;
 
     @Column(nullable = false)
     private boolean ehPublico = false;
