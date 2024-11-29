@@ -79,11 +79,8 @@ public class CandidateApplication implements Serializable  {
     @ManyToMany
     @JoinTable(
         name = "pontuacao_criterio",
-        joinColumns = {
-            @JoinColumn(name = "candidate_id", referencedColumnName = "user_id"),
-            @JoinColumn(name = "processo_seletivo_id", referencedColumnName = "processo_seletivo_id")
-        },
-        inverseJoinColumns = @JoinColumn(name = "criterio_id")
+        joinColumns = @JoinColumn(name = "inscricao_id"),  // Chave estrangeira da inscrição
+        inverseJoinColumns = @JoinColumn(name = "criterio_id")  // Chave estrangeira do critério de avaliação
     )
     private List<CriterioAvaliacao> avaliacoes;
 
