@@ -7,9 +7,9 @@ import com.rb.web2.shared.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
 
 @Service
 public class UserService {

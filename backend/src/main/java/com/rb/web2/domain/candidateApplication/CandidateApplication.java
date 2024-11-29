@@ -4,7 +4,6 @@ package com.rb.web2.domain.candidateApplication;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -26,10 +25,10 @@ import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-
 import java.util.List;
-
 import java.time.LocalDateTime;
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 

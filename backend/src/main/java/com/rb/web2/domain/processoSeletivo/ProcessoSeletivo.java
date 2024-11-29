@@ -6,8 +6,9 @@ import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-// import com.rb.web2.domain.candidateApplication.CandidateApplication;
+import com.fasterxml.jackson.annotation.JsonIgnore; 
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -21,6 +22,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,9 +30,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore; 
 
 @Entity
 @Table(name = "processos")

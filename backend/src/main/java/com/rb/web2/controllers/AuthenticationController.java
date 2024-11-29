@@ -4,6 +4,7 @@ import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
 import com.rb.web2.domain.user.dto.RegisterDTO;
 import com.rb.web2.services.AuthenticationService;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
