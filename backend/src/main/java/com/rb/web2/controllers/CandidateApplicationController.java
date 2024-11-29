@@ -5,6 +5,7 @@ import com.rb.web2.domain.candidateApplication.CandidateApplication;
 import com.rb.web2.domain.candidateApplication.dto.RequestInscricaoDTO;
 import com.rb.web2.domain.candidateApplication.mapper.RequestInscricaoMapper;
 import com.rb.web2.services.CandidateApplicationService;
+import com.rb.web2.services.PontuacaoCriterioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/inscricoes")
@@ -21,6 +23,9 @@ public class CandidateApplicationController {
     
         @Autowired
         CandidateApplicationService service;
+
+        @Autowired
+        PontuacaoCriterioService pontuacaoCriterioService;
     
         @GetMapping
         public ResponseEntity<List<CandidateApplication>> getAllCandidateApplications() {
@@ -54,6 +59,20 @@ public class CandidateApplicationController {
                                     .body(null);
             }
             return ResponseEntity.ok(updatedApplication);
+        }
+
+        @GetMapping("/{id}/nota")
+        public ResponseEntity<BigDecimal> calcularNotaTotal(@PathVariable String id) {
+            try {
+                BigDecimal notaTotal = pontuacaoCriterioService.calcularNotaTotal(id); 
+                if (notaTotal != null) {
+                    return new ResponseEntity<>(notaTotal, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     
         // @TODO Implement this method
