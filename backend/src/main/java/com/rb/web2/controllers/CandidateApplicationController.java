@@ -6,6 +6,7 @@ import com.rb.web2.domain.candidateApplication.dto.RequestInscricaoDTO;
 import com.rb.web2.domain.candidateApplication.mapper.RequestInscricaoMapper;
 import com.rb.web2.services.CandidateApplicationService;
 import com.rb.web2.services.PontuacaoCriterioService;
+import com.rb.web2.domain.candidateApplication.dto.UpdateInscricaoDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,16 +35,16 @@ public class CandidateApplicationController {
         }
     
         @PostMapping
-    public ResponseEntity<String> createCandidateApplication(@RequestBody @Validated RequestInscricaoDTO dto) {
-        try {
-            service.create(dto); 
-        return ResponseEntity.ok("Application created successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error creating application: " + e.getMessage());
+        public ResponseEntity<String> createCandidateApplication(@RequestBody @Validated RequestInscricaoDTO dto) {
+            try {
+                CandidateApplication createdApplication = service.create(dto); 
+                service.create(dto); 
+                return ResponseEntity.ok("Incrição com id: " + createdApplication.getId() + " criada com sucesso");
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body("Error creating application: " + e.getMessage());
+            }
         }
-    }
 
-    
         @GetMapping("/{id}")
         public ResponseEntity<CandidateApplication> getCandidateApplication(@PathVariable String id) {
             return this.service.getCandidateApplicationById(id)
@@ -52,7 +53,7 @@ public class CandidateApplicationController {
         }
     
         @PutMapping("/{id}")
-        public ResponseEntity updateCandidateApplication(@PathVariable String id, @RequestBody @Validated RequestInscricaoDTO dto) {
+        public ResponseEntity updateCandidateApplication(@PathVariable String id, @RequestBody @Validated UpdateInscricaoDTO dto) {
             var updatedApplication = this.service.updateCandidateApplication(id, dto);
             if (updatedApplication == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)

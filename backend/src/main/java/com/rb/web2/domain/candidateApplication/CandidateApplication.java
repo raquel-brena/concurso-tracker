@@ -4,7 +4,6 @@ package com.rb.web2.domain.candidateApplication;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import com.rb.web2.domain.candidateApplication.CandidateApplicationId;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Id;
@@ -46,18 +45,13 @@ public class CandidateApplication implements Serializable  {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    //@EmbeddedId
-    //private CandidateApplicationId id;  // Chave composta
-
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User candidate;  // Associando com a classe User
-    //@MapsId("user_id") // Mapeia a chave primária compartilhada
+    private User candidate; 
 
     @ManyToOne
     @JoinColumn(name = "processo_seletivo_id", referencedColumnName = "id", nullable = false)
-    private ProcessoSeletivo processoSeletivo;  // Agora vinculado ao Processo Seletivo
-    //@MapsId("processo_seletivo_id") // Mapeia a chave primária compartilhada
+    private ProcessoSeletivo processoSeletivo;
 
     @Column(nullable = false)
     private String jobPosition;  // Cargo desejado

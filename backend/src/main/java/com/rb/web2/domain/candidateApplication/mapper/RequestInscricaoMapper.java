@@ -14,17 +14,9 @@ public class RequestInscricaoMapper {
     // Método para mapear a entidade CandidateApplication para RequestInscricaoDTO
     public static RequestInscricaoDTO toDTO(CandidateApplication application) {
         return new RequestInscricaoDTO(
-            application.getId(),
             application.getCandidate().getId(),  // Pegando o ID do candidato
             application.getProcessoSeletivo().getId(),  // Pegando o ID do processo seletivo
-            application.getJobPosition(),
-            application.getApplicationDate(),
-            application.isAtivo(),
-            application.getCriado_em(),
-            application.getAtualizado_em(),
-            application.getAvaliacoes().stream()
-                .map(avaliacao -> avaliacao.getId())  // Pegando o ID de CriterioAvaliacao
-                .collect(Collectors.toList())
+            application.getJobPosition()
         );
     }
 

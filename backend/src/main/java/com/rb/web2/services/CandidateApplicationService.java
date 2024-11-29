@@ -17,6 +17,7 @@ import com.rb.web2.services.UserService;
 import com.rb.web2.services.ProcessoSeletivoService;
 import com.rb.web2.domain.candidateApplication.mapper.RequestInscricaoMapper;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.candidateApplication.dto.UpdateInscricaoDTO;
 
 @Service
 public class CandidateApplicationService {
@@ -58,11 +59,11 @@ public class CandidateApplicationService {
     return applications;
   }
 
-  public CandidateApplication updateCandidateApplication(String id, RequestInscricaoDTO dto){
+  public CandidateApplication updateCandidateApplication(String id, UpdateInscricaoDTO dto){
     CandidateApplication existingCandidateApplication = candidateApplicationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Candidate Application not found with id " + id));
 
-    existingCandidateApplication = updateWithDTO(existingCandidateApplication, dto);
+    existingCandidateApplication.setJobPosition(dto.jobPosition());
 
     return candidateApplicationRepository.save(existingCandidateApplication);
 }
@@ -71,10 +72,6 @@ public class CandidateApplicationService {
 private CandidateApplication updateWithDTO(CandidateApplication existingCandidateApplication, RequestInscricaoDTO dto) {
     if (dto.jobPosition() != null) {
         existingCandidateApplication.setJobPosition(dto.jobPosition());
-    }
-
-    if (dto.applicationDate() != null) {
-        existingCandidateApplication.setApplicationDate(dto.applicationDate());
     }
 
     if (dto.candidateId() != null) {
