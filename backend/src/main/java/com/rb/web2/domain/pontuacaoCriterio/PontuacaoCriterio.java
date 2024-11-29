@@ -1,7 +1,8 @@
-package com.rb.web2.domain.criterioAvaliacao;
+package com.rb.web2.domain.pontuacaoCriterio;
 
 import java.util.List;
 
+import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.candidateApplication.CandidateApplication;
 
@@ -34,7 +35,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class pontuacaoCriterio {
+public class PontuacaoCriterio {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
