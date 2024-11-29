@@ -40,7 +40,7 @@ public class PontuacaoCriterio {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private BigDecimal nota;
-
+    
     @ManyToOne
     @JoinColumn(name = "criterio_id", nullable = false)
     private CriterioAvaliacao criterio;  // Associando com a classe CriterioAvaliacao
@@ -48,6 +48,9 @@ public class PontuacaoCriterio {
     @ManyToOne
     @JoinColumn(name = "inscricao_id", nullable = false)
     private CandidateApplication candidateApplication;
+
+    @Column(nullable = false)
+    private boolean ehPublico = false;
 
     @Column(nullable = false)
     private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
