@@ -10,14 +10,17 @@ import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,8 +41,6 @@ public class ProcessoSeletivoController {
 
     public ProcessoSeletivoController(ProcessoSeletivoService service) {
         this.service = service;
-
-        
     }
 
     @PostMapping
@@ -72,26 +73,19 @@ public class ProcessoSeletivoController {
     
 
     
-  public Resource downloadEdital(String filename, String id) throws MalformedURLException {
-    Path userDirectory = fileStorageLocation.resolve(String.valueOf(id)).normalize();
-    if (!Files.exists(userDirectory)) {
-      throw new NotFoundException("Diretório do usuário " + id + " não encontrado.");
-    }
+  public ResponseEntity downloadEdital(String filename, String id, HttpServletRequest request) throws IOException {
+   Resource resource = this.service.downloadEdital(filename, id);
 
-    Path filePath = userDirectory.resolve(filename).normalize();
+   String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
-    if (!Files.exists(filePath)) {
-      throw new NotFoundException(
-          "Arquivo " + filename + " não encontrado no diretório do usuário " + id + ".");
-    }
+   if (contentType == null) {
+       contentType = "application/octet-stream";
+   }
 
-    Resource resource = new UrlResource(filePath.toUri());
-
-    if (!resource.exists() || !resource.isReadable()) {
-      throw new BadRequestException("Erro ao tentar acessar o arquivo " + filename + ".");
-    }
-
-    return resource;
+      return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename =\"" + resource.getFilename() + "\"")
+                .body(resource);
   }
 
 

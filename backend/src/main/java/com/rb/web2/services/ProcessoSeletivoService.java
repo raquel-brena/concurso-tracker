@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -151,25 +154,9 @@ public class ProcessoSeletivoService {
     return fileDownloadUri;
   }
 
-    public String downloadEdital(MultipartFile file, String id) throws IOException {
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-    Path processoDir = fileStorageLocation.resolve("editais").resolve(String.valueOf(id)).normalize();
-
-    if (!Files.exists(processoDir)) {
-      Files.createDirectories(processoDir);
-    }
-
-    Path targetLocation = processoDir.resolve(fileName);
-    file.transferTo(targetLocation);
-
-    String fileDonwloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-        .path("api/processo/")
-        .path(id + "/edital")
-        .path(fileName)
-        .toUriString();
-
-    return fileDonwloadUri;
+    public Resource downloadEdital(String filename, String userId) throws IOException {
+     var resource =  this.documentoService.downloadFile(filename, userId);
+   return resource;
 
   }
 }
