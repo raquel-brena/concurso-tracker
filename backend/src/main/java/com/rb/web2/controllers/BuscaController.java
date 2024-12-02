@@ -28,10 +28,12 @@ public class BuscaController {
         if ("processos".equalsIgnoreCase(type)) {
             List<ProcessoSeletivo> result = processoSeletivoService
                 .buscarProcessos(q);
-            
             return ResponseEntity.ok(result);
+        } else if ("vagas".equalsIgnoreCase(type)) {
+            // Exemplo de outros tipos de busca
         }
 
-        return ResponseEntity.badRequest().body("Tipo de busca inválido");
+        List<ProcessoSeletivo> result = processoSeletivoService.buscarProcessos(q);
+        return ResponseEntity.ok(result);
     }
 }
