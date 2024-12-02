@@ -74,7 +74,7 @@ public class ProcessoSeletivo {
     private List<User> participantes;
 
     @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    private boolean ativo = true; 
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

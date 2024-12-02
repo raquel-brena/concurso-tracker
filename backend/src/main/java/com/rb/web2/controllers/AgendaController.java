@@ -2,7 +2,7 @@ package com.rb.web2.controllers;
 
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.services.AgendaService;
-import com.rb.web2.shared.response.RestSuccessMessage;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.validation.Valid;
 

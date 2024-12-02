@@ -2,10 +2,11 @@ package com.rb.web2.controllers;
 
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
+import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.services.ProcessoSeletivoService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 import com.rb.web2.shared.exceptions.NotFoundException;
-import com.rb.web2.shared.response.RestSuccessMessage;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +44,7 @@ public class ProcessoSeletivoController {
 
     @PutMapping("{id}")
     public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable String id,
-            @RequestBody RequestProcessoDTO dto) {
+            @RequestBody UpdateProcessoDTO dto) {
         var agenda = this.service.atualizar(id, dto);
         return ResponseEntity.ok().body(new RestSuccessMessage("Agenda atualizada com sucesso.", agenda));
     }
@@ -51,13 +52,9 @@ public class ProcessoSeletivoController {
     @GetMapping("{id}")
     public ResponseEntity getProcessoSeletivo(@PathVariable String id) {
         var processo = this.service.getProcessoSeletivoById(id);
-
-        if (processo.isEmpty()) {
-            throw new NotFoundException("Processo seletivo com o ID " + id + " não encontrado.");
-        }
-        
-        ProcessoSeletivoMapper.toResponseProcessoDTO(processo.get());
-        return ResponseEntity.ok().body( ProcessoSeletivoMapper.toResponseProcessoDTO(processo.get()));
+    
+        return ResponseEntity.ok()
+        .body( new RestSuccessMessage("Consulta realizada com sucesso.", ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
     }
 
     // UPDATE

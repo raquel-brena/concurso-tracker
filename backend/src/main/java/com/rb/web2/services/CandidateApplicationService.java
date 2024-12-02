@@ -64,8 +64,7 @@ public class CandidateApplicationService {
       }
 
       if (updatedCandidateApplication.getProcessoSeletivo() != null) {
-          ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(updatedCandidateApplication.getProcessoSeletivo().getId())
-                  .orElseThrow(() -> new RuntimeException("Processo Seletivo not found with id " + updatedCandidateApplication.getProcessoSeletivo().getId()));
+          ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(updatedCandidateApplication.getProcessoSeletivo().getId());
           existingCandidateApplication.setProcessoSeletivo(processoSeletivo);
       }
 

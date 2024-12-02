@@ -12,7 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.rb.web2.infra.RestMessage.RestErrorMessage;
+import com.rb.web2.shared.RestMessage.RestErrorMessage;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.ForbbidenException;
 import com.rb.web2.shared.exceptions.NotFoundException;

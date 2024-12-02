@@ -37,6 +37,16 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    // @PatchMapping("/{id}")
+    // public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+    //     User updatedUser = this.service.updateUser(id, user);
+    //     if (updatedUser == null) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    //                             .body(null);
+    //     }
+    //     return ResponseEntity.ok(updatedUser);
+    // }
+
     @PutMapping
     public ResponseEntity updateUser(@RequestBody @Validated UpdateUserDTO dto) {
         var user = this.service.getUserById(dto.userId());
