@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
-@RequestMapping("/buscar")
+@RequestMapping("/api/buscar")
 public class BuscarController {
 
     @Autowired
