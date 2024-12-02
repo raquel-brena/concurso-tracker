@@ -1,9 +1,16 @@
 package com.rb.web2.services;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
@@ -13,6 +20,7 @@ import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
+import com.rb.web2.infra.properties.FileStorageProperties;
 import com.rb.web2.repositories.AgendaRepository;
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 import com.rb.web2.repositories.ProcessoSeletivoRepository;
@@ -22,6 +30,12 @@ import com.rb.web2.shared.exceptions.NotFoundException;
 
 @Service
 public class ProcessoSeletivoService {
+
+
+  private final Path fileStorageLocation;
+
+  @Autowired
+  private DocumentoService documentoService;
 
   @Autowired
   private ProcessoSeletivoRepository repository;
@@ -37,6 +51,11 @@ public class ProcessoSeletivoService {
 
   @Autowired
   private UserRepository userRepository;
+
+    public ProcessoSeletivoService(FileStorageProperties fileStorageProperties) {
+    this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
+        .toAbsolutePath().normalize();
+  }
 
   public ProcessoSeletivo create(RequestProcessoDTO dto) {
     var existeProcesso = this.getProcessoSeletivoByTitulo(dto.titulo());
@@ -85,13 +104,11 @@ public class ProcessoSeletivoService {
       processo.setLinkEdital(dto.linkEdital());
     }
 
-
     if (dto.vagasIds() != null) {
     List<Vaga> vagas = vagaRepository.findAllById(dto.vagasIds());
     processo.setVagas(vagas);
     }
 
-    // Atualizar agenda
     if (dto.agendaId() != null) {
     Agenda agenda = agendaRepository.findById(dto.agendaId())
     .orElseThrow(() -> new NotFoundException("Agenda não encontrada"));
@@ -122,8 +139,37 @@ public class ProcessoSeletivoService {
     processo.setParticipantes(participantes);
     }
 
-    
-
     return repository.save(processo);
+  }
+
+
+  public String uploadEdital (MultipartFile file, String id) throws IOException {
+   String fileDownloadUri = documentoService.uploadFile(file, id);
+    ProcessoSeletivo processo = this.getProcessoSeletivoById(id);
+    processo.setLinkEdital(fileDownloadUri);
+    repository.save(processo);
+    return fileDownloadUri;
+  }
+
+    public String downloadEdital(MultipartFile file, String id) throws IOException {
+    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+    Path processoDir = fileStorageLocation.resolve("editais").resolve(String.valueOf(id)).normalize();
+
+    if (!Files.exists(processoDir)) {
+      Files.createDirectories(processoDir);
+    }
+
+    Path targetLocation = processoDir.resolve(fileName);
+    file.transferTo(targetLocation);
+
+    String fileDonwloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+        .path("api/processo/")
+        .path(id + "/edital")
+        .path(fileName)
+        .toUriString();
+
+    return fileDonwloadUri;
+
   }
 }

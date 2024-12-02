@@ -74,17 +74,17 @@ public class DocumentoController {
     }
 
     @PostMapping("path/{userId}")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String userId)
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String id)
             throws IllegalStateException, IOException {
-        var fileaDownloadURI = this.service.uploadFile(file, userId);
+        var fileaDownloadURI = this.service.uploadFile(file, id);
         return ResponseEntity.ok(fileaDownloadURI);
     }
 
-    @GetMapping("/download/{userId}/{filename:.+}")
-    public ResponseEntity downloadFile(@PathVariable String filename, @PathVariable String userId,
+    @GetMapping("/download/{id}/{filename:.+}")
+    public ResponseEntity downloadFile(@PathVariable String filename, @PathVariable String id,
             HttpServletRequest request) throws IOException {
 
-        Resource resource = this.service.downloadFile(filename, userId);
+        Resource resource = this.service.downloadFile(filename, id);
         String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
         if (contentType == null) {

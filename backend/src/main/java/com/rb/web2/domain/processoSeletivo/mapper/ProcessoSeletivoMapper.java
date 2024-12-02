@@ -2,18 +2,15 @@ package com.rb.web2.domain.processoSeletivo.mapper;
 
 import java.util.List;
 
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.mapper.AgendaMapper;
 import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
 import com.rb.web2.domain.criterioAvaliacao.mapper.CriterioAvalicaoMapper;
-import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.dto.ResponseProcessoDTO;
-import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.ResponseUserDTO;
 import com.rb.web2.domain.user.mapper.UserMapper;
-
-import io.micrometer.core.ipc.http.HttpSender.Response;
 
 public class ProcessoSeletivoMapper {
 
@@ -47,6 +44,8 @@ public class ProcessoSeletivoMapper {
                 .map(user -> UserMapper.toResponseUserDTO(user))
                 .toList();
 
+        AgendaDTO agenda = AgendaMapper.toDTO(processo.getAgenda());
+
         return new ResponseProcessoDTO(
                 processo.getTitulo(),
                 processo.getDescricao(),
@@ -54,7 +53,7 @@ public class ProcessoSeletivoMapper {
                 processo.isTemporario(),
                 processo.getLinkEdital(),
                 criteriosDTOs,
-                processo.getAgenda(),
+                agenda,
                 processo.getDocumentosNecessarios(),
                 comissaoOrganizadoraDTOs,
                 participantesDTOs);

@@ -37,11 +37,9 @@ public class DocumentoService {
   @Autowired
   private DocumentoRepository repository;
 
-  public DocumentoService(FileStorageProperties fileStorageProperties, DocumentoRepository repository) {
+  public DocumentoService(FileStorageProperties fileStorageProperties) {
     this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
         .toAbsolutePath().normalize();
-
-    this.repository = repository;
   }
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
@@ -64,21 +62,22 @@ public class DocumentoService {
     return repository.findAll();
   }
 
-  public String uploadFile(MultipartFile file, String userId) throws IOException {
+  public String uploadFile(MultipartFile file, String id) throws IOException {
     String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-    Path userDirectory = fileStorageLocation.resolve(String.valueOf(userId)).normalize();
-   
-    if (!Files.exists(userDirectory)) {
-      Files.createDirectories(userDirectory);
+
+    Path processoDir = fileStorageLocation.resolve(String.valueOf(id)).normalize();
+
+    if (!Files.exists(processoDir)) {
+      Files.createDirectories(processoDir);
     }
 
-    Path targetLocation = userDirectory.resolve(fileName);
+    Path targetLocation = processoDir.resolve(fileName);
     file.transferTo(targetLocation);
 
     String fileDonwloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
         .path("api/documentos/download/")
-        .path(userId + "/")
+        .path(id + "/")
         .path(fileName)
         .toUriString();
 
@@ -106,6 +105,5 @@ public class DocumentoService {
     }
 
     return resource;
-
   }
 }

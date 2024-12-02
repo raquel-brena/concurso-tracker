@@ -4,15 +4,27 @@ import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
+import com.rb.web2.infra.properties.FileStorageProperties;
 import com.rb.web2.services.ProcessoSeletivoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
+import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +38,8 @@ public class ProcessoSeletivoController {
 
     public ProcessoSeletivoController(ProcessoSeletivoService service) {
         this.service = service;
+
+        
     }
 
     @PostMapping
@@ -43,19 +57,57 @@ public class ProcessoSeletivoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable String id,
+    public ResponseEntity<RestSuccessMessage> atualizar(@PathVariable String id,
             @RequestBody UpdateProcessoDTO dto) {
-        var agenda = this.service.atualizar(id, dto);
-        return ResponseEntity.ok().body(new RestSuccessMessage("Agenda atualizada com sucesso.", agenda));
+        var processo = this.service.atualizar(id, dto);
+        return ResponseEntity.ok().body(new RestSuccessMessage("Proesso seletivo atualizado com sucesso", ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
     }
+
+    @PostMapping("{id}/edital")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String id)
+            throws IllegalStateException, IOException {
+        var fileaDownloadURI = this.service.uploadEdital(file, id);
+        return ResponseEntity.ok(fileaDownloadURI);
+    }
+    
+
+    
+  public Resource downloadEdital(String filename, String id) throws MalformedURLException {
+    Path userDirectory = fileStorageLocation.resolve(String.valueOf(id)).normalize();
+    if (!Files.exists(userDirectory)) {
+      throw new NotFoundException("Diretório do usuário " + id + " não encontrado.");
+    }
+
+    Path filePath = userDirectory.resolve(filename).normalize();
+
+    if (!Files.exists(filePath)) {
+      throw new NotFoundException(
+          "Arquivo " + filename + " não encontrado no diretório do usuário " + id + ".");
+    }
+
+    Resource resource = new UrlResource(filePath.toUri());
+
+    if (!resource.exists() || !resource.isReadable()) {
+      throw new BadRequestException("Erro ao tentar acessar o arquivo " + filename + ".");
+    }
+
+    return resource;
+  }
+
 
     @GetMapping("{id}")
     public ResponseEntity getProcessoSeletivo(@PathVariable String id) {
         var processo = this.service.getProcessoSeletivoById(id);
     
         return ResponseEntity.ok()
-        .body( new RestSuccessMessage("Consulta realizada com sucesso.", ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
+        .body(new RestSuccessMessage(
+            "Consulta realizada com sucesso.",
+            ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
     }
+
+
+
+
 
     // UPDATE
     // vincular vagas
