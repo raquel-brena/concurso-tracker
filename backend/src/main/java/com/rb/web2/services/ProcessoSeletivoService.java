@@ -87,4 +87,8 @@ public class ProcessoSeletivoService {
 
         return repository.save(processo);
     }
+
+    public List<ProcessoSeletivo> buscarProcessos(String termo) {
+      return repository.findByTituloContainingIgnoreCaseOrDescricaoContainingOrderByAgendaInicioInscricaoDesc(termo, termo);
+  }
 }

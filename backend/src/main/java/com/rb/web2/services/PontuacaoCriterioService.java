@@ -34,7 +34,7 @@ public class PontuacaoCriterioService {
 
         PontuacaoCriterio pontuacaoCriterio = new PontuacaoCriterio();
         pontuacaoCriterio.setNota(dto.nota());
-        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.findById(dto.criterioId())
+        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
                 .orElseThrow(() -> new RuntimeException("Criterio not found")));
         pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId())
                 .orElseThrow(() -> new RuntimeException("Inscrição not found")));
@@ -51,7 +51,7 @@ public class PontuacaoCriterioService {
                 .orElseThrow(() -> new RuntimeException("PontuacaoCriterio not found"));
 
         pontuacaoCriterio.setNota(dto.nota());
-        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.findById(dto.criterioId())
+        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
                 .orElseThrow(() -> new RuntimeException("Criterio not found")));
         pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId())
                 .orElseThrow(() -> new RuntimeException("Inscrição not found")));
@@ -60,7 +60,7 @@ public class PontuacaoCriterioService {
     }
 
     public List<PontuacaoCriterio> findByCriterio(String criterioId) {
-        CriterioAvaliacao criterio = criterioAvaliacaoService.findById(criterioId)
+        CriterioAvaliacao criterio = criterioAvaliacaoService.getCriterioById(criterioId)
                 .orElseThrow(() -> new RuntimeException("Critério de Avaliação não encontrado"));
         return pontuacaoCriterioRepository.findByCriterio(criterio);
     }
