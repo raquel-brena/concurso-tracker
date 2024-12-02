@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/buscar")
-public class BuscaController {
+public class BuscarController {
 
     @Autowired
     private ProcessoSeletivoService processoSeletivoService;
