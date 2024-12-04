@@ -1,24 +1,19 @@
 package com.rb.web2.controllers;
 
-import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.infra.properties.FileStorageProperties;
 import com.rb.web2.services.ProcessoSeletivoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
-import com.rb.web2.shared.exceptions.BadRequestException;
-import com.rb.web2.shared.exceptions.NotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +33,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class ProcessoSeletivoController {
 
     ProcessoSeletivoService service;
+
 
     public ProcessoSeletivoController(ProcessoSeletivoService service) {
         this.service = service;
@@ -72,11 +68,14 @@ public class ProcessoSeletivoController {
     }
     
 
-    
+    @PostMapping("{id}/edital/{filename:.+}")
   public ResponseEntity downloadEdital(String filename, String id, HttpServletRequest request) throws IOException {
-   Resource resource = this.service.downloadEdital(filename, id);
+   
+Resource resource = this.service.downloadEdital(filename, id);
 
-   String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+   String contentType 
+   = request.getServletContext()
+   .getMimeType(resource.getFile().getAbsolutePath());
 
    if (contentType == null) {
        contentType = "application/octet-stream";

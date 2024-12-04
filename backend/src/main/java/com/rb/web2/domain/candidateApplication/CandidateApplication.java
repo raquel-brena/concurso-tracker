@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -41,13 +40,13 @@ public class CandidateApplication {
     private String jobPosition;  // Cargo desejado
 
     @Column(nullable = false)
-    private boolean isActive;  // Indica se a candidatura está ativa
+    private Boolean isActive;  // Indica se a candidatura está ativa
 
     @Column(nullable = false)
     private LocalDateTime applicationDate;  // Data de inscrição
 
     @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    private Boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
@@ -57,7 +56,7 @@ public class CandidateApplication {
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
 
-    public CandidateApplication(User candidate, String jobPosition, String coverLetter, boolean isActive, ProcessoSeletivo processoSeletivo) {
+    public CandidateApplication(User candidate, String jobPosition, String coverLetter, Boolean isActive, ProcessoSeletivo processoSeletivo) {
         this.candidate = candidate;
         this.jobPosition = jobPosition;
         this.isActive = isActive;

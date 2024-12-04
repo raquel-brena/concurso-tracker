@@ -1,6 +1,5 @@
 package com.rb.web2.controllers;
 
-import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.candidateApplication.CandidateApplication;
 import com.rb.web2.services.CandidateApplicationService;
 

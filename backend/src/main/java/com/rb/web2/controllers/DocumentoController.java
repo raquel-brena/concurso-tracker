@@ -7,6 +7,7 @@ import com.rb.web2.services.DocumentoService;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.core.io.Resource;
@@ -39,7 +40,7 @@ public class DocumentoController {
     public ResponseEntity createDocumento(
         @RequestParam("file") MultipartFile file, 
         @RequestParam("nome") String nome,
-        @RequestParam("userId") String userId,
+        @RequestParam("id") String userId,
         @RequestParam("tipo") String tipo) throws IOException {
             
         var dto = new CreateDocumentoDTO(nome, tipo, userId);
@@ -73,7 +74,7 @@ public class DocumentoController {
         return ResponseEntity.ok(Documentos);
     }
 
-    @PostMapping("path/{userId}")
+    @PostMapping("path/{id}")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String id)
             throws IllegalStateException, IOException {
         var fileaDownloadURI = this.service.uploadFile(file, id);
@@ -84,7 +85,8 @@ public class DocumentoController {
     public ResponseEntity downloadFile(@PathVariable String filename, @PathVariable String id,
             HttpServletRequest request) throws IOException {
 
-        Resource resource = this.service.downloadFile(filename, id);
+   
+        Resource resource = this.service.downloadFile(filename, id, "documentos",String.valueOf(id));
         String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
         if (contentType == null) {

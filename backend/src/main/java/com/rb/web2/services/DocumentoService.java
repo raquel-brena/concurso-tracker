@@ -85,17 +85,19 @@ public class DocumentoService {
 
   }
 
-  public Resource downloadFile(String filename, String userId) throws MalformedURLException {
-    Path userDirectory = fileStorageLocation.resolve(String.valueOf(userId)).normalize();
-    if (!Files.exists(userDirectory)) {
-      throw new NotFoundException("Diretório do usuário " + userId + " não encontrado.");
+  public Resource downloadFile(String filename, String id, String directoryName1,String directoryName2) throws MalformedURLException {
+    
+    Path directory = fileStorageLocation.resolve(directoryName1).resolve(directoryName2).normalize();
+
+    if (!Files.exists(directory)) {
+      throw new NotFoundException("Diretório " + id + " não encontrado.");
     }
 
-    Path filePath = userDirectory.resolve(filename).normalize();
+    Path filePath = directory.resolve(filename).normalize();
 
     if (!Files.exists(filePath)) {
       throw new NotFoundException(
-          "Arquivo " + filename + " não encontrado no diretório do usuário " + userId + ".");
+          "Arquivo " + filename + " não encontrado no diretório de " + id + ".");
     }
 
     Resource resource = new UrlResource(filePath.toUri());

@@ -73,9 +73,6 @@ public class ProcessoSeletivo {
     @JoinTable(name = "candidate_applications", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participantes;
 
-    @Column(nullable = false)
-    private boolean ativo = true; 
-
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
     private LocalDateTime criado_em;

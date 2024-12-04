@@ -34,9 +34,6 @@ import com.rb.web2.shared.exceptions.NotFoundException;
 @Service
 public class ProcessoSeletivoService {
 
-
-  private final Path fileStorageLocation;
-
   @Autowired
   private DocumentoService documentoService;
 
@@ -54,11 +51,6 @@ public class ProcessoSeletivoService {
 
   @Autowired
   private UserRepository userRepository;
-
-    public ProcessoSeletivoService(FileStorageProperties fileStorageProperties) {
-    this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-        .toAbsolutePath().normalize();
-  }
 
   public ProcessoSeletivo create(RequestProcessoDTO dto) {
     var existeProcesso = this.getProcessoSeletivoByTitulo(dto.titulo());
@@ -154,8 +146,10 @@ public class ProcessoSeletivoService {
     return fileDownloadUri;
   }
 
-    public Resource downloadEdital(String filename, String userId) throws IOException {
-     var resource =  this.documentoService.downloadFile(filename, userId);
+    public Resource downloadEdital(String filename, String id) throws IOException {
+    
+   
+     var resource =  this.documentoService.downloadFile(filename, id,"editais",String.valueOf(id));
    return resource;
 
   }

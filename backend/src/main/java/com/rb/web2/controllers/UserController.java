@@ -2,13 +2,10 @@ package com.rb.web2.controllers;
 
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
-import com.rb.web2.repositories.UserRepository;
 import com.rb.web2.services.UserService;
-import com.rb.web2.shared.exceptions.NotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
