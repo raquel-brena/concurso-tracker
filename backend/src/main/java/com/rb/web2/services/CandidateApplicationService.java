@@ -3,14 +3,12 @@ package com.rb.web2.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.candidateApplication.CandidateApplication;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.repositories.CandidateApplicationRepository;
-import com.rb.web2.services.UserService;
 
 @Service
 public class CandidateApplicationService {
@@ -19,7 +17,6 @@ public class CandidateApplicationService {
     private final UserService userService;
     private final ProcessoSeletivoService processoSeletivoService;
 
-    // Construtor para injeção de dependências
     public CandidateApplicationService(
             CandidateApplicationRepository candidateApplicationRepository,
             UserService userService,
@@ -68,7 +65,7 @@ public class CandidateApplicationService {
           existingCandidateApplication.setProcessoSeletivo(processoSeletivo);
       }
 
-      existingCandidateApplication.setActive(updatedCandidateApplication.isActive());
+      existingCandidateApplication.setIsActive(updatedCandidateApplication.getIsActive());
       return candidateApplicationRepository.save(existingCandidateApplication);
   }
 

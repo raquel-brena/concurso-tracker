@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import org.springframework.core.io.UrlResource;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -20,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.documento.dto.CreateDocumentoDTO;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.infra.properties.FileStorageProperties;
 import com.rb.web2.repositories.DocumentoRepository;
@@ -37,20 +36,37 @@ public class DocumentoService {
   @Autowired
   private DocumentoRepository repository;
 
+  @Autowired
+  private ProcessoSeletivoService processoSeletivoService;
+
   public DocumentoService(FileStorageProperties fileStorageProperties) {
     this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
         .toAbsolutePath().normalize();
   }
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
-    String uri = this.uploadFile(file, dto.userId());
-    User user = this.userService.getUserById(dto.userId());
 
+    String id = null;
     Documento documento = new Documento();
+
+    if (dto.userId() != null) {
+      User user = this.userService.getUserById(dto.userId());
+      id = dto.userId();
+      documento.setUsuario(user);
+    }
+
+    if (dto.processoId() != null) {
+      ProcessoSeletivo processo 
+      = this.processoSeletivoService.getProcessoSeletivoById(dto.processoId());
+      id = dto.processoId();
+      documento.setProcessoSeletivo(processo);
+    }
+
+    String uri = this.uploadFile(file, id);
     documento.setNome(dto.nome());
-    documento.setTipo(dto.tipo());
+    documento.setDescricao(dto.descricao());
     documento.setDownloadUrl(uri);
-    documento.setUsuario(user);
+
     return repository.save(documento);
   }
 
@@ -82,12 +98,11 @@ public class DocumentoService {
         .toUriString();
 
     return fileDonwloadUri;
-
   }
 
   public Resource downloadFile(String filename, String id, String directoryName1,String directoryName2) throws MalformedURLException {
     
-    Path directory = fileStorageLocation.resolve(directoryName1).resolve(directoryName2).normalize();
+    Path directory = fileStorageLocation.resolve(directoryName2).normalize();
 
     if (!Files.exists(directory)) {
       throw new NotFoundException("Diretório " + id + " não encontrado.");

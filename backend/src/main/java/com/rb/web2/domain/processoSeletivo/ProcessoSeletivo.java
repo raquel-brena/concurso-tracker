@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 
@@ -50,7 +51,8 @@ public class ProcessoSeletivo {
 
     private boolean temporario;
 
-    private String linkEdital;
+    @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Documento> editais;
 
     private List<String> documentosNecessarios;
 
@@ -75,9 +77,12 @@ public class ProcessoSeletivo {
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
-    private LocalDateTime criado_em;
+    private LocalDateTime criadoEm;
 
     @Column(name = "atualizado_em")
     @UpdateTimestamp
-    private LocalDateTime atualizado_em;
+    private LocalDateTime atualizadoEm;
+
+    @Column(name = "deletado_em")
+    private LocalDateTime deletadoEm;
 }

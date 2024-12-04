@@ -1,4 +1,5 @@
 package com.rb.web2.domain.documento;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
 
 import jakarta.persistence.Entity;
@@ -36,14 +37,15 @@ public class Documento {
 
     private String downloadUrl;
 
-    private String tipo;
+    private String descricao;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private User usuario;
-
-    @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    
+    @ManyToOne
+    @JoinColumn(name = "processo_id")
+    private ProcessoSeletivo processoSeletivo;
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

@@ -21,6 +21,9 @@ public class UserMapper {
     // }
 
     public static ResponseUserDTO toResponseUserDTO(User user) {
+        if (user == null) {
+            return null;
+        }
         List<DocumentoResponseDTO> documentos 
             = user.getDocumentos()
                 .stream()

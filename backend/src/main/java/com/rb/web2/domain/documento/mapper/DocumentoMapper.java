@@ -16,10 +16,12 @@ public class DocumentoMapper {
     // }
 
     public static DocumentoResponseDTO toDocumentoResponseDTO(Documento documento) {
+        if (documento == null) {
+            return null;
+        }
         return new DocumentoResponseDTO(
-            documento.isAtivo(),
             documento.getNome(),
-            documento.getTipo(),
+            documento.getDescricao(),
             documento.getDownloadUrl(),
             documento.getCriado_em(),
             documento.getAtualizado_em()

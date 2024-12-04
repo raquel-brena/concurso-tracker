@@ -41,4 +41,12 @@ public class UserService {
         return repository.findAll();
     }
 
+    public List<User> findAllById(List<String> ids){
+        List<User> users = this.repository.findAllById(ids);
+        if (users.isEmpty()) {
+            throw new NotFoundException("Users doesn't exist");
+        }
+        return users;
+    }
+
 }
