@@ -18,6 +18,8 @@ import org.springframework.util.StringUtils;
 
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.documento.dto.CreateDocumentoDTO;
+import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
+import com.rb.web2.domain.documento.mapper.DocumentoMapper;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.infra.properties.FileStorageProperties;
@@ -78,6 +80,20 @@ public class DocumentoService {
     return repository.findAll();
   }
 
+  public List<DocumentoResponseDTO> getAllDocumentosUsuarios () {
+    List <Documento> documentos = repository.findByUsuarioIsNotNull().orElseThrow(
+        () -> new NotFoundException("Nenhum documento encontrado.")
+    );
+    return documentos.stream().map(DocumentoMapper::toDocumentoResponseDTO).toList();
+  }
+  
+  public List<DocumentoResponseDTO> getAllDocumentosProcessosSeletivos () {
+    List <Documento> documentos = repository.findByProcessoSeletivoIsNotNull().orElseThrow(
+        () -> new NotFoundException("Nenhum documento encontrado.")
+    );
+    return documentos.stream().map(DocumentoMapper::toDocumentoResponseDTO).toList();
+  }
+
   public String uploadFile(MultipartFile file, String id) throws IOException {
     String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
@@ -99,6 +115,7 @@ public class DocumentoService {
 
     return fileDonwloadUri;
   }
+
 
   public Resource downloadFile(String filename, String id, String directoryName1,String directoryName2) throws MalformedURLException {
     

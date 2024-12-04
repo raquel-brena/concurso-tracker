@@ -39,12 +39,12 @@ public class DocumentoController {
 
     @PostMapping("/")
     public ResponseEntity<?> createDocumento(
-            @RequestParam("file") MultipartFile file, 
+            @RequestParam("file") MultipartFile file,
             @RequestParam("nome") String nome,
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "processoId", required = false) String processoId,
             @RequestParam("observacao") String observacao) throws IOException {
-            
+
         var dto = new CreateDocumentoDTO(nome, observacao, userId, processoId);
         Documento doc = this.service.create(dto, file);
 
@@ -71,18 +71,33 @@ public class DocumentoController {
         }
     }
 
+
+
     @GetMapping
     public ResponseEntity<List<Documento>> getAllDocumentos() {
         List<Documento> Documentos = service.getAllDocumentos();
         return ResponseEntity.ok(Documentos);
     }
 
+    @GetMapping("/usuarios")
+    public ResponseEntity<?> getAllDocumentosUsuarios() {
+            var documento = service.getAllDocumentosUsuarios();
+
+            return ResponseEntity.ok().body(documento);
+    }
+    
+    @GetMapping("/processos")
+    public ResponseEntity<?> getAllDocumentosProcessosSeletivos() {
+            var documento = service.getAllDocumentosProcessosSeletivos();
+
+            return ResponseEntity.ok().body(documento);
+    }
+
     @GetMapping("/download/{id}/{filename:.+}")
     public ResponseEntity downloadFile(@PathVariable String filename, @PathVariable String id,
             HttpServletRequest request) throws IOException {
 
-   
-        Resource resource = this.service.downloadFile(filename, id, "documentos",String.valueOf(id));
+        Resource resource = this.service.downloadFile(filename, id, "documentos", String.valueOf(id));
         String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
         if (contentType == null) {
