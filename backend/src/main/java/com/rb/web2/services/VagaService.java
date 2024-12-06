@@ -1,18 +1,17 @@
 package com.rb.web2.services;
 
-import com.rb.web2.domain.vaga.Vaga;
-import com.rb.web2.domain.vaga.dto.VagasRequestDTO;
-import com.rb.web2.domain.vaga.mapper.VagaMapper;
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.formacao.Formacao;
-import com.rb.web2.services.ProcessoSeletivoService;
-import com.rb.web2.repositories.VagaRepository;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.rb.web2.domain.formacao.Formacao;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+import com.rb.web2.domain.vaga.Vaga;
+import com.rb.web2.domain.vaga.dto.VagasRequestDTO;
+import com.rb.web2.domain.vaga.mapper.VagaMapper;
+import com.rb.web2.repositories.VagaRepository;
 
 @Service
 public class VagaService {

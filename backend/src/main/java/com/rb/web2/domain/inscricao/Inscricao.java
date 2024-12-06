@@ -8,7 +8,6 @@ import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
@@ -16,7 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.MapsId;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +24,6 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
-import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;

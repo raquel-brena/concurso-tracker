@@ -4,10 +4,6 @@ import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class RequestInscricaoMapper {
 

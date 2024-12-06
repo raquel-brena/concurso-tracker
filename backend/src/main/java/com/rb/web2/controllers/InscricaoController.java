@@ -1,22 +1,25 @@
 package com.rb.web2.controllers;
 
-import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.inscricao.Inscricao;
-import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
-import com.rb.web2.domain.inscricao.mapper.RequestInscricaoMapper;
-import com.rb.web2.services.InscricaoService;
-import com.rb.web2.services.PontuacaoCriterioService;
-import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
+import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.math.BigDecimal;
+import com.rb.web2.domain.inscricao.Inscricao;
+import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
+import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
+import com.rb.web2.services.InscricaoService;
+import com.rb.web2.services.PontuacaoCriterioService;
 
 @RestController
 @RequestMapping("/api/inscricoes")
