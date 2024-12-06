@@ -29,7 +29,7 @@ public class VagaService {
         ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
             .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
         Formacao formacao = formacaoService.buscarPorId(dto.formacaoId())
-            .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
+            .orElseThrow(() -> new RuntimeException("Formação não encontrada"));
 
         if (dto.quantidade() <= 0) {
             throw new IllegalArgumentException("A quantidade de vagas deve ser maior que zero.");
