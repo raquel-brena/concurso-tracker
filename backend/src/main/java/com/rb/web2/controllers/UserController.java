@@ -1,16 +1,11 @@
 package com.rb.web2.controllers;
 
-import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.user.dto.UpdateUserDTO;
-import com.rb.web2.repositories.UserRepository;
-import com.rb.web2.services.UserService;
-import com.rb.web2.shared.exceptions.NotFoundException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.user.dto.UpdateUserDTO;
+import com.rb.web2.services.UserService;
 
 @RestController
 @RequestMapping("/api/user")
@@ -35,7 +32,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
-        User user = this.service.getUserById(id);
+        User user = this.service.getUserById(id).orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                 .body(null);
@@ -45,7 +42,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity updateUser(@RequestBody @Validated UpdateUserDTO dto) {
-        var user = this.service.getUserById(dto.userId());
+        var user = this.service.getUserById(dto.userId()).orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));;
 
         var role = user.getRole();
         // if (!(dto.roleId() == null)) {
@@ -63,6 +60,6 @@ public class UserController {
     }
 
     public User getUserById(String id) {
-        return this.service.getUserById(id);
+        return this.service.getUserById(id).orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
     }
 }

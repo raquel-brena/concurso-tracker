@@ -2,21 +2,16 @@ package com.rb.web2.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
-import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.repositories.InscricaoRepository;
-import com.rb.web2.services.UserService;
-import com.rb.web2.services.ProcessoSeletivoService;
-import com.rb.web2.domain.inscricao.mapper.RequestInscricaoMapper;
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
+import com.rb.web2.domain.inscricao.mapper.RequestInscricaoMapper;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+import com.rb.web2.domain.user.User;
+import com.rb.web2.repositories.InscricaoRepository;
 
 @Service
 public class InscricaoService {
@@ -36,7 +31,7 @@ public class InscricaoService {
     }
 
   public Inscricao create(RequestInscricaoDTO dto) {
-    User candidate = userService.getUserById(dto.candidateId());
+    User candidate = userService.getUserById(dto.candidateId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     if (candidate == null) {
         throw new RuntimeException("User not found");
     }
@@ -74,7 +69,7 @@ private Inscricao updateWithDTO(Inscricao existingInscricao, RequestInscricaoDTO
     }
 
     if (dto.candidateId() != null) {
-        User candidate = userService.getUserById(dto.candidateId());
+        User candidate = userService.getUserById(dto.candidateId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         if (candidate == null) {
             throw new RuntimeException("User not found with id " + dto.candidateId());
         }

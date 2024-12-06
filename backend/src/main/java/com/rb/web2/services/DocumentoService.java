@@ -1,5 +1,10 @@
 package com.rb.web2.services;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,16 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.util.StringUtils;
-import org.springframework.core.io.UrlResource;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.net.MalformedURLException;
 
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.documento.dto.CreateDocumentoDTO;
@@ -46,7 +44,7 @@ public class DocumentoService {
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
     String uri = this.uploadFile(file, dto.userId());
-    User user = this.userService.getUserById(dto.userId());
+    User user = this.userService.getUserById(dto.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));;
 
     Documento documento = new Documento();
     documento.setNome(dto.nome());

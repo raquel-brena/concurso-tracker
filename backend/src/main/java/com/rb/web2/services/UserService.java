@@ -1,15 +1,15 @@
 package com.rb.web2.services;
 
-import com.rb.web2.domain.user.User;
-import com.rb.web2.repositories.UserRepository;
-import com.rb.web2.shared.exceptions.NotFoundException;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpStatus;
 
-import java.util.List;
+import com.rb.web2.domain.user.User;
+import com.rb.web2.repositories.UserRepository;
+import com.rb.web2.shared.exceptions.NotFoundException;
 
 @Service
 public class UserService {
@@ -21,10 +21,10 @@ public class UserService {
         return this.repository.save(user);
     }
 
-    public User getUserById(String id) {
-        return this.repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User doesn't exist"));
+    public Optional<User> getUserById(String userId) {
+        return repository.findById(userId);
     }
+    
 
     public UserDetails loadUserByUsername(String login) {
         return this.repository.findByLogin(login)
