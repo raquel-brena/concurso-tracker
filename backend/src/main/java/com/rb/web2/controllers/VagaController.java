@@ -1,5 +1,6 @@
 package com.rb.web2.controllers;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,21 +26,20 @@ public class VagaController {
     private VagaService vagasService;
 
     @PostMapping
-public ResponseEntity<?> criarVaga(@RequestBody VagasRequestDTO vagasRequestDTO) {
-    try {
-        System.out.println("Vaga recebida: " + vagasRequestDTO);
+    public ResponseEntity<?> criarVaga(@RequestBody VagasRequestDTO vagasRequestDTO) {
+        try {
+            System.out.println("Vaga recebida: " + vagasRequestDTO);
 
-        Vaga vagaSalva = vagasService.salvar(vagasRequestDTO);
-        return new ResponseEntity<>(vagaSalva, HttpStatus.CREATED);
-    } catch (IllegalArgumentException e) {
-        // Em caso de erro esperado (ex: dados inválidos)
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (Exception e) {
-        // Em caso de erro inesperado
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            Vaga vagaSalva = vagasService.salvar(vagasRequestDTO);
+            return new ResponseEntity<>(vagaSalva, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            // Em caso de erro esperado (ex: dados inválidos)
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            // Em caso de erro inesperado
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-}
-
 
     @GetMapping
     public ResponseEntity<List<Vaga>> buscarVagas() {
@@ -52,7 +52,7 @@ public ResponseEntity<?> criarVaga(@RequestBody VagasRequestDTO vagasRequestDTO)
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -66,7 +66,7 @@ public ResponseEntity<?> criarVaga(@RequestBody VagasRequestDTO vagasRequestDTO)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -80,9 +80,9 @@ public ResponseEntity<?> criarVaga(@RequestBody VagasRequestDTO vagasRequestDTO)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

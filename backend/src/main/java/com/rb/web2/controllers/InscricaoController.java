@@ -56,7 +56,7 @@ public class InscricaoController {
         }
     
         @PutMapping("/{id}")
-        public ResponseEntity updateInscricao(@PathVariable String id, @RequestBody @Validated UpdateInscricaoDTO dto) {
+        public ResponseEntity<?> updateInscricao(@PathVariable String id, @RequestBody @Validated UpdateInscricaoDTO dto) {
             var updatedApplication = this.service.updateInscricao(id, dto);
             if (updatedApplication == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -75,7 +75,7 @@ public class InscricaoController {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
             } catch (Exception e) {
-                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     

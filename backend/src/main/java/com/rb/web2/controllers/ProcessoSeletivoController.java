@@ -30,7 +30,7 @@ public class ProcessoSeletivoController {
     }
 
     @PostMapping
-    public ResponseEntity createProcessoSeletivo(@RequestBody RequestProcessoDTO dto) {
+    public ResponseEntity<?> createProcessoSeletivo(@RequestBody RequestProcessoDTO dto) {
 
         var processo = service.create(dto);
 
@@ -44,7 +44,7 @@ public class ProcessoSeletivoController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getProcessoSeletivo(@PathVariable String id) {
+    public ResponseEntity<?> getProcessoSeletivo(@PathVariable String id) {
         var processo = this.service.getProcessoSeletivoById(id);
 
         if (processo.isEmpty()) {

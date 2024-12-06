@@ -6,6 +6,4 @@ public class ProcessoComissaoId implements Serializable {
 
     private String processoSeletivoId;
     private String userId;
-
-    // Construtores, getters, setters, equals, and hashcode
 }

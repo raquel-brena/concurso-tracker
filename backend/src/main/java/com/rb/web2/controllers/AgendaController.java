@@ -1,22 +1,24 @@
 package com.rb.web2.controllers;
 
-import com.rb.web2.domain.agenda.dto.AgendaDTO;
-import com.rb.web2.services.AgendaService;
-import com.rb.web2.shared.response.RestSuccessMessage;
-
-import jakarta.validation.Valid;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import com.rb.web2.domain.agenda.Agenda;
+import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.services.AgendaService;
+import com.rb.web2.shared.response.RestSuccessMessage;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/agendas")
@@ -29,7 +31,7 @@ public class AgendaController {
     }
 
     @PostMapping("/")
-    public ResponseEntity createAgenda(@Valid @RequestBody AgendaDTO dto) {
+    public ResponseEntity<String> createAgenda(@Valid @RequestBody AgendaDTO dto) {
         var agenda = service.create(dto);
 
         var location = ServletUriComponentsBuilder
@@ -42,19 +44,20 @@ public class AgendaController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getAgenda(@PathVariable Long id) {
+    public ResponseEntity<Agenda> getAgenda(@PathVariable Long id) {
         var agenda = this.service.getAgendaById(id);
         return ResponseEntity.ok().body(agenda);
     }
 
     @GetMapping("/")
-    public ResponseEntity getAllAgendas() {
-        var agendas = this.service.getAllAgendas();
-        return ResponseEntity.ok().body(agendas);
+    public ResponseEntity<List<AgendaDTO>> getAllAgendas() {
+        List<AgendaDTO> agendasDTO = this.service.getAllAgendas(); // Certifique-se de que o serviço retorne
+                                                                   // List<AgendaDTO>
+        return ResponseEntity.ok().body(agendasDTO);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity removeAgenda(@PathVariable Long id) {
+    public ResponseEntity<String> removeAgenda(@PathVariable Long id) {
         this.service.deleteAgenda(id);
 
         return ResponseEntity.ok().body("Agenda com o ID " + id + " removida com sucesso.");

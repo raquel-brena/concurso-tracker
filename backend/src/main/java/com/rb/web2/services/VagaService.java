@@ -54,8 +54,8 @@ public class VagaService {
     }
 
     public Vaga atualizar(Long id, VagasRequestDTO dto) {
-        Optional<Vaga> vagaOptional = vagaRepository.findById(id);
-        Vaga vagaExistente = vagaOptional.orElseThrow(() -> new RuntimeException("Vaga não encontrada com o id " + id));
+        Vaga vagaExistente = vagaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Vaga não encontrada com o id " + id));
     
         // Obtém o Processo Seletivo e a Formação associados ao DTO
         ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
@@ -68,9 +68,9 @@ public class VagaService {
             throw new IllegalArgumentException("A quantidade de vagas deve ser maior que zero.");
         }
     
-        Vaga vagaAtualizada = VagaMapper.toEntity(dto, processoSeletivo, formacao);
-        vagaAtualizada.setId(id); // Garante que o ID da vaga existente será mantido
-        return vagaRepository.save(vagaAtualizada);
+        vagaExistente = VagaMapper.toEntity(dto, processoSeletivo, formacao);
+        vagaExistente.setId(id); // Garante que o ID da vaga existente será mantido
+        return vagaRepository.save(vagaExistente);
     }
     
     

@@ -1,40 +1,40 @@
 package com.rb.web2.controllers;
 
-import com.rb.web2.domain.documento.Documento;
-import com.rb.web2.domain.documento.dto.CreateDocumentoDTO;
-import com.rb.web2.services.DocumentoService;
-
 import java.io.IOException;
 import java.util.List;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.documento.dto.CreateDocumentoDTO;
+import com.rb.web2.services.DocumentoService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @RestController
 @RequestMapping("/api/documentos")
 public class DocumentoController {
 
-    private DocumentoService service;
+    private final DocumentoService service;
 
     public DocumentoController(DocumentoService service) {
         this.service = service;
     }
 
     @PostMapping("/")
-    public ResponseEntity createDocumento(
+    public ResponseEntity<?> createDocumento(
         @RequestParam("file") MultipartFile file, 
         @RequestParam("nome") String nome,
         @RequestParam("userId") String userId,
@@ -79,7 +79,7 @@ public class DocumentoController {
     }
 
     @GetMapping("/download/{userId}/{filename:.+}")
-    public ResponseEntity downloadFile(@PathVariable String filename, @PathVariable String userId,
+    public ResponseEntity<?> downloadFile(@PathVariable String filename, @PathVariable String userId,
             HttpServletRequest request) throws IOException {
 
         Resource resource = this.service.downloadFile(filename, userId);

@@ -41,8 +41,8 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity updateUser(@RequestBody @Validated UpdateUserDTO dto) {
-        var user = this.service.getUserById(dto.userId()).orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));;
+    public ResponseEntity<?> updateUser(@RequestBody @Validated UpdateUserDTO dto) {
+        var user = this.service.getUserById(dto.userId()).orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
 
         var role = user.getRole();
         // if (!(dto.roleId() == null)) {

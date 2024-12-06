@@ -35,16 +35,14 @@ public class DocumentoService {
   @Autowired
   private DocumentoRepository repository;
 
-  public DocumentoService(FileStorageProperties fileStorageProperties, DocumentoRepository repository) {
+  public DocumentoService(FileStorageProperties fileStorageProperties) {
     this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
         .toAbsolutePath().normalize();
-
-    this.repository = repository;
   }
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
     String uri = this.uploadFile(file, dto.userId());
-    User user = this.userService.getUserById(dto.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));;
+    User user = this.userService.getUserById(dto.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
     Documento documento = new Documento();
     documento.setNome(dto.nome());
