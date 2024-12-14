@@ -1,5 +1,14 @@
 package com.rb.web2.services;
 
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -18,6 +27,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.documento.dto.CreateDocumentoDTO;
+import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
+import com.rb.web2.domain.documento.mapper.DocumentoMapper;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.infra.properties.FileStorageProperties;
 import com.rb.web2.repositories.DocumentoRepository;
@@ -35,20 +47,38 @@ public class DocumentoService {
   @Autowired
   private DocumentoRepository repository;
 
+  @Autowired
+  private ProcessoSeletivoService processoSeletivoService;
+
   public DocumentoService(FileStorageProperties fileStorageProperties) {
     this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
         .toAbsolutePath().normalize();
   }
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
-    String uri = this.uploadFile(file, dto.userId());
-    User user = this.userService.getUserById(dto.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+
+    String id = null;
     Documento documento = new Documento();
+
+    if (dto.userId() != null) {
+      User user = this.userService.getUserById(dto.userId());
+      id = dto.userId();
+      documento.setUsuario(user);
+    }
+
+    if (dto.processoId() != null) {
+      ProcessoSeletivo processo 
+      = this.processoSeletivoService.getProcessoSeletivoById(dto.processoId());
+      id = dto.processoId();
+      documento.setProcessoSeletivo(processo);
+    }
+
+    String uri = this.uploadFile(file, id);
     documento.setNome(dto.nome());
-    documento.setTipo(dto.tipo());
+    documento.setDescricao(dto.descricao());
     documento.setDownloadUrl(uri);
-    documento.setUsuario(user);
+
     return repository.save(documento);
   }
 
@@ -60,39 +90,56 @@ public class DocumentoService {
     return repository.findAll();
   }
 
-  public String uploadFile(MultipartFile file, String userId) throws IOException {
+  public List<DocumentoResponseDTO> getAllDocumentosUsuarios () {
+    List <Documento> documentos = repository.findByUsuarioIsNotNull().orElseThrow(
+        () -> new NotFoundException("Nenhum documento encontrado.")
+    );
+    return documentos.stream().map(DocumentoMapper::toDocumentoResponseDTO).toList();
+  }
+  
+  public List<DocumentoResponseDTO> getAllDocumentosProcessosSeletivos () {
+    List <Documento> documentos = repository.findByProcessoSeletivoIsNotNull().orElseThrow(
+        () -> new NotFoundException("Nenhum documento encontrado.")
+    );
+    return documentos.stream().map(DocumentoMapper::toDocumentoResponseDTO).toList();
+  }
+
+  public String uploadFile(MultipartFile file, String id) throws IOException {
     String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-    Path userDirectory = fileStorageLocation.resolve(String.valueOf(userId)).normalize();
-   
-    if (!Files.exists(userDirectory)) {
-      Files.createDirectories(userDirectory);
+
+    Path processoDir = fileStorageLocation.resolve(String.valueOf(id)).normalize();
+
+    if (!Files.exists(processoDir)) {
+      Files.createDirectories(processoDir);
     }
 
-    Path targetLocation = userDirectory.resolve(fileName);
+    Path targetLocation = processoDir.resolve(fileName);
     file.transferTo(targetLocation);
 
     String fileDonwloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
         .path("api/documentos/download/")
-        .path(userId + "/")
+        .path(id + "/")
         .path(fileName)
         .toUriString();
 
     return fileDonwloadUri;
-
   }
 
-  public Resource downloadFile(String filename, String userId) throws MalformedURLException {
-    Path userDirectory = fileStorageLocation.resolve(String.valueOf(userId)).normalize();
-    if (!Files.exists(userDirectory)) {
-      throw new NotFoundException("Diretório do usuário " + userId + " não encontrado.");
+
+  public Resource downloadFile(String filename, String id, String directoryName1,String directoryName2) throws MalformedURLException {
+    
+    Path directory = fileStorageLocation.resolve(directoryName2).normalize();
+
+    if (!Files.exists(directory)) {
+      throw new NotFoundException("Diretório " + id + " não encontrado.");
     }
 
-    Path filePath = userDirectory.resolve(filename).normalize();
+    Path filePath = directory.resolve(filename).normalize();
 
     if (!Files.exists(filePath)) {
       throw new NotFoundException(
-          "Arquivo " + filename + " não encontrado no diretório do usuário " + userId + ".");
+          "Arquivo " + filename + " não encontrado no diretório de " + id + ".");
     }
 
     Resource resource = new UrlResource(filePath.toUri());
@@ -102,6 +149,5 @@ public class DocumentoService {
     }
 
     return resource;
-
   }
 }

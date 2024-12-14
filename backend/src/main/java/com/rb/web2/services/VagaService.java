@@ -26,8 +26,7 @@ public class VagaService {
     private FormacaoService formacaoService;
     
     public Vaga salvar(VagasRequestDTO dto) {
-        ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
-            .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
+        ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
         Formacao formacao = formacaoService.buscarPorId(dto.formacaoId())
             .orElseThrow(() -> new RuntimeException("Formação não encontrada"));
 
@@ -58,8 +57,7 @@ public class VagaService {
             .orElseThrow(() -> new RuntimeException("Vaga não encontrada com o id " + id));
     
         // Obtém o Processo Seletivo e a Formação associados ao DTO
-        ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
-                .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
+        ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
         Formacao formacao = formacaoService.buscarPorId(dto.formacaoId())
                 .orElseThrow(() -> new RuntimeException("Formação não encontrada"));
     

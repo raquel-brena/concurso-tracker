@@ -27,8 +27,7 @@ public class CriterioAvaliacaoService {
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
         criterioAvaliacao.setNome(dto.nome());
         criterioAvaliacao.setPeso(dto.peso());
-        criterioAvaliacao.setProcessoSeletivo(processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
-                .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado")));
+        criterioAvaliacao.setProcessoSeletivo(processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId()));
         return repository.save(criterioAvaliacao);
     }
 
@@ -48,8 +47,7 @@ public class CriterioAvaliacaoService {
     }
 
     public List<CriterioAvaliacao> findAllByProcessoSeletivo(String processoSeletivoId) {
-        ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(processoSeletivoId)
-                .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
+        ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(processoSeletivoId);
         return repository.findByProcessoSeletivo(processoSeletivo);
     }
 

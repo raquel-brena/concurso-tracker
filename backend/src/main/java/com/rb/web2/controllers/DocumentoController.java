@@ -18,7 +18,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.documento.dto.CreateDocumentoDTO;
+import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
+import com.rb.web2.domain.documento.mapper.DocumentoMapper;
 import com.rb.web2.services.DocumentoService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -35,21 +38,23 @@ public class DocumentoController {
 
     @PostMapping("/")
     public ResponseEntity<?> createDocumento(
-        @RequestParam("file") MultipartFile file, 
-        @RequestParam("nome") String nome,
-        @RequestParam("userId") String userId,
-        @RequestParam("tipo") String tipo) throws IOException {
-            
-        var dto = new CreateDocumentoDTO(nome, tipo, userId);
-        var id = this.service.create(dto, file);
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("nome") String nome,
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "processoId", required = false) String processoId,
+            @RequestParam("observacao") String observacao) throws IOException {
+
+        var dto = new CreateDocumentoDTO(nome, observacao, userId, processoId);
+        Documento doc = this.service.create(dto, file);
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(id)
+                .buildAndExpand(doc.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).build();
+        DocumentoResponseDTO response = DocumentoMapper.toDocumentoResponseDTO(doc);
+        return ResponseEntity.created(location).body(new RestSuccessMessage("Upload realizado com sucesso.", response));
     }
 
     @GetMapping("/{id}")
@@ -65,24 +70,33 @@ public class DocumentoController {
         }
     }
 
+
+
     @GetMapping
     public ResponseEntity<List<Documento>> getAllDocumentos() {
         List<Documento> Documentos = service.getAllDocumentos();
         return ResponseEntity.ok(Documentos);
     }
 
-    @PostMapping("path/{userId}")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String userId)
-            throws IllegalStateException, IOException {
-        var fileaDownloadURI = this.service.uploadFile(file, userId);
-        return ResponseEntity.ok(fileaDownloadURI);
+    @GetMapping("/usuarios")
+    public ResponseEntity<?> getAllDocumentosUsuarios() {
+            var documento = service.getAllDocumentosUsuarios();
+
+            return ResponseEntity.ok().body(documento);
+    }
+    
+    @GetMapping("/processos")
+    public ResponseEntity<?> getAllDocumentosProcessosSeletivos() {
+            var documento = service.getAllDocumentosProcessosSeletivos();
+
+            return ResponseEntity.ok().body(documento);
     }
 
-    @GetMapping("/download/{userId}/{filename:.+}")
-    public ResponseEntity<?> downloadFile(@PathVariable String filename, @PathVariable String userId,
+    @GetMapping("/download/{id}/{filename:.+}")
+    public ResponseEntity downloadFile(@PathVariable String filename, @PathVariable String id,
             HttpServletRequest request) throws IOException {
 
-        Resource resource = this.service.downloadFile(filename, userId);
+        Resource resource = this.service.downloadFile(filename, id, "documentos", String.valueOf(id));
         String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
         if (contentType == null) {

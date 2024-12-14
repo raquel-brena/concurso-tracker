@@ -31,14 +31,12 @@ public class InscricaoService {
   }
 
   public Inscricao create(RequestInscricaoDTO dto) {
-    User candidate = userService.getUserById(dto.candidateId())
-        .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    User candidate = userService.getUserById(dto.candidateId());
     if (candidate == null) {
       throw new RuntimeException("User not found");
     }
 
-    ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
-        .orElseThrow(() -> new RuntimeException("Processo Seletivo not found"));
+    ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
 
     Inscricao application = RequestInscricaoMapper.toEntity(dto, candidate, processoSeletivo);
     return inscricaoRepository.save(application);

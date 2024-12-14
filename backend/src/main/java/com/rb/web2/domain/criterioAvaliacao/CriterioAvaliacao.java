@@ -39,6 +39,7 @@ public class CriterioAvaliacao {
     private String nome;
     private int peso;
 
+    
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "processo_seletivo_id")
@@ -46,9 +47,6 @@ public class CriterioAvaliacao {
 
     @ManyToMany(mappedBy = "avaliacoes")
     private List<Inscricao> participantes;
-
-    @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

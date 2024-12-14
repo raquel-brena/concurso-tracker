@@ -32,7 +32,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
-        User user = this.service.getUserById(id).orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
+        User user = this.service.getUserById(id);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                 .body(null);
@@ -40,26 +40,36 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    // @PatchMapping("/{id}")
+    // public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+    //     User updatedUser = this.service.updateUser(id, user);
+    //     if (updatedUser == null) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    //                             .body(null);
+    //     }
+    //     return ResponseEntity.ok(updatedUser);
+    // }
+
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody @Validated UpdateUserDTO dto) {
-        var user = this.service.getUserById(dto.userId()).orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
+        var user = this.service.getUserById(dto.userId());
 
-        var role = user.getRole();
-        // if (!(dto.roleId() == null)) {
-        //     role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new NotFoundException("Role doesnt exist"));
+        // var role = user.getRole();
+        // // if (!(dto.roleId() == null)) {
+        // //     role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new NotFoundException("Role doesnt exist"));
+        // // }
+
+        // if (dto.login() != null) {
+        //     user.setLogin(dto.login());
         // }
 
-        if (dto.login() != null) {
-            user.setLogin(dto.login());
-        }
-
-        user.setRole(role);
-        this.service.create(user);
+        // user.setRole(role);
+        // this.service.create(user);
 
         return ResponseEntity.ok().body("User updated with ID: " + user.getId());
     }
 
     public User getUserById(String id) {
-        return this.service.getUserById(id).orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
+        return this.service.getUserById(id);
     }
 }

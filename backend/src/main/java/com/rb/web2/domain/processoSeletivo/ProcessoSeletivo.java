@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 
@@ -54,7 +55,8 @@ public class ProcessoSeletivo {
 
     private boolean temporario;
 
-    private String linkEdital;
+    @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Documento> editais;
 
     private List<String> documentosNecessarios;
 
@@ -78,14 +80,14 @@ public class ProcessoSeletivo {
     @JoinTable(name = "candidate_applications", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participantes;
 
-    @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
-
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
-    private LocalDateTime criado_em;
+    private LocalDateTime criadoEm;
 
     @Column(name = "atualizado_em")
     @UpdateTimestamp
-    private LocalDateTime atualizado_em;
+    private LocalDateTime atualizadoEm;
+
+    @Column(name = "deletado_em")
+    private LocalDateTime deletadoEm;
 }

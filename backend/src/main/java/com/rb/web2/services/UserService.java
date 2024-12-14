@@ -21,8 +21,10 @@ public class UserService {
         return this.repository.save(user);
     }
 
-    public Optional<User> getUserById(String userId) {
-        return repository.findById(userId);
+    public User getUserById(String userId) {
+        return repository.findById(userId).orElseThrow(
+            () -> new NotFoundException(userId)
+        );
     }
     
 
@@ -39,6 +41,14 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return repository.findAll();
+    }
+
+    public List<User> findAllById(List<String> ids){
+        List<User> users = this.repository.findAllById(ids);
+        if (users.isEmpty()) {
+            throw new NotFoundException("Users doesn't exist");
+        }
+        return users;
     }
 
 }
