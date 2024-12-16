@@ -96,7 +96,12 @@ public class DocumentoService {
   }
 
   public String uploadFile(MultipartFile file, String id) throws IOException {
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    String originalFilename = file.getOriginalFilename();
+    if (originalFilename == null || originalFilename.isBlank()) {
+        throw new IllegalArgumentException("O arquivo enviado não possui um nome válido.");
+    }
+
+    String fileName = StringUtils.cleanPath(originalFilename);
 
     Path processoDir = fileStorageLocation.resolve(String.valueOf(id)).normalize();
 
