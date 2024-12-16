@@ -1,14 +1,5 @@
 package com.rb.web2.services;
 
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -105,8 +96,12 @@ public class DocumentoService {
   }
 
   public String uploadFile(MultipartFile file, String id) throws IOException {
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    String originalFilename = file.getOriginalFilename();
+    if (originalFilename == null || originalFilename.isBlank()) {
+        throw new IllegalArgumentException("O arquivo enviado não possui um nome válido.");
+    }
 
+    String fileName = StringUtils.cleanPath(originalFilename);
 
     Path processoDir = fileStorageLocation.resolve(String.valueOf(id)).normalize();
 

@@ -1,14 +1,6 @@
 package com.rb.web2.controllers;
 
 import org.springframework.http.HttpStatus;
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
-import com.rb.web2.domain.processoSeletivo.dto.ResponseProcessoDTO;
-import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
-import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
-import com.rb.web2.services.ProcessoSeletivoService;
-import com.rb.web2.shared.RestMessage.RestSuccessMessage;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
-import com.rb.web2.shared.exceptions.NotFoundException;
+import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
+import com.rb.web2.domain.processoSeletivo.dto.ResponseProcessoDTO;
+import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
+import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
+import com.rb.web2.services.ProcessoSeletivoService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -37,7 +34,7 @@ public class ProcessoSeletivoController {
     }
 
     @PostMapping("/")
-    public ResponseEntity create(@RequestBody RequestProcessoDTO dto) {
+    public ResponseEntity<RestSuccessMessage> create(@RequestBody RequestProcessoDTO dto) {
 
         ResponseProcessoDTO processo = service.create(dto);
 
@@ -81,7 +78,7 @@ public class ProcessoSeletivoController {
         }
     }
 
-    public ResponseEntity get(@PathVariable String id) {
+    public ResponseEntity<RestSuccessMessage> get(@PathVariable String id) {
         var processo = this.service.getProcessoSeletivoById(id);
 
         return ResponseEntity.ok()
@@ -91,7 +88,7 @@ public class ProcessoSeletivoController {
     }
 
     @GetMapping("/")
-    public ResponseEntity getAll() {
+    public ResponseEntity<RestSuccessMessage> getAll() {
         var processos = this.service.getAllProcessoSeletivos();
 
         return ResponseEntity.ok()
@@ -109,7 +106,7 @@ public class ProcessoSeletivoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable String id) {
+    public ResponseEntity<RestSuccessMessage> delete(@PathVariable String id) {
         this.service.deleteById(id);
 
         return ResponseEntity.ok()
