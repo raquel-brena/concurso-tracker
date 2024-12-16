@@ -38,6 +38,9 @@ public class ProcessoSeletivoService {
   private ProcessoSeletivoRepository repository;
 
   @Autowired
+  private ProcessoComissaoRepository processoComissaoRepository;
+
+  @Autowired
   private VagaRepository vagaRepository;
 
   @Autowired
@@ -156,9 +159,11 @@ public class ProcessoSeletivoService {
     if (processoComissao.getDeletedAt() != null) {
       throw new NotFoundException("Membro já removido");
     }
+    
 
     processoComissao.setDeletedAt(LocalDateTime.now());
     processoComissaoRepository.save(processoComissao);
+  }
 
   public String deleteById(String id) {
     ProcessoSeletivo processo = this.getProcessoSeletivoById(id);
