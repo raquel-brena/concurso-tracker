@@ -12,7 +12,7 @@ import com.rb.web2.domain.vaga.Vaga;
 
 @Repository
 public interface VagaRepository extends JpaRepository<Vaga, Long> {
-    // List<Vaga> findByProcessoSeletivo(ProcessoSeletivo processoSeletivo);
+    @Override
     Optional<Vaga> findById(Long id);
     List<Agenda> findAllByAtivoTrue();
     List<Vaga> findByProcessoSeletivo(ProcessoSeletivo processoSeletivo);

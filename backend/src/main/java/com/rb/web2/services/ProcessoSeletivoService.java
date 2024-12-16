@@ -1,34 +1,27 @@
 package com.rb.web2.services;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.rb.web2.domain.processoComissao.ProcessoComissao;
-import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import com.rb.web2.domain.documento.Documento;
-import com.rb.web2.domain.documento.dto.CreateDocumentoDTO;
+import com.rb.web2.domain.processoComissao.ProcessoComissao;
+import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.dto.ResponseProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.domain.user.User;
-import com.rb.web2.repositories.ProcessoComissaoRepository;
 import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.repositories.AgendaRepository;
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
-import com.rb.web2.repositories.ProcessoSeletivoRepository;
-import com.rb.web2.repositories.UserRepository;
 import com.rb.web2.repositories.ProcessoComissaoRepository;
+import com.rb.web2.repositories.ProcessoSeletivoRepository;
 import com.rb.web2.repositories.VagaRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
@@ -183,7 +176,8 @@ public class ProcessoSeletivoService {
       processo.setTemporario(dto.temporario());
     }
 
-    if (dto.descricao() != processo.getDescricao()) {
+    // @TODO Avaliar estratégia (neste caso, se o valor novo for "null" vai atualizar o do bd para "null" também)	
+    if (dto.descricao() == null ? processo.getDescricao() != null : !dto.descricao().equals(processo.getDescricao())) {
       processo.setDescricao(dto.descricao());
     }
 
