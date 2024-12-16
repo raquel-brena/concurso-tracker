@@ -28,6 +28,7 @@ import com.rb.web2.repositories.AgendaRepository;
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 import com.rb.web2.repositories.ProcessoSeletivoRepository;
 import com.rb.web2.repositories.UserRepository;
+import com.rb.web2.repositories.ProcessoComissaoRepository;
 import com.rb.web2.repositories.VagaRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
@@ -47,10 +48,13 @@ public class ProcessoSeletivoService {
   private CriterioAvaliacaoRepository criterioAvaliacaoRepository;
 
   @Autowired
+  private ProcessoComissaoRepository processoComissaoRepository;
+
+  @Autowired
   private UserService userService;
 
   public ResponseProcessoDTO create(RequestProcessoDTO dto) {
-    if (dto.titulo() == null || dto.validade() == null ) {
+    if (dto.titulo() == null || dto.validade() == null) {
       throw new NotFoundException("Titulo do processo seletivo não pode ser nulo");
     }
     var existeProcesso = this.getProcessoSeletivoByTitulo(dto.titulo());
@@ -59,8 +63,8 @@ public class ProcessoSeletivoService {
       throw new NotFoundException("Processo seletivo com o nome " + dto.titulo() + " já existe");
     }
 
-   ProcessoSeletivo processoCriado = repository.save(ProcessoSeletivoMapper.toEntity(dto));
-    
+    ProcessoSeletivo processoCriado = repository.save(ProcessoSeletivoMapper.toEntity(dto));
+
     return ProcessoSeletivoMapper.toResponseProcessoDTO(processoCriado);
   }
 
@@ -147,7 +151,8 @@ public class ProcessoSeletivoService {
   }
 
   public void removerMembroComissao(RequestMembroComissaoDTO dto) {
-    ProcessoComissao processoComissao = processoComissaoRepository.findByProcessoSeletivoIdIgnoreCaseAndUserIdIgnoreCase(dto.processoSeletivoId(), dto.userId());
+    ProcessoComissao processoComissao = processoComissaoRepository
+        .findByProcessoSeletivoIdIgnoreCaseAndUserIdIgnoreCase(dto.processoSeletivoId(), dto.userId());
 
     if (processoComissao == null) {
       throw new NotFoundException("Membro não encontrado");
@@ -159,6 +164,7 @@ public class ProcessoSeletivoService {
 
     processoComissao.setDeletedAt(LocalDateTime.now());
     processoComissaoRepository.save(processoComissao);
+  }
 
   public String deleteById(String id) {
     ProcessoSeletivo processo = this.getProcessoSeletivoById(id);
@@ -224,6 +230,5 @@ public class ProcessoSeletivoService {
 
     return repository.save(processo);
   }
-
 
 }
