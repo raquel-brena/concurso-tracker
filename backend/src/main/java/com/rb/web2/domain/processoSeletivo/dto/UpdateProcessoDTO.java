@@ -9,7 +9,7 @@ public record UpdateProcessoDTO(
         boolean temporario,
         String linkEdital,
         List<Long> vagasIds,
-        List<Long> criteriosIds,
+        List<String> criteriosIds,
         Long agendaId,
         List<String> documentoNecessarios,
         List<String> comissaoOrganizadoraIds,

@@ -2,6 +2,7 @@
 package com.rb.web2.domain.inscricao;
 
 import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 
@@ -29,34 +30,41 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Table(name = "inscricoes")
 @Entity
+@Table(name = "inscricoes")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Inscricao implements Serializable  {
+public class Inscricao implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User candidate; 
+    private User candidato;
 
     @ManyToOne
-    @JoinColumn(name = "processo_seletivo_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "processo_seletivo_id", nullable = false)
     private ProcessoSeletivo processoSeletivo;
 
-    @Column(nullable = false)
-    private String jobPosition;  // Cargo desejado
+    @ManyToOne
+    @JoinColumn(name = "vaga_id", nullable = false)
+    private Vaga vaga;
+
+    @ManyToMany
+    @JoinTable(
+        name = "pontuacao_criterio",
+        joinColumns = @JoinColumn(name = "inscricao_id"),
+        inverseJoinColumns = @JoinColumn(name = "criterio_id")
+    )
+    private List<CriterioAvaliacao> avaliacoes;
 
     @Column(nullable = false)
-    private LocalDateTime applicationDate;  // Data de inscrição
-
-    @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    private boolean ativo = true;
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
@@ -65,19 +73,4 @@ public class Inscricao implements Serializable  {
     @Column(name = "atualizado_em")
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
-
-    @ManyToMany
-    @JoinTable(
-        name = "pontuacao_criterio",
-        joinColumns = @JoinColumn(name = "inscricao_id"),  // Chave estrangeira da inscrição
-        inverseJoinColumns = @JoinColumn(name = "criterio_id")  // Chave estrangeira do critério de avaliação
-    )
-    private List<CriterioAvaliacao> avaliacoes;
-
-    public Inscricao(User candidate, String jobPosition, ProcessoSeletivo processoSeletivo) {
-        this.candidate = candidate;
-        this.jobPosition = jobPosition;
-        this.applicationDate = LocalDateTime.now();
-        this.processoSeletivo = processoSeletivo;
-    }
 }

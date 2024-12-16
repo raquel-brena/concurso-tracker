@@ -52,8 +52,7 @@ public class AgendaController {
 
     @GetMapping("/")
     public ResponseEntity<List<AgendaDTO>> getAllAgendas() {
-        List<AgendaDTO> agendasDTO = this.service.getAllAgendas(); // Certifique-se de que o serviço retorne
-                                                                   // List<AgendaDTO>
+        List<AgendaDTO> agendasDTO = this.service.getAllAgendas();
         return ResponseEntity.ok().body(agendasDTO);
     }
 

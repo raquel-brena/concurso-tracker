@@ -15,6 +15,5 @@ public interface CriterioAvaliacaoRepository extends JpaRepository<CriterioAvali
     List<CriterioAvaliacao> findByProcessoSeletivo(ProcessoSeletivo processoSeletivo);
     List<CriterioAvaliacao> findByParticipantes(Inscricao inscricao);
     Optional<CriterioAvaliacao> findById(String id);
-    List<CriterioAvaliacao> findAllById(List<Long> ids);
 
 }

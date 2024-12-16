@@ -23,6 +23,7 @@ import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 import com.rb.web2.repositories.ProcessoComissaoRepository;
 import com.rb.web2.repositories.ProcessoSeletivoRepository;
 import com.rb.web2.repositories.VagaRepository;
+import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
 @Service
@@ -30,9 +31,6 @@ public class ProcessoSeletivoService {
 
   @Autowired
   private ProcessoSeletivoRepository repository;
-
-  @Autowired
-  private ProcessoComissaoRepository processoComissaoRepository;
 
   @Autowired
   private VagaRepository vagaRepository;
@@ -130,19 +128,16 @@ public class ProcessoSeletivoService {
   }
 
   public void adicionarMembroComissao(RequestMembroComissaoDTO dto) {
-    // Buscar o Processo Seletivo
-    ProcessoSeletivo processoSeletivo = repository.findById(dto.processoSeletivoId())
-        .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
 
-    // Buscar o usuário
+    ProcessoSeletivo processoSeletivo = this.getProcessoSeletivoById(dto.processoSeletivoId());
+
     User user = userService.getUserById(dto.userId());
 
-    // Adicionar o usuário à comissão organizadora
     if (!processoSeletivo.getComissaoOrganizadora().contains(user)) {
       processoSeletivo.getComissaoOrganizadora().add(user);
       repository.save(processoSeletivo); // Salva a entidade com a atualização
     } else {
-      throw new RuntimeException("Usuário já faz parte da comissão organizadora");
+      throw new BadRequestException("Usuário já faz parte da comissão organizadora");
     }
   }
 
@@ -222,8 +217,8 @@ public class ProcessoSeletivoService {
     }
 
     if (dto.comissaoOrganizadoraIds() != null) {
-      List<User> participantes = userService.findAllById(dto.comissaoOrganizadoraIds());
-      processo.setParticipantes(participantes);
+      List<User> comissao = userService.findAllById(dto.comissaoOrganizadoraIds());
+      processo.setComissaoOrganizadora(comissao);
     }
 
     return repository.save(processo);

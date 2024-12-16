@@ -5,13 +5,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.rb.web2.domain.formacao.Formacao;
+import com.rb.web2.domain.formacao.Cargo;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.domain.vaga.dto.VagasRequestDTO;
 import com.rb.web2.domain.vaga.mapper.VagaMapper;
 import com.rb.web2.repositories.VagaRepository;
+import com.rb.web2.shared.exceptions.BadRequestException;
 
 @Service
 public class VagaService {
@@ -23,18 +23,17 @@ public class VagaService {
     private ProcessoSeletivoService processoSeletivoService;
 
     @Autowired
-    private FormacaoService formacaoService;
+    private CargoService formacaoService;
 
     public Vaga salvar(VagasRequestDTO dto) {
         ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
-        Formacao formacao = formacaoService.buscarPorId(dto.formacaoId())
-                .orElseThrow(() -> new RuntimeException("Formação não encontrada"));
+        Cargo cargo = formacaoService.buscarPorId(dto.cargoId());
 
         if (dto.quantidade() <= 0) {
-            throw new IllegalArgumentException("A quantidade de vagas deve ser maior que zero.");
+            throw new BadRequestException("A quantidade de vagas deve ser maior que zero.");
         }
 
-        Vaga vaga = VagaMapper.toEntity(dto, processoSeletivo, formacao);
+        Vaga vaga = VagaMapper.toEntity(dto, processoSeletivo, cargo);
 
         return vagaRepository.save(vaga);
     }
@@ -56,18 +55,15 @@ public class VagaService {
         vagaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vaga não encontrada com o id " + id));
 
-        // Obtém o Processo Seletivo e a Formação associados ao DTO
         ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
-        Formacao formacao = formacaoService.buscarPorId(dto.formacaoId())
-                .orElseThrow(() -> new RuntimeException("Formação não encontrada"));
+        Cargo cargo = formacaoService.buscarPorId(dto.cargoId());
 
-        // Verifica se a quantidade é válida
         if (dto.quantidade() <= 0) {
             throw new IllegalArgumentException("A quantidade de vagas deve ser maior que zero.");
         }
 
-        Vaga vagaExistente = VagaMapper.toEntity(dto, processoSeletivo, formacao);
-        vagaExistente.setId(id); // Garante que o ID da vaga existente será mantido
+        Vaga vagaExistente = VagaMapper.toEntity(dto, processoSeletivo, cargo);
+        vagaExistente.setId(id);
         return vagaRepository.save(vagaExistente);
     }
 
