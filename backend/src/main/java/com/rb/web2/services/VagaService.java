@@ -24,18 +24,18 @@ public class VagaService {
 
     @Autowired
     private FormacaoService formacaoService;
-    
+
     public Vaga salvar(VagasRequestDTO dto) {
         ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
         Formacao formacao = formacaoService.buscarPorId(dto.formacaoId())
-            .orElseThrow(() -> new RuntimeException("Formação não encontrada"));
+                .orElseThrow(() -> new RuntimeException("Formação não encontrada"));
 
         if (dto.quantidade() <= 0) {
             throw new IllegalArgumentException("A quantidade de vagas deve ser maior que zero.");
         }
 
         Vaga vaga = VagaMapper.toEntity(dto, processoSeletivo, formacao);
-        
+
         return vagaRepository.save(vaga);
     }
 
@@ -47,31 +47,29 @@ public class VagaService {
         Optional<Vaga> vagaOptional = vagaRepository.findById(id);
         return vagaOptional.orElseThrow(() -> new RuntimeException("Vaga não encontrada com o id " + id));
     }
-    
+
     public List<Vaga> buscarVagasPorProcessoSeletivo(ProcessoSeletivo processoSeletivo) {
         return vagaRepository.findByProcessoSeletivo(processoSeletivo);
     }
 
     public Vaga atualizar(Long id, VagasRequestDTO dto) {
-        Vaga vagaExistente = vagaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Vaga não encontrada com o id " + id));
-    
+        vagaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vaga não encontrada com o id " + id));
+
         // Obtém o Processo Seletivo e a Formação associados ao DTO
         ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
         Formacao formacao = formacaoService.buscarPorId(dto.formacaoId())
                 .orElseThrow(() -> new RuntimeException("Formação não encontrada"));
-    
+
         // Verifica se a quantidade é válida
         if (dto.quantidade() <= 0) {
             throw new IllegalArgumentException("A quantidade de vagas deve ser maior que zero.");
         }
-    
-        vagaExistente = VagaMapper.toEntity(dto, processoSeletivo, formacao);
+
+        Vaga vagaExistente = VagaMapper.toEntity(dto, processoSeletivo, formacao);
         vagaExistente.setId(id); // Garante que o ID da vaga existente será mantido
         return vagaRepository.save(vagaExistente);
     }
-    
-    
 
     // @TODO: Deletar vaga
 }

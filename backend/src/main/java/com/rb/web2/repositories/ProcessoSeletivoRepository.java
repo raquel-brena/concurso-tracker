@@ -10,7 +10,6 @@ import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
 @Repository
 public interface ProcessoSeletivoRepository extends JpaRepository<ProcessoSeletivo, String> {
-    Optional<ProcessoSeletivo> findById(String id);
     Optional<ProcessoSeletivo> findByTitulo(String titulo);
     List<ProcessoSeletivo> findByTituloContainingIgnoreCaseOrDescricaoContainingOrderByAgendaInicioInscricaoDesc(String termo, String descricao);
 }

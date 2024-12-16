@@ -98,7 +98,6 @@ public class DocumentoService {
   public String uploadFile(MultipartFile file, String id) throws IOException {
     String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-
     Path processoDir = fileStorageLocation.resolve(String.valueOf(id)).normalize();
 
     if (!Files.exists(processoDir)) {
