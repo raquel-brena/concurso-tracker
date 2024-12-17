@@ -52,8 +52,8 @@ public class CriterioAvaliacaoService {
     }
 
     public List<CriterioAvaliacao> findAllByInscricao(String inscricaoId) {
-        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId)
-                .orElseThrow(() -> new RuntimeException("Inscrição não encontrada"));
+        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId);
+              
         return repository.findByParticipantes(inscricao);
     }
 }

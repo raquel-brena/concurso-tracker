@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
+import com.rb.web2.domain.inscricao.dto.UpdateReqInscricaoDTO;
 import com.rb.web2.services.InscricaoService;
 import com.rb.web2.services.PontuacaoCriterioService;
 
@@ -50,14 +50,13 @@ public class InscricaoController {
 
         @GetMapping("/{id}")
         public ResponseEntity<Inscricao> getInscricao(@PathVariable String id) {
-            return this.service.getInscricaoById(id)
-                    .map(ResponseEntity::ok) // Se o Optional tiver valor, retorna 200 OK com o valor
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)); // Se vazio, retorna 404 NOT FOUND
+            Inscricao incricao =  this.service.getInscricaoById(id);
+            return ResponseEntity.ok(incricao);
         }
     
         @PutMapping("/{id}")
-        public ResponseEntity<?> updateInscricao(@PathVariable String id, @RequestBody @Validated UpdateInscricaoDTO dto) {
-            var updatedApplication = this.service.updateInscricao(id, dto);
+        public ResponseEntity<?> updateInscricao(@PathVariable String id, @RequestBody @Validated UpdateReqInscricaoDTO dto) {
+            var updatedApplication = this.service.atualizarInscricao(id, dto);
             if (updatedApplication == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                     .body(null);

@@ -36,8 +36,7 @@ public class PontuacaoCriterioService {
         pontuacaoCriterio.setNota(dto.nota());
         pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
                 .orElseThrow(() -> new RuntimeException("Criterio not found")));
-        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId())
-                .orElseThrow(() -> new RuntimeException("Inscrição not found")));
+        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId()));
 
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
     }
@@ -53,8 +52,7 @@ public class PontuacaoCriterioService {
         pontuacaoCriterio.setNota(dto.nota());
         pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
                 .orElseThrow(() -> new RuntimeException("Criterio not found")));
-        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId())
-                .orElseThrow(() -> new RuntimeException("Inscrição not found")));
+        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId()));
 
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
     }
@@ -66,14 +64,12 @@ public class PontuacaoCriterioService {
     }
 
     public List<PontuacaoCriterio> findByInscricao(String inscricaoId) {
-        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId)
-                .orElseThrow(() -> new RuntimeException("Inscrição não encontrada"));
+        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId);
         return pontuacaoCriterioRepository.findByInscricao(inscricao);
     }
 
     public BigDecimal calcularNotaTotal(String inscricaoId) {
-        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId)
-                .orElseThrow(() -> new RuntimeException("Inscrição não encontrada"));
+        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId);
 
         List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioRepository.findByInscricao(inscricao);
 
@@ -82,11 +78,11 @@ public class PontuacaoCriterioService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal somaPesos = pontuacoes.stream()
-                .map(pontuacao -> BigDecimal.valueOf(pontuacao.getCriterio().getPeso()))  // Extrair os pesos
-                .reduce(BigDecimal.ZERO, BigDecimal::add);  // Somar todos os pesos
+                .map(pontuacao -> BigDecimal.valueOf(pontuacao.getCriterio().getPeso()))  
+                .reduce(BigDecimal.ZERO, BigDecimal::add);  
 
         if (somaPesos.compareTo(BigDecimal.ZERO) > 0) {
-            return somaNotasPonderadas.divide(somaPesos, 2, RoundingMode.HALF_UP);  // Média ponderada com 2 casas decimais
+            return somaNotasPonderadas.divide(somaPesos, 2, RoundingMode.HALF_UP);  
         } else {
             throw new RuntimeException("A soma dos pesos não pode ser zero");
         }

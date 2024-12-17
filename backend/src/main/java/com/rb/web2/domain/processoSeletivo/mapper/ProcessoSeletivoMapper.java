@@ -39,8 +39,8 @@ public class ProcessoSeletivoMapper {
                                         .toList();
                 }
 
-                if (!(processo.getParticipantes() == null)) {
-                        comissaoOrganizadoraDTOs = processo.getParticipantes()
+                if (!(processo.getComissaoOrganizadora() == null)) {
+                        comissaoOrganizadoraDTOs = processo.getComissaoOrganizadora()
                                         .stream()
                                         .map(user -> UserMapper.toResponseUserDTO(user))
                                         .toList();

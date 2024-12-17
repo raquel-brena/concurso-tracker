@@ -17,7 +17,7 @@ import com.rb.web2.services.ProcessoSeletivoService;
 public class BuscarController {
 
     @Autowired
-    private ProcessoSeletivoService processoSeletivoService;
+    ProcessoSeletivoService processoSeletivoService;
 
     @GetMapping
     public ResponseEntity<?> search(

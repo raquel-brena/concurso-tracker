@@ -1,4 +1,4 @@
-package com.rb.web2.domain.formacao;
+package com.rb.web2.domain.cargo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,17 +25,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Formacao {
+public class Cargo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String descricao;
-    // private Documento documento;
+    private float remuneracao;
+    
+    private boolean temporario;
 
     @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    private boolean ativo = true; 
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

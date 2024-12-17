@@ -1,13 +1,16 @@
 package com.rb.web2.domain.vaga;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.rb.web2.domain.formacao.Formacao;
+import com.rb.web2.domain.cargo.Cargo;
+import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -39,24 +43,25 @@ public class Vaga {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "processo_id", nullable = false)
     private ProcessoSeletivo processoSeletivo;
-    
-    //mudar para cargo
-    @ManyToOne
-    @JoinColumn(name = "formacao_id", nullable = false)
-    private Formacao formacao;
 
+    @ManyToOne
+    @JoinColumn(name = "cargo_id", nullable = false)
+    private Cargo cargo;
+
+    @OneToMany(mappedBy = "vaga", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Inscricao> inscricoes;
+
+    @Column(nullable = false)
     private int quantidade;
 
-    private boolean reserva;
-
-    private float remuneracao;
-
+    @Column(nullable = false)
     private String descricao;
-    
+
+    @Column(nullable = false)
     private float taxaInscricao;
 
     @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    private boolean ativo = true;
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
@@ -66,4 +71,3 @@ public class Vaga {
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
 }
-

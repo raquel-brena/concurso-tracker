@@ -26,6 +26,7 @@ import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 import com.rb.web2.repositories.ProcessoComissaoRepository;
 import com.rb.web2.repositories.ProcessoSeletivoRepository;
 import com.rb.web2.repositories.VagaRepository;
+import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
 @Service
@@ -134,17 +135,23 @@ public class ProcessoSeletivoService {
   }
 
   public void adicionarMembroComissao(RequestMembroComissaoDTO dto) {
+<<<<<<< HEAD
     System.out.println("novo" + dto);
     ProcessoSeletivo processoSeletivo = repository.findById(dto.processoSeletivoId())
         .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
 
+=======
+
+    ProcessoSeletivo processoSeletivo = this.getProcessoSeletivoById(dto.processoSeletivoId());
+
+>>>>>>> develop
     User user = userService.getUserById(dto.userId());
 
     if (!processoSeletivo.getComissaoOrganizadora().contains(user)) {
       processoSeletivo.getComissaoOrganizadora().add(user);
       repository.save(processoSeletivo);
     } else {
-      throw new RuntimeException("Usuário já faz parte da comissão organizadora");
+      throw new BadRequestException("Usuário já faz parte da comissão organizadora");
     }
   }
 
@@ -231,8 +238,8 @@ public class ProcessoSeletivoService {
     }
 
     if (dto.comissaoOrganizadoraIds() != null) {
-      List<User> participantes = userService.findAllById(dto.comissaoOrganizadoraIds());
-      processo.setParticipantes(participantes);
+      List<User> comissao = userService.findAllById(dto.comissaoOrganizadoraIds());
+      processo.setComissaoOrganizadora(comissao);
     }
 
     return repository.save(processo);

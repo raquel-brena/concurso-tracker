@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.enums.Role;
+import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
 import jakarta.persistence.CascadeType;
@@ -73,11 +74,12 @@ public class User implements UserDetails {
     private List<ProcessoSeletivo> processosComissao;
 
     @JsonBackReference
-    @ManyToMany(mappedBy = "participantes")
-    private List<ProcessoSeletivo> processosParticipante;
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Inscricao> inscricoes;
+
 
     @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    private boolean ativo = true; 
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

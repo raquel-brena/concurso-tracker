@@ -4,27 +4,28 @@ import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.vaga.Vaga;
 
 public class RequestInscricaoMapper {
 
-    // Método para mapear a entidade Inscricao para RequestInscricaoDTO
-    public static RequestInscricaoDTO toDTO(Inscricao application) {
+    public static RequestInscricaoDTO toDTO(Inscricao inscricao) {
         return new RequestInscricaoDTO(
-            application.getCandidate().getId(),  // Pegando o ID do candidato
-            application.getProcessoSeletivo().getId(),  // Pegando o ID do processo seletivo
-            application.getJobPosition()
-        );
+                inscricao.getCandidato().getId(),
+                inscricao.getCandidato().getId(),
+                inscricao.getProcessoSeletivo().getId(),
+                inscricao.getVaga().getId());
     }
 
     public static Inscricao toEntity(
-        RequestInscricaoDTO dto, 
-        User candidate, 
-        ProcessoSeletivo processoSeletivo) 
-    {
-        return new Inscricao(
-            candidate,  // Usando o objeto User
-            dto.jobPosition(),
-            processoSeletivo
-        );
+            RequestInscricaoDTO dto,
+            User candidato,
+            ProcessoSeletivo processoSeletivo,
+            Vaga vaga) {
+        Inscricao inscricao = new Inscricao();
+        inscricao.setCandidato(candidato);
+        inscricao.setProcessoSeletivo(processoSeletivo);
+        inscricao.setVaga(vaga);
+        inscricao.setAtivo(true);
+        return inscricao;
     }
 }

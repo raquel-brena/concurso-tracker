@@ -38,7 +38,6 @@ public class CriterioAvaliacao {
     private String id;
     private String nome;
     private int peso;
-
     
     @JsonIgnore
     @ManyToOne
