@@ -6,7 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.rb.web2.domain.formacao.Cargo;
+import com.rb.web2.domain.cargo.Cargo;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 

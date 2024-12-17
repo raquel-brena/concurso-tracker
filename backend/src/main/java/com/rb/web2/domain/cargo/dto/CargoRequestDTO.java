@@ -1,4 +1,4 @@
-package com.rb.web2.domain.formacao.dto;
+package com.rb.web2.domain.cargo.dto;
 public record CargoRequestDTO(
     String nome,
     String descricao,

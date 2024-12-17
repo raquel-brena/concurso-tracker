@@ -1,4 +1,4 @@
-package com.rb.web2.domain.formacao;
+package com.rb.web2.domain.cargo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

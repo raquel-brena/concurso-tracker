@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.rb.web2.domain.formacao.Cargo;
+
+import com.rb.web2.domain.cargo.Cargo;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.domain.vaga.dto.VagasRequestDTO;

@@ -1,9 +1,9 @@
 package com.rb.web2.services;
 
+import com.rb.web2.domain.cargo.Cargo;
+import com.rb.web2.domain.cargo.dto.CargoRequestDTO;
 import com.rb.web2.repositories.CargoRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
-import com.rb.web2.domain.formacao.Cargo;
-import com.rb.web2.domain.formacao.dto.CargoRequestDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

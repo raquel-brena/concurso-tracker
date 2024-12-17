@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.rb.web2.domain.cargo.Cargo;
+import com.rb.web2.domain.cargo.dto.CargoRequestDTO;
 import com.rb.web2.services.CargoService;
-import com.rb.web2.domain.formacao.dto.CargoRequestDTO;
-import com.rb.web2.domain.formacao.Cargo;
 
 import java.util.List;
 @RestController
