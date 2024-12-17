@@ -57,55 +57,35 @@ public class PontuacaoCriterioController {
     @GetMapping("/inscricao")
     public ResponseEntity<List<PontuacaoCriterio>> listarPontuacoesPorInscricao(
             @RequestParam("id") String inscricaoId) {
-        try {
-            List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioService.findByInscricao(inscricaoId);
-            if (!pontuacoes.isEmpty()) {
-                return new ResponseEntity<>(pontuacoes, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+        List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioService.findByInscricao(inscricaoId);
+        return new ResponseEntity<>(pontuacoes, HttpStatus.OK);
+
     }
 
     @GetMapping("/criterio")
     public ResponseEntity<List<PontuacaoCriterio>> listarPontuacoesPorCriterio(@RequestParam("id") String criterioId) {
-        try {
-            List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioService.findByCriterio(criterioId);
-            if (!pontuacoes.isEmpty()) {
-                return new ResponseEntity<>(pontuacoes, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+        List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioService.findByCriterio(criterioId);
+        return new ResponseEntity<>(pontuacoes, HttpStatus.OK);
+
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PontuacaoCriterio> buscarPontuacaoPorId(@PathVariable String id) {
-        try {
-            Optional<PontuacaoCriterio> pontuacao = pontuacaoCriterioService.getPontuacaoCriterioById(id);
-            if (pontuacao.isPresent()) {
-                return new ResponseEntity<>(pontuacao.get(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<PontuacaoCriterio> buscarPontuacaoPorId(@PathVariable Long id) {
+
+        var pontuacaoCriteriopontuacao = pontuacaoCriterioService.getPontuacaoCriterioById(id);
+        return new ResponseEntity<>(pontuacaoCriteriopontuacao, HttpStatus.OK);
+
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PontuacaoCriterio> atualizarPontuacao(@PathVariable String id,
+    public ResponseEntity<PontuacaoCriterio> atualizarPontuacao(@PathVariable Long id,
             @RequestBody RequestPontuacaoDTO dto) {
-        try {
-            PontuacaoCriterio pontuacaoAtualizada = pontuacaoCriterioService.update(id, dto);
-            return new ResponseEntity<>(pontuacaoAtualizada, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+        PontuacaoCriterio pontuacaoAtualizada = pontuacaoCriterioService.update(id, dto);
+        return new ResponseEntity<>(pontuacaoAtualizada, HttpStatus.OK);
+
     }
 
     // @TODO: Implementar endpoint para deletar uma nota de um critério de avaliação

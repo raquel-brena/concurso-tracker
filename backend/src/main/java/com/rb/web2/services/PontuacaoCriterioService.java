@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 import com.rb.web2.domain.pontuacaoCriterio.dto.RequestPontuacaoDTO;
 import com.rb.web2.repositories.PontuacaoCriterioRepository;
+import com.rb.web2.shared.exceptions.NotFoundException;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 
@@ -34,32 +35,28 @@ public class PontuacaoCriterioService {
 
         PontuacaoCriterio pontuacaoCriterio = new PontuacaoCriterio();
         pontuacaoCriterio.setNota(dto.nota());
-        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
-                .orElseThrow(() -> new RuntimeException("Criterio not found")));
+        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId()));
         pontuacaoCriterio.setInscricao(inscricaoService.buscarInscricaoPorId(dto.inscricaoId()));
 
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
     }
 
-    public Optional<PontuacaoCriterio> getPontuacaoCriterioById(String id) {
-        return pontuacaoCriterioRepository.findById(id);
+    public PontuacaoCriterio getPontuacaoCriterioById(Long id) {
+        return pontuacaoCriterioRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found"));
     }
 
-    public PontuacaoCriterio update(String id, RequestPontuacaoDTO dto) {
-        PontuacaoCriterio pontuacaoCriterio = pontuacaoCriterioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("PontuacaoCriterio not found"));
+    public PontuacaoCriterio update(Long id, RequestPontuacaoDTO dto) {
+        PontuacaoCriterio pontuacaoCriterio = this.getPontuacaoCriterioById(id);
 
         pontuacaoCriterio.setNota(dto.nota());
-        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
-                .orElseThrow(() -> new RuntimeException("Criterio not found")));
+        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId()));
         pontuacaoCriterio.setInscricao(inscricaoService.buscarInscricaoPorId(dto.inscricaoId()));
 
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
     }
 
     public List<PontuacaoCriterio> findByCriterio(String criterioId) {
-        CriterioAvaliacao criterio = criterioAvaliacaoService.getCriterioById(criterioId)
-                .orElseThrow(() -> new RuntimeException("Critério de Avaliação não encontrado"));
+        CriterioAvaliacao criterio = criterioAvaliacaoService.getCriterioById(criterioId);
         return pontuacaoCriterioRepository.findByCriterio(criterio);
     }
 

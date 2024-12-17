@@ -31,8 +31,9 @@ public class CriterioAvaliacaoService {
         return repository.save(criterioAvaliacao);
     }
 
-    public Optional<CriterioAvaliacao> getCriterioById(String id) {
-        return repository.findById(id);
+    public CriterioAvaliacao getCriterioById(String id) {
+        return repository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Criterio not found"));
     }
 
     public CriterioAvaliacao update(String id, RequestCriterioDTO dto) {
