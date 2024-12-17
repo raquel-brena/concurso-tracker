@@ -134,17 +134,15 @@ public class ProcessoSeletivoService {
   }
 
   public void adicionarMembroComissao(RequestMembroComissaoDTO dto) {
-    // Buscar o Processo Seletivo
+    System.out.println("novo" + dto);
     ProcessoSeletivo processoSeletivo = repository.findById(dto.processoSeletivoId())
         .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
 
-    // Buscar o usuário
     User user = userService.getUserById(dto.userId());
 
-    // Adicionar o usuário à comissão organizadora
     if (!processoSeletivo.getComissaoOrganizadora().contains(user)) {
       processoSeletivo.getComissaoOrganizadora().add(user);
-      repository.save(processoSeletivo); // Salva a entidade com a atualização
+      repository.save(processoSeletivo);
     } else {
       throw new RuntimeException("Usuário já faz parte da comissão organizadora");
     }
