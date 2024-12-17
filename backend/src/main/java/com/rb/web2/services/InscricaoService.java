@@ -20,7 +20,6 @@ public class InscricaoService {
 
   private final InscricaoRepository inscricaoRepository;
   private final UserService userService;
-  private final ProcessoSeletivoService processoSeletivoService;
   private final VagaService vagaService;
 
   // Construtor para injeção de dependências
@@ -31,7 +30,6 @@ public class InscricaoService {
       VagaService vagaService) {
     this.inscricaoRepository = inscricaoRepository;
     this.userService = userService;
-    this.processoSeletivoService = processoSeletivoService;
     this.vagaService = vagaService;
   }
 
