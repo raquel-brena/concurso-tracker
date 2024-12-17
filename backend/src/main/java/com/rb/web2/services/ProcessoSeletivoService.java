@@ -204,7 +204,7 @@ public class ProcessoSeletivoService {
     }
 
     if (dto.criteriosIds() != null) {
-      List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllById(dto.criteriosIds());
+      List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllByIdIn(dto.criteriosIds());
       if (criterios.isEmpty()) {
         throw new NotFoundException("Criterio de avaliação não encontrado");
       }
