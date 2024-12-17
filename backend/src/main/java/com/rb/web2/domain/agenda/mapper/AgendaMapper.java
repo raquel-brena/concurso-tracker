@@ -2,60 +2,33 @@ package com.rb.web2.domain.agenda.mapper;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 
 public class AgendaMapper {
 
     public static Agenda toEntity(AgendaDTO dto) {
         Agenda agenda = new Agenda();
 
-        if (dto.inicioVigencia() != null) {
-            agenda.setInicioVigencia(dto.inicioVigencia());
-        }
-
-        if (dto.fimVigencia() != null) {
-            agenda.setFimVigencia(dto.fimVigencia());
-        }
-
-        if (dto.inicioInscricao() != null) {
-            agenda.setInicioInscricao(dto.inicioInscricao());
-        }
-
-        if (dto.fimInscricao() != null) {
-            agenda.setFimInscricao(dto.fimInscricao());
-        }
-
-        if (dto.homologacao() != null) {
-            agenda.setHomologacao(dto.homologacao());
-        }
-
-        if (dto.inicioRecurso() != null) {
-            agenda.setInicioRecurso(dto.inicioRecurso());
-        }
-
-        if (dto.fimRecurso() != null) {
-            agenda.setFimRecurso(dto.fimRecurso());
-        }
-
-        if (dto.resultadoPreliminar() != null) {
-            agenda.setResultadoPreliminar(dto.resultadoPreliminar());
-        }
-
-        if (dto.resultadoFinal() != null) {
-            agenda.setResultadoFinal(dto.resultadoFinal());
-        }
-
-        if (dto.prazoConvocacao() != null) {
-            agenda.setPrazoConvocacao(dto.prazoConvocacao());
-        }
+        agenda.setInicioVigencia(dto.inicioVigencia());
+        agenda.setFimVigencia(dto.fimVigencia());
+        agenda.setInicioInscricao(dto.inicioInscricao());
+        agenda.setFimInscricao(dto.fimInscricao());
+        agenda.setHomologacao(dto.homologacao());
+        agenda.setInicioRecurso(dto.inicioRecurso());
+        agenda.setFimRecurso(dto.fimRecurso());
+        agenda.setResultadoPreliminar(dto.resultadoPreliminar());
+        agenda.setResultadoFinal(dto.resultadoFinal());
+        agenda.setPrazoConvocacao(dto.prazoConvocacao());
         return agenda;
     }
 
-    public static AgendaDTO toDTO(Agenda agenda) {
+    public static AgendaResponseDTO toDTO(Agenda agenda) {
         if (agenda == null) {
             return null;
         }
-        return new AgendaDTO(
-            agenda.isAtivo(),
+        return new AgendaResponseDTO(
+                agenda.getId(),
+                agenda.isAtivo(),
                 agenda.getInicioVigencia(),
                 agenda.getFimVigencia(),
                 agenda.getInicioInscricao(),

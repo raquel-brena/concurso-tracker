@@ -3,7 +3,6 @@ package com.rb.web2.domain.processoSeletivo.mapper;
 import java.util.List;
 
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
-import com.rb.web2.domain.agenda.mapper.AgendaMapper;
 import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
 import com.rb.web2.domain.criterioAvaliacao.mapper.CriterioAvalicaoMapper;
 import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
@@ -56,7 +55,7 @@ public class ProcessoSeletivoMapper {
                 }
 
                 if (processo.getAgenda() != null) {
-                        agendaDTO = AgendaMapper.toDTO(processo.getAgenda());
+                        processo.getAgenda();
                 }
 
                 return new ResponseProcessoDTO(
