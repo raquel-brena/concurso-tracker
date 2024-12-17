@@ -33,7 +33,7 @@ public class ProcessoSeletivoController {
         this.service = service;
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<RestSuccessMessage> create(@RequestBody RequestProcessoDTO dto) {
 
         ResponseProcessoDTO processo = service.create(dto);
@@ -87,7 +87,7 @@ public class ProcessoSeletivoController {
                         ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
     }
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<RestSuccessMessage> getAll() {
         var processos = this.service.getAllProcessoSeletivos();
 
@@ -109,12 +109,11 @@ public class ProcessoSeletivoController {
     public ResponseEntity<RestSuccessMessage> delete(@PathVariable String id) {
         this.service.deleteById(id);
 
-        return ResponseEntity.ok()
-                .body(new RestSuccessMessage(
-                        "Consulta realizada com sucesso.",
-                        id));
-    }
+        String mensagem = "O edital com id " + id + " foi deletado com sucesso.";
 
+        return ResponseEntity.ok()
+                .body(new RestSuccessMessage(mensagem, null));
+    }
 
     // @PostMapping("{id}/edital/{filename:.+}")
     // public ResponseEntity downloadEdital(String filename, String id,

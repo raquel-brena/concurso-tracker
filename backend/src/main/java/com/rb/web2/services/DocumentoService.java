@@ -73,6 +73,10 @@ public class DocumentoService {
     return repository.save(documento);
   }
 
+  public Optional<Documento> getDocumentoByUrl(String link) {
+    return repository.findByDownloadUrl(link);
+  }
+
   public Optional<Documento> getDocumentoById(Long id) {
     return repository.findById(id);
   }

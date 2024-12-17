@@ -1,14 +1,17 @@
 package com.rb.web2.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.processoComissao.ProcessoComissao;
 import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -45,6 +48,10 @@ public class ProcessoSeletivoService {
 
   @Autowired
   private UserService userService;
+
+  @Lazy
+  @Autowired
+  private DocumentoService documentoService;
 
   public ResponseProcessoDTO create(RequestProcessoDTO dto) {
     if (dto.titulo() == null || dto.validade() == null) {
@@ -154,7 +161,6 @@ public class ProcessoSeletivoService {
     if (processoComissao.getDeletedAt() != null) {
       throw new NotFoundException("Membro já removido");
     }
-    
 
     processoComissao.setDeletedAt(LocalDateTime.now());
     processoComissaoRepository.save(processoComissao);
@@ -177,7 +183,8 @@ public class ProcessoSeletivoService {
       processo.setTemporario(dto.temporario());
     }
 
-    // @TODO Avaliar estratégia (neste caso, se o valor novo for "null" vai atualizar o do bd para "null" também)	
+    // @TODO Avaliar estratégia (neste caso, se o valor novo for "null" vai
+    // atualizar o do bd para "null" também)
     if (dto.descricao() == null ? processo.getDescricao() != null : !dto.descricao().equals(processo.getDescricao())) {
       processo.setDescricao(dto.descricao());
     }
@@ -186,9 +193,16 @@ public class ProcessoSeletivoService {
       processo.setValidadeMeses(dto.validade());
     }
 
-    // if (dto.linkEdital() != processo.getEditais()) {
-    // processo.setLinkEdital(dto.linkEdital());
-    // }
+    if (dto.linkEdital() != null) {
+      Documento documento = documentoService.getDocumentoByUrl(dto.linkEdital())
+          .orElseThrow(() -> new NotFoundException("Documento não encontrado"));
+
+      if (processo.getEditais() == null) {
+        processo.setEditais(new ArrayList<>());
+      }
+
+      processo.getEditais().add(documento);
+    }
 
     if (dto.vagasIds() != null) {
       List<Vaga> vagas = vagaRepository.findAllById(dto.vagasIds());
@@ -196,9 +210,10 @@ public class ProcessoSeletivoService {
     }
 
     if (dto.agendaId() != null) {
-      Agenda agenda = agendaRepository.findById(dto.agendaId())
-          .orElseThrow(() -> new NotFoundException("Agenda não encontrada"));
-      processo.setAgenda(agenda);
+      Agenda agenda = agendaRepository.findById(dto.agendaId()).orElse(null);
+      if (agenda != null) {
+        processo.setAgenda(agenda);
+      }
     }
 
     if (dto.documentoNecessarios() != null) {
@@ -207,10 +222,9 @@ public class ProcessoSeletivoService {
 
     if (dto.criteriosIds() != null) {
       List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllByIdIn(dto.criteriosIds());
-      if (criterios.isEmpty()) {
-        throw new NotFoundException("Criterio de avaliação não encontrado");
+      if (!criterios.isEmpty()) {
+        processo.setCriterios(criterios);
       }
-      processo.setCriterios(criterios);
     }
 
     if (dto.comissaoOrganizadoraIds() != null) {

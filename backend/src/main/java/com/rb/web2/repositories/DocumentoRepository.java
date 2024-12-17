@@ -12,4 +12,5 @@ import com.rb.web2.domain.documento.Documento;
 public interface DocumentoRepository extends JpaRepository<Documento, Long> {
     Optional<List<Documento>> findByUsuarioIsNotNull();
     Optional<List<Documento>> findByProcessoSeletivoIsNotNull();
+    Optional<Documento> findByDownloadUrl(String downloadUrl);
 }
