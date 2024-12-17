@@ -34,31 +34,30 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id")
 public class PontuacaoCriterio {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false)
     private BigDecimal nota;
-    
+
     @ManyToOne
     @JoinColumn(name = "criterio_id", nullable = false)
-    private CriterioAvaliacao criterio;  // Associando com a classe CriterioAvaliacao
+    private CriterioAvaliacao criterio;
 
     @ManyToOne
     @JoinColumn(name = "inscricao_id", nullable = false)
     private Inscricao inscricao;
 
     @Column(nullable = false)
-    private boolean ehPublico = false;
-
-    @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    private boolean publico = false;
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
-    private LocalDateTime criado_em;
+    private LocalDateTime criadoEm;
 
     @Column(name = "atualizado_em")
     @UpdateTimestamp
-    private LocalDateTime atualizado_em;
+    private LocalDateTime atualizadoEm;
 
     @PrePersist
     @PreUpdate

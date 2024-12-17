@@ -19,7 +19,7 @@ public class CriterioAvalicaoMapper {
         return new ResponseCriterioDTO(
             criterio.getNome(), 
             criterio.getPeso(), 
-            criterio.getCriado_em(), 
-            criterio.getAtualizado_em());
+            criterio.getCriadoEm(), 
+            criterio.getAtualizadoEm());
     }
 }

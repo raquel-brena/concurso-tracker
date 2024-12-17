@@ -152,7 +152,6 @@ public class ProcessoSeletivoService {
     if (processoComissao.getDeletedAt() != null) {
       throw new NotFoundException("Membro já removido");
     }
-    
 
     processoComissao.setDeletedAt(LocalDateTime.now());
     processoComissaoRepository.save(processoComissao);
@@ -162,6 +161,10 @@ public class ProcessoSeletivoService {
     ProcessoSeletivo processo = this.getProcessoSeletivoById(id);
     processo.setDeletadoEm(LocalDateTime.now());
     return repository.save(processo).getId();
+  }
+
+  public void homologarDocumentacao(){
+    
   }
 
   public ProcessoSeletivo atualizar(String id, UpdateProcessoDTO dto) {
@@ -175,7 +178,8 @@ public class ProcessoSeletivoService {
       processo.setTemporario(dto.temporario());
     }
 
-    // @TODO Avaliar estratégia (neste caso, se o valor novo for "null" vai atualizar o do bd para "null" também)	
+    // @TODO Avaliar estratégia (neste caso, se o valor novo for "null" vai
+    // atualizar o do bd para "null" também)
     if (dto.descricao() == null ? processo.getDescricao() != null : !dto.descricao().equals(processo.getDescricao())) {
       processo.setDescricao(dto.descricao());
     }
