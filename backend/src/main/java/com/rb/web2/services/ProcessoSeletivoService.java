@@ -135,16 +135,9 @@ public class ProcessoSeletivoService {
   }
 
   public void adicionarMembroComissao(RequestMembroComissaoDTO dto) {
-<<<<<<< HEAD
-    System.out.println("novo" + dto);
     ProcessoSeletivo processoSeletivo = repository.findById(dto.processoSeletivoId())
         .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
 
-=======
-
-    ProcessoSeletivo processoSeletivo = this.getProcessoSeletivoById(dto.processoSeletivoId());
-
->>>>>>> develop
     User user = userService.getUserById(dto.userId());
 
     if (!processoSeletivo.getComissaoOrganizadora().contains(user)) {
