@@ -32,9 +32,6 @@ public class ProcessoSeletivoService {
   private ProcessoSeletivoRepository repository;
 
   @Autowired
-  private ProcessoComissaoRepository processoComissaoRepository;
-
-  @Autowired
   private VagaRepository vagaRepository;
 
   @Autowired
@@ -209,7 +206,7 @@ public class ProcessoSeletivoService {
     }
 
     if (dto.criteriosIds() != null) {
-      List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllById(dto.criteriosIds());
+      List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllByIdIn(dto.criteriosIds());
       if (criterios.isEmpty()) {
         throw new NotFoundException("Criterio de avaliação não encontrado");
       }
