@@ -1,41 +1,36 @@
 package com.rb.web2.domain.processoSeletivo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.documento.Documento;
-import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonIgnore; 
-
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "processos")
@@ -74,11 +69,9 @@ public class ProcessoSeletivo {
     private Agenda agenda;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(name = "processo_comissao", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> comissaoOrganizadora;
-
-    @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Inscricao> inscricoes;
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

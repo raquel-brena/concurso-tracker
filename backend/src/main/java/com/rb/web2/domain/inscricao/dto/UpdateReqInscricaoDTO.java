@@ -4,8 +4,6 @@ import java.util.List;
 
 public record UpdateReqInscricaoDTO(
     Long vagaId,
-    String processoSeletivoId,
-    Boolean ativo,
     List<Long> avaliacoes
 ) {
 }
