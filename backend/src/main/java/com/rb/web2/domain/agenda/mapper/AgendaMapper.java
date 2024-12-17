@@ -25,8 +25,10 @@ public class AgendaMapper {
         }
 
         if (dto.homologacao() != null) {
-            agenda.setHomologacao(dto.homologacao());
+            agenda.setInicioHomologacao(dto.homologacao());
         }
+
+        
 
         if (dto.inicioRecurso() != null) {
             agenda.setInicioRecurso(dto.inicioRecurso());
@@ -60,7 +62,7 @@ public class AgendaMapper {
                 agenda.getFimVigencia(),
                 agenda.getInicioInscricao(),
                 agenda.getFimInscricao(),
-                agenda.getHomologacao(),
+                agenda.getInicioHomologacao(),
                 agenda.getInicioRecurso(),
                 agenda.getFimRecurso(),
                 agenda.getResultadoPreliminar(),

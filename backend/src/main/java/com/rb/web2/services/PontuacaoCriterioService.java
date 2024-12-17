@@ -36,7 +36,7 @@ public class PontuacaoCriterioService {
         pontuacaoCriterio.setNota(dto.nota());
         pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
                 .orElseThrow(() -> new RuntimeException("Criterio not found")));
-        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId()));
+        pontuacaoCriterio.setInscricao(inscricaoService.buscarInscricaoPorId(dto.inscricaoId()));
 
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
     }
@@ -52,7 +52,7 @@ public class PontuacaoCriterioService {
         pontuacaoCriterio.setNota(dto.nota());
         pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
                 .orElseThrow(() -> new RuntimeException("Criterio not found")));
-        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId()));
+        pontuacaoCriterio.setInscricao(inscricaoService.buscarInscricaoPorId(dto.inscricaoId()));
 
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
     }
@@ -64,12 +64,12 @@ public class PontuacaoCriterioService {
     }
 
     public List<PontuacaoCriterio> findByInscricao(String inscricaoId) {
-        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId);
+        Inscricao inscricao = inscricaoService.buscarInscricaoPorId(inscricaoId);
         return pontuacaoCriterioRepository.findByInscricao(inscricao);
     }
 
     public BigDecimal calcularNotaTotal(String inscricaoId) {
-        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId);
+        Inscricao inscricao = inscricaoService.buscarInscricaoPorId(inscricaoId);
 
         List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioRepository.findByInscricao(inscricao);
 

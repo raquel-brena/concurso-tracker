@@ -21,9 +21,8 @@ public class DocumentoMapper {
             documento.getNome(),
             documento.getDescricao(),
             documento.getDownloadUrl(),
-            documento.getCriado_em(),
-            documento.getAtualizado_em()
-
+            documento.getCriadoEm(),
+            documento.getAtualizadoEm()
         );
     }
 }

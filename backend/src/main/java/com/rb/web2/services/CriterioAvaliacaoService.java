@@ -52,7 +52,7 @@ public class CriterioAvaliacaoService {
     }
 
     public List<CriterioAvaliacao> findAllByInscricao(String inscricaoId) {
-        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId);
+        Inscricao inscricao = inscricaoService.buscarInscricaoPorId(inscricaoId);
               
         return repository.findByParticipantes(inscricao);
     }

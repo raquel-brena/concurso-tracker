@@ -67,11 +67,11 @@ public class AgendaService {
         throw new BadRequestException("A data de início das inscrições deve ser anterior à data de fim das inscrições.");
     }
 
-    if (agenda.getFimInscricao().isAfter(agenda.getHomologacao())) {
+    if (agenda.getFimInscricao().isAfter(agenda.getInicioHomologacao())) {
         throw new BadRequestException("A data de fim das inscrições deve ser anterior à data de homologação.");
     }
 
-    if (agenda.getHomologacao().isAfter(agenda.getInicioRecurso())) {
+    if (agenda.getInicioHomologacao().isAfter(agenda.getInicioRecurso())) {
         throw new BadRequestException("A data de homologação deve ser anterior à data de início do recurso.");
     }
 

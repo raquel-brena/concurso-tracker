@@ -1,10 +1,11 @@
- 
+
 package com.rb.web2.domain.inscricao;
 
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.documentoInscricao.DocumentoInscricao;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 
 import jakarta.persistence.Id;
@@ -53,6 +54,9 @@ public class Inscricao implements Serializable {
     @ManyToOne
     @JoinColumn(name = "processo_seletivo_id", nullable = false)
     private ProcessoSeletivo processoSeletivo;
+
+    @OneToMany(mappedBy = "inscricao", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DocumentoInscricao> documentosInscricoes;
 
     @ManyToOne
     @JoinColumn(name = "vaga_id", nullable = false)

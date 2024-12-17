@@ -73,8 +73,8 @@ public class DocumentoService {
     return repository.save(documento);
   }
 
-  public Optional<Documento> getDocumentoById(Long id) {
-    return repository.findById(id);
+  public Documento buscarDocumentoPorId(Long id) {
+    return repository.findById(id).orElseThrow(() -> new NotFoundException("Documento não encontrado. ID: " + id));
   }
 
   public List<Documento> getAllDocumentos() {

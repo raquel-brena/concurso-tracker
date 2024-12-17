@@ -55,7 +55,6 @@ public class ProcessoSeletivo {
     private int validadeMeses;
     private boolean temporario;
 
-
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Documento> editais;
 

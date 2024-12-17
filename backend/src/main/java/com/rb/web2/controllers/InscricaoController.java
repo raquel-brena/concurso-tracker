@@ -20,71 +20,69 @@ import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
 import com.rb.web2.domain.inscricao.dto.UpdateReqInscricaoDTO;
 import com.rb.web2.services.InscricaoService;
 import com.rb.web2.services.PontuacaoCriterioService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 @RestController
 @RequestMapping("/api/inscricoes")
 public class InscricaoController {
-    
-        @Autowired
-        InscricaoService service;
 
-        @Autowired
-        PontuacaoCriterioService pontuacaoCriterioService;
-    
-        @GetMapping
-        public ResponseEntity<List<Inscricao>> getAllInscricaos() {
-            List<Inscricao> applications = service.getAllInscricaos();
-            return ResponseEntity.ok(applications);
-        }
-    
-        @PostMapping
-        public ResponseEntity<String> createInscricao(@RequestBody @Validated RequestInscricaoDTO dto) {
-            try {
-                Inscricao createdApplication = service.create(dto); 
-                service.create(dto); 
-                return ResponseEntity.ok("Incrição com id: " + createdApplication.getId() + " criada com sucesso");
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().body("Error creating application: " + e.getMessage());
-            }
-        }
+    @Autowired
+    InscricaoService service;
 
-        @GetMapping("/{id}")
-        public ResponseEntity<Inscricao> getInscricao(@PathVariable String id) {
-            Inscricao incricao =  this.service.getInscricaoById(id);
-            return ResponseEntity.ok(incricao);
-        }
-    
-        @PutMapping("/{id}")
-        public ResponseEntity<?> updateInscricao(@PathVariable String id, @RequestBody @Validated UpdateReqInscricaoDTO dto) {
-            var updatedApplication = this.service.atualizarInscricao(id, dto);
-            if (updatedApplication == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                    .body(null);
-            }
-            return ResponseEntity.ok(updatedApplication);
-        }
+    @Autowired
+    PontuacaoCriterioService pontuacaoCriterioService;
 
-        @GetMapping("/{id}/nota")
-        public ResponseEntity<BigDecimal> calcularNotaTotal(@PathVariable String id) {
-            try {
-                BigDecimal notaTotal = pontuacaoCriterioService.calcularNotaTotal(id); 
-                if (notaTotal != null) {
-                    return new ResponseEntity<>(notaTotal, HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                }
-            } catch (Exception e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    @GetMapping
+    public ResponseEntity<RestSuccessMessage> getAllInscricaos() {
+        List<Inscricao> applications = service.getAllInscricaos();
+        return ResponseEntity.ok()
+                .body(new RestSuccessMessage("Inscrições buscadas com sucesso.", applications));
+    }
+
+    @PostMapping
+    public ResponseEntity<RestSuccessMessage> createInscricao(@RequestBody @Validated RequestInscricaoDTO dto) {
+
+        Inscricao createdApplication = service.create(dto);
+        return ResponseEntity.ok()
+                .body(new RestSuccessMessage("Incrição com id: " + createdApplication.getId() + " criada com sucesso",
+                        createdApplication));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RestSuccessMessage> getInscricao(@PathVariable String id) {
+        Inscricao incricao = this.service.buscarInscricaoPorId(id);
+        return ResponseEntity.ok()
+                .body(new RestSuccessMessage("Inscrição buscada com sucesso.", incricao));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateInscricao(@PathVariable String id,
+            @RequestBody @Validated UpdateReqInscricaoDTO dto) {
+        var updatedApplication = this.service.atualizarInscricao(id, dto);
+        if (updatedApplication == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
         }
-    
-        // @TODO Implement this method
-        /*
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteInscricao(@PathVariable String id) {
-            return null;
+        return ResponseEntity.ok()
+                .body(new RestSuccessMessage("Inscrição atualizada com sucesso.", updatedApplication));
+    }
+
+    @GetMapping("/{id}/nota")
+    public ResponseEntity<BigDecimal> calcularNotaTotal(@PathVariable String id) {
+
+        BigDecimal notaTotal = pontuacaoCriterioService.calcularNotaTotal(id);
+        if (notaTotal != null) {
+            return new ResponseEntity<>(notaTotal, HttpStatus.OK);
         }
-         */
-        
+        return null;
+    }
+
+    // @TODO Implement this method
+    /*
+     * @DeleteMapping("/{id}")
+     * public ResponseEntity<Void> deleteInscricao(@PathVariable String id) {
+     * return null;
+     * }
+     */
 
 }

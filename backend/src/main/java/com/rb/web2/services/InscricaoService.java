@@ -45,7 +45,7 @@ public class InscricaoService {
     return inscricaoRepository.save(inscricao);
   }
 
-  public Inscricao getInscricaoById(String id) {
+  public Inscricao buscarInscricaoPorId(String id) {
     return inscricaoRepository.findById(id).orElseThrow(() 
     -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
@@ -57,7 +57,7 @@ public class InscricaoService {
   }
 
   public Inscricao atualizarInscricao(String id, UpdateReqInscricaoDTO dto) {
-    Inscricao existingInscricao = this.getInscricaoById(id);
+    Inscricao existingInscricao = this.buscarInscricaoPorId(id);
 
     if (dto.vagaId() != null) {
         existingInscricao.setVaga(vagaService.buscarVagaPorId(dto.vagaId()));
