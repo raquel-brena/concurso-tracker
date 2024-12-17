@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
 import com.rb.web2.domain.inscricao.dto.ResponseInscricaoDTO;
@@ -20,18 +21,17 @@ public class InscricaoService {
 
   private final InscricaoRepository inscricaoRepository;
   private final UserService userService;
-  private final ProcessoSeletivoService processoSeletivoService;
+  private final CriterioAvaliacaoService criterioAvaliacaoService;
   private final VagaService vagaService;
 
-  // Construtor para injeção de dependências
   public InscricaoService(
       InscricaoRepository inscricaoRepository,
       UserService userService,
-      ProcessoSeletivoService processoSeletivoService,
+      CriterioAvaliacaoService criterioAvaliacaoService,
       VagaService vagaService) {
     this.inscricaoRepository = inscricaoRepository;
     this.userService = userService;
-    this.processoSeletivoService = processoSeletivoService;
+    this.criterioAvaliacaoService = criterioAvaliacaoService;
     this.vagaService = vagaService;
   }
 
@@ -81,7 +81,7 @@ public class InscricaoService {
   }
 
   public List<ResponseInscricaoDTO> getAllInscricoesPorVaga(Long vagaId) {
-    List<Inscricao> inscricoes = inscricaoRepository.findAllByVagaId(Long.valueOf(vagaId));
+    List<Inscricao> inscricoes = inscricaoRepository.findAllByVagaId(vagaId);
     List<ResponseInscricaoDTO> applications = inscricoes.stream()
         .map(inscricao -> new ResponseInscricaoDTO(
             inscricao.getId(),
@@ -99,11 +99,10 @@ public class InscricaoService {
       existingInscricao.setVaga(vagaService.buscarVagaPorId(dto.vagaId()));
     }
 
-    // if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
-    // List<CriterioAvaliacao> criterios =
-    // criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
-    // existingInscricao.setAvaliacoes(criterios);
-    // }
+    if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
+      List<CriterioAvaliacao> criterios = criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
+      existingInscricao.setAvaliacoes(criterios);
+    }
 
     return inscricaoRepository.save(existingInscricao);
   }

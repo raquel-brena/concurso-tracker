@@ -63,4 +63,8 @@ public class CriterioAvaliacaoService {
         criterioAvaliacao.setAtivo(false);
         repository.save(criterioAvaliacao);
     }
+
+    public List<CriterioAvaliacao> buscarCriteriosPorIds(List<Long> avaliacoes) {
+        return repository.findByIdIn(avaliacoes);
+    }
 }
