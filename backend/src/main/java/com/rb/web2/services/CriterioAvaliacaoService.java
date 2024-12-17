@@ -11,6 +11,7 @@ import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
+import com.rb.web2.repositories.InscricaoRepository;
 
 @Service
 public class CriterioAvaliacaoService {
@@ -21,7 +22,7 @@ public class CriterioAvaliacaoService {
     private ProcessoSeletivoService processoSeletivoService;
 
     @Autowired
-    private InscricaoService inscricaoService;
+    private InscricaoRepository inscricaoRepository;
 
     public CriterioAvaliacao create(RequestCriterioDTO dto) {
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
@@ -52,7 +53,8 @@ public class CriterioAvaliacaoService {
     }
 
     public List<CriterioAvaliacao> findAllByInscricao(String inscricaoId) {
-        Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId);
+        Inscricao inscricao = inscricaoRepository.findById(inscricaoId)
+                .orElseThrow(() -> new RuntimeException("Inscricao not found"));
               
         return repository.findByParticipantes(inscricao);
     }
