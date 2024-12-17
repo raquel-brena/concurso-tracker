@@ -13,5 +13,5 @@ import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 public interface CriterioAvaliacaoRepository extends JpaRepository<CriterioAvaliacao, String> {
     List<CriterioAvaliacao> findByProcessoSeletivo(ProcessoSeletivo processoSeletivo);
     List<CriterioAvaliacao> findByParticipantes(Inscricao inscricao);
-    List<CriterioAvaliacao> findAllByIdIn(List<Long> ids);
+    List<CriterioAvaliacao> findAllByIdIn(List<String> ids);
 }
