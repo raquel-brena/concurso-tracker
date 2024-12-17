@@ -54,4 +54,7 @@ public class CriterioAvaliacao {
     @Column(name = "atualizado_em")
     @UpdateTimestamp
     private LocalDateTime atualizado_em;
+
+    @Column(nullable = false)
+    private boolean ativo = true; 
 }

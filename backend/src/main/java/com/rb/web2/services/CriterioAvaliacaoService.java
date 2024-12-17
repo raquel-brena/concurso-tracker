@@ -1,16 +1,16 @@
 package com.rb.web2.services;
 
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.rb.web2.repositories.CriterioAvaliacaoRepository;
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.inscricao.Inscricao;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
+import com.rb.web2.domain.inscricao.Inscricao;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 
 @Service
 public class CriterioAvaliacaoService {
@@ -55,5 +55,12 @@ public class CriterioAvaliacaoService {
         Inscricao inscricao = inscricaoService.getInscricaoById(inscricaoId);
               
         return repository.findByParticipantes(inscricao);
+    }
+
+    public void softDelete(String id) {
+        CriterioAvaliacao criterioAvaliacao = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("CriterioAvaliacao not found"));
+        criterioAvaliacao.setAtivo(false);
+        repository.save(criterioAvaliacao);
     }
 }
