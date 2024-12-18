@@ -22,6 +22,8 @@ import com.rb.web2.domain.vaga.dto.VagasRequestDTO;
 import com.rb.web2.services.VagaService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/vagas")
 public class VagaController {
@@ -30,7 +32,7 @@ public class VagaController {
     private VagaService vagasService;
 
     @PostMapping
-    public ResponseEntity<RestSuccessMessage> criarVaga(@RequestBody VagasRequestDTO vagasRequestDTO) {
+    public ResponseEntity<RestSuccessMessage> criarVaga(@Valid @RequestBody VagasRequestDTO vagasRequestDTO) {
         try {
             System.out.println("Vaga recebida: " + vagasRequestDTO);
 
@@ -107,7 +109,7 @@ public class VagaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VagaResponseDTO> atualizarVaga(@PathVariable Long id, @RequestBody VagaUpdateDTO dto) {
+    public ResponseEntity<VagaResponseDTO> atualizarVaga(@PathVariable Long id, @Valid @RequestBody VagaUpdateDTO dto) {
         try {
             VagaResponseDTO vagaAtualizada = vagasService.atualizar(id, dto);
             if (vagaAtualizada != null) {

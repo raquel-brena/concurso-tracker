@@ -2,7 +2,6 @@ package com.rb.web2.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +21,7 @@ import com.rb.web2.services.ProcessoSeletivoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/processo")
@@ -34,7 +34,7 @@ public class ProcessoSeletivoController {
     }
 
     @PostMapping()
-    public ResponseEntity<RestSuccessMessage> create(@RequestBody RequestProcessoDTO dto) {
+    public ResponseEntity<RestSuccessMessage> create(@Valid @RequestBody RequestProcessoDTO dto) {
 
         ResponseProcessoDTO processo = service.create(dto);
 
@@ -55,7 +55,7 @@ public class ProcessoSeletivoController {
     }
 
     @PostMapping("/membro-comissao")
-    public ResponseEntity<String> adicionarMembroComissao(@Validated @RequestBody RequestMembroComissaoDTO dto) {
+    public ResponseEntity<String> adicionarMembroComissao(@Valid @RequestBody RequestMembroComissaoDTO dto) {
         try {
             this.service.adicionarMembroComissao(dto);
             return ResponseEntity.ok("Membro adicionado com sucesso");
@@ -67,7 +67,7 @@ public class ProcessoSeletivoController {
     }
 
     @DeleteMapping("/membro-comissao")
-    public ResponseEntity<String> removerMembroComissao(@Validated @RequestBody RequestMembroComissaoDTO dto) {
+    public ResponseEntity<String> removerMembroComissao(@Valid @RequestBody RequestMembroComissaoDTO dto) {
         try {
             this.service.removerMembroComissao(dto);
             return ResponseEntity.ok("Membro removido com sucesso");
@@ -119,7 +119,7 @@ public class ProcessoSeletivoController {
 
     @PutMapping("{id}")
     public ResponseEntity<RestSuccessMessage> update(@PathVariable String id,
-            @RequestBody UpdateProcessoDTO dto) {
+            @Valid @RequestBody UpdateProcessoDTO dto) {
         var processo = this.service.atualizar(id, dto);
         return ResponseEntity.ok().body(new RestSuccessMessage("Processo seletivo atualizado com sucesso",
                 ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));

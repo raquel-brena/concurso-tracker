@@ -26,6 +26,8 @@ import com.rb.web2.services.InscricaoService;
 import com.rb.web2.services.PontuacaoCriterioService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/inscricoes")
 public class InscricaoController {
@@ -55,7 +57,7 @@ public class InscricaoController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createInscricao(@RequestBody @Validated RequestInscricaoDTO dto) {
+    public ResponseEntity<String> createInscricao(@Valid @RequestBody RequestInscricaoDTO dto) {
         try {
             Inscricao inscricaoCriada = service.create(dto);
             service.create(dto);
@@ -74,7 +76,7 @@ public class InscricaoController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseInscricaoDTO> updateInscricao(
             @PathVariable String id,
-            @RequestBody @Validated UpdateReqInscricaoDTO dto) {
+            @Valid @RequestBody @Validated UpdateReqInscricaoDTO dto) {
     
             var updatedApplication = this.service.atualizarInscricao(id, dto);
             ResponseInscricaoDTO responseDTO = InscricaoMapper.toDTO(updatedApplication);

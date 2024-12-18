@@ -21,6 +21,8 @@ import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
 import com.rb.web2.services.CriterioAvaliacaoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/criterios")
 public class CriterioAvaliacaoController {
@@ -29,7 +31,7 @@ public class CriterioAvaliacaoController {
     private CriterioAvaliacaoService criterioAvaliacaoService;
 
     @PostMapping
-    public ResponseEntity<CriterioAvaliacao> criarCriterio(@RequestBody RequestCriterioDTO requestCriterioDTO) {
+    public ResponseEntity<CriterioAvaliacao> criarCriterio(@Valid @RequestBody RequestCriterioDTO requestCriterioDTO) {
         CriterioAvaliacao criterioSalvo = criterioAvaliacaoService.create(requestCriterioDTO);
         return new ResponseEntity<>(criterioSalvo, HttpStatus.CREATED);
 
@@ -58,7 +60,7 @@ public class CriterioAvaliacaoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CriterioAvaliacao> atualizarCriterio(@PathVariable Long id,
-            @RequestBody RequestCriterioDTO requestCriterioDTO) {
+    @Valid @RequestBody RequestCriterioDTO requestCriterioDTO) {
 
         CriterioAvaliacao criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
         return new ResponseEntity<>(criterioAtualizado, HttpStatus.OK);

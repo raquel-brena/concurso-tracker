@@ -78,7 +78,7 @@ public class PontuacaoCriterioController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponsePontuacaoDTO> atualizarPontuacao(@PathVariable Long id,
-            @RequestBody RequestPontuacaoDTO dto) {
+            @Valid @RequestBody RequestPontuacaoDTO dto) {
 
         ResponsePontuacaoDTO pontuacaoAtualizada = pontuacaoCriterioService.update(id, dto);
         return new ResponseEntity<>(pontuacaoAtualizada, HttpStatus.OK);
