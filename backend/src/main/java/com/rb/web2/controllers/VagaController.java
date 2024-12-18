@@ -96,6 +96,16 @@ public class VagaController {
         }
     }
 
+    @GetMapping("/cargo")
+    public ResponseEntity<List<VagaResponseDTO>> buscarVagaPorCargo(@RequestParam("cn") String cargoNome) {
+        try {
+            List<VagaResponseDTO> vagas = vagasService.buscarVagasPorCargo(cargoNome);
+            return new ResponseEntity<>(vagas, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<VagaResponseDTO> atualizarVaga(@PathVariable Long id, @RequestBody VagaUpdateDTO dto) {
         try {
@@ -111,14 +121,15 @@ public class VagaController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> deletarVaga(@PathVariable Long id) {
         try {
             vagasService.softDelete(id);
             return new ResponseEntity<>(new RestSuccessMessage("Vaga deletada com sucesso.", id), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(new RestSuccessMessage("Erro interno: " + e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new RestSuccessMessage("Erro interno: " + e.getMessage(), null),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

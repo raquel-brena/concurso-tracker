@@ -89,6 +89,17 @@ public class VagaService {
         }
     }
 
+    public List<VagaResponseDTO> buscarVagasPorCargo(String cargoNome) {
+        try {
+            List<Vaga> vagas = vagaRepository.findByCargoNome(cargoNome);
+            return vagas.stream()
+                    .map(VagaResponseDTO::from)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar todas as vagas por cargo: " + e.getMessage(), e);
+        }
+    }
+
     public VagaResponseDTO atualizar(Long id, VagaUpdateDTO dto) {
         try {
             Vaga vaga = vagaRepository.findById(id)

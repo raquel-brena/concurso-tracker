@@ -12,4 +12,5 @@ import com.rb.web2.domain.vaga.Vaga;
 public interface VagaRepository extends JpaRepository<Vaga, Long> {
     List<Vaga> findAllByAtivoTrue();
     List<Vaga> findByProcessoSeletivoAndAtivoTrue(ProcessoSeletivo processoSeletivo);
+    List<Vaga> findByCargoNome(String cargoNome);
 }
