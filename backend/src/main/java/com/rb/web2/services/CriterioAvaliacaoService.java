@@ -59,7 +59,7 @@ public class CriterioAvaliacaoService {
     //     return repository.findByParticipantes(inscricao);
     // }
 
-    public void softDelete(String id) {
+    public void softDelete(Long id) {
         CriterioAvaliacao criterioAvaliacao = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CriterioAvaliacao not found"));
         criterioAvaliacao.setAtivo(false);

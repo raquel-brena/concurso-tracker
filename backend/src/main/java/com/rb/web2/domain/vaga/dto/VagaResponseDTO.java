@@ -26,8 +26,8 @@ public record VagaResponseDTO(
             vaga.getDescricao(),
             vaga.getTaxaInscricao(),
             vaga.isAtivo(),
-            vaga.getCriado_em(),
-            vaga.getAtualizado_em()
+            vaga.getCriadoEm(),
+            vaga.getAtualizadoEm()
         );
     }
 }

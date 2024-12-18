@@ -60,7 +60,7 @@ public class CriterioAvaliacaoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RestSuccessMessage> deletarCriterio(@PathVariable String id) {
+    public ResponseEntity<RestSuccessMessage> deletarCriterio(@PathVariable Long id) {
         try {
             criterioAvaliacaoService.softDelete(id);
             return ResponseEntity.ok().body(new RestSuccessMessage("Critério de avaliação deletado com sucesso.", id));
