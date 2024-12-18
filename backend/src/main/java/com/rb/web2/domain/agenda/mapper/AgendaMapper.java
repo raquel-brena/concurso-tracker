@@ -2,6 +2,7 @@ package com.rb.web2.domain.agenda.mapper;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 
 public class AgendaMapper {
 
@@ -52,12 +53,13 @@ public class AgendaMapper {
         return agenda;
     }
 
-    public static AgendaDTO toDTO(Agenda agenda) {
+    public static AgendaResponseDTO toDTO(Agenda agenda) {
         if (agenda == null) {
             return null;
         }
-        return new AgendaDTO(
-            agenda.isAtivo(),
+        return new AgendaResponseDTO(
+                agenda.getId(),
+                agenda.isAtivo(),
                 agenda.getInicioVigencia(),
                 agenda.getFimVigencia(),
                 agenda.getInicioInscricao(),

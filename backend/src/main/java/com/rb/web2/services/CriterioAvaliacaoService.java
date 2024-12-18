@@ -12,6 +12,7 @@ import com.rb.web2.domain.inscricao.Inscricao;
 
 import java.util.List;
 import java.util.Optional;
+import com.rb.web2.repositories.InscricaoRepository;
 
 @Service
 public class CriterioAvaliacaoService {
@@ -22,7 +23,7 @@ public class CriterioAvaliacaoService {
     private ProcessoSeletivoService processoSeletivoService;
 
     @Autowired
-    private InscricaoService inscricaoService;
+    private InscricaoRepository inscricaoRepository;
 
     public CriterioAvaliacao create(RequestCriterioDTO dto) {
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
@@ -52,8 +53,20 @@ public class CriterioAvaliacaoService {
     // }
 
     // public List<CriterioAvaliacao> findAllByInscricao(String inscricaoId) {
-    //     Inscricao inscricao = inscricaoService.buscarInscricaoPorId(inscricaoId);
+    //     Inscricao inscricao = inscricaoRepository.findById(inscricaoId)
+    //             .orElseThrow(() -> new RuntimeException("Inscricao not found"));
               
     //     return repository.findByParticipantes(inscricao);
     // }
+
+    public void softDelete(String id) {
+        CriterioAvaliacao criterioAvaliacao = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("CriterioAvaliacao not found"));
+        criterioAvaliacao.setAtivo(false);
+        repository.save(criterioAvaliacao);
+    }
+
+    public List<CriterioAvaliacao> buscarCriteriosPorIds(List<Long> avaliacoes) {
+        return repository.findByIdIn(avaliacoes);
+    }
 }

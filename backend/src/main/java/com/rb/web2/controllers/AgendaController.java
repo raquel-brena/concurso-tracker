@@ -1,11 +1,5 @@
 package com.rb.web2.controllers;
 
-import com.rb.web2.domain.agenda.dto.AgendaDTO;
-import com.rb.web2.services.AgendaService;
-import com.rb.web2.shared.RestMessage.RestSuccessMessage;
-
-import jakarta.validation.Valid;
-
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -20,6 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rb.web2.domain.agenda.Agenda;
+import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
+import com.rb.web2.services.AgendaService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/agendas")
@@ -51,8 +51,8 @@ public class AgendaController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<AgendaDTO>> getAllAgendas() {
-        List<AgendaDTO> agendasDTO = this.service.getAllAgendas();
+    public ResponseEntity<List<AgendaResponseDTO>> getAllAgendas() {
+        List<AgendaResponseDTO> agendasDTO = this.service.getAllAgendas();
         return ResponseEntity.ok().body(agendasDTO);
     }
 

@@ -5,7 +5,6 @@ public record VagasRequestDTO(
     Long cargoId, 
     int quantidade, 
     String descricao, 
-    float taxaInscricao, 
-    boolean ativo
+    float taxaInscricao
 ) {
 }

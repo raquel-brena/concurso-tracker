@@ -3,8 +3,6 @@ package com.rb.web2.domain.inscricao;
 
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.documentoInscricao.DocumentoInscricao;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 
@@ -18,9 +16,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
@@ -28,8 +23,8 @@ import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -64,9 +59,6 @@ public class Inscricao implements Serializable {
     @Column(nullable = false)
     private boolean estaPaga = false;
 
-    @Column(nullable = false)
-    private boolean ativo = true;
-
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
     private LocalDateTime criadoEm;
@@ -74,4 +66,11 @@ public class Inscricao implements Serializable {
     @Column(name = "atualizado_em")
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
+
+    @Column(name = "deletado_em")
+    @UpdateTimestamp
+    private LocalDateTime deletadoEm;
+
+
+
 }

@@ -1,13 +1,11 @@
 package com.rb.web2.domain.agenda.dto;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
-
 public record AgendaDTO (
-    boolean ativo,
-
     @NotNull(message = "A data de início da vigência é obrigatória.")
     LocalDate inicioVigencia,
 

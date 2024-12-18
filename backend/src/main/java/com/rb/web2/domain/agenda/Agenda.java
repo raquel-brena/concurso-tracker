@@ -35,7 +35,7 @@ public class Agenda {
     private Long id;
 
     @Column(nullable = false)
-    private boolean ativo;
+    private boolean ativo = true;
 
     private LocalDate inicioVigencia;
 

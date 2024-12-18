@@ -1,14 +1,17 @@
 package com.rb.web2.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
+import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.processoComissao.ProcessoComissao;
 import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -46,6 +49,10 @@ public class ProcessoSeletivoService {
 
   @Autowired
   private UserService userService;
+
+  @Lazy
+  @Autowired
+  private DocumentoService documentoService;
 
   public ResponseProcessoDTO create(RequestProcessoDTO dto) {
     if (dto.titulo() == null || dto.validade() == null) {
@@ -128,14 +135,14 @@ public class ProcessoSeletivoService {
   }
 
   public void adicionarMembroComissao(RequestMembroComissaoDTO dto) {
-
-    ProcessoSeletivo processoSeletivo = this.getProcessoSeletivoById(dto.processoSeletivoId());
+    ProcessoSeletivo processoSeletivo = repository.findById(dto.processoSeletivoId())
+        .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
 
     User user = userService.getUserById(dto.userId());
 
     if (!processoSeletivo.getComissaoOrganizadora().contains(user)) {
       processoSeletivo.getComissaoOrganizadora().add(user);
-      repository.save(processoSeletivo); // Salva a entidade com a atualização
+      repository.save(processoSeletivo);
     } else {
       throw new BadRequestException("Usuário já faz parte da comissão organizadora");
     }
@@ -188,9 +195,16 @@ public class ProcessoSeletivoService {
       processo.setValidadeMeses(dto.validade());
     }
 
-    // if (dto.linkEdital() != processo.getEditais()) {
-    // processo.setLinkEdital(dto.linkEdital());
-    // }
+    if (dto.linkEdital() != null) {
+      Documento documento = documentoService.getDocumentoByUrl(dto.linkEdital())
+          .orElseThrow(() -> new NotFoundException("Documento não encontrado"));
+
+      if (processo.getEditais() == null) {
+        processo.setEditais(new ArrayList<>());
+      }
+
+      processo.getEditais().add(documento);
+    }
 
     if (dto.vagasIds() != null) {
       List<Vaga> vagas = vagaRepository.findAllById(dto.vagasIds());
@@ -198,9 +212,10 @@ public class ProcessoSeletivoService {
     }
 
     if (dto.agendaId() != null) {
-      Agenda agenda = agendaRepository.findById(dto.agendaId())
-          .orElseThrow(() -> new NotFoundException("Agenda não encontrada"));
-      processo.setAgenda(agenda);
+      Agenda agenda = agendaRepository.findById(dto.agendaId()).orElse(null);
+      if (agenda != null) {
+        processo.setAgenda(agenda);
+      }
     }
 
     if (dto.documentoNecessarios() != null) {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 import com.rb.web2.domain.agenda.mapper.AgendaMapper;
 import com.rb.web2.repositories.AgendaRepository;
 import com.rb.web2.shared.exceptions.BadRequestException;
@@ -34,9 +35,9 @@ public class AgendaService {
         () -> new NotFoundException("Agenda com o ID " + id + " não encontrado."));
   }
 
-  public List<AgendaDTO> getAllAgendas() {
+  public List<AgendaResponseDTO> getAllAgendas() {
     List<Agenda> agendas = repository.findAllByAtivoTrue();
-    List<AgendaDTO> agendasDTO = agendas.stream().map(AgendaMapper::toDTO).collect(Collectors.toList());
+    List<AgendaResponseDTO> agendasDTO = agendas.stream().map(AgendaMapper::toDTO).collect(Collectors.toList());
     return agendasDTO;
   }
 
@@ -46,14 +47,14 @@ public class AgendaService {
     repository.save(agenda);
   }
 
-  public AgendaDTO updateAgenda(Long id, AgendaDTO dto) {
+  public AgendaResponseDTO updateAgenda(Long id, AgendaDTO dto) {
     Agenda agenda = getAgendaById(id);
     Agenda agendaAtualizada = AgendaMapper.toEntity(dto);
     agendaAtualizada.setId(agenda.getId());
     this.isConsistent(agendaAtualizada);
 
     repository.save(agendaAtualizada);
-    AgendaDTO agendaAtualizadaDTO = AgendaMapper.toDTO(agendaAtualizada);
+    AgendaResponseDTO agendaAtualizadaDTO = AgendaMapper.toDTO(agendaAtualizada);
     return agendaAtualizadaDTO;
   }
 

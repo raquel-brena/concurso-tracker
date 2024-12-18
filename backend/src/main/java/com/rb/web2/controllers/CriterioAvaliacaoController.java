@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
 import com.rb.web2.services.CriterioAvaliacaoService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 @RestController
 @RequestMapping("/api/criterios")
@@ -57,5 +59,14 @@ public class CriterioAvaliacaoController {
 
     }
 
-    // @TODO: Implementar o método para deletar um critério de avaliação
+    @DeleteMapping("/{id}")
+    public ResponseEntity<RestSuccessMessage> deletarCriterio(@PathVariable String id) {
+        try {
+            criterioAvaliacaoService.softDelete(id);
+            return ResponseEntity.ok().body(new RestSuccessMessage("Critério de avaliação deletado com sucesso.", id));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new RestSuccessMessage("Erro ao deletar critério de avaliação.", null),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

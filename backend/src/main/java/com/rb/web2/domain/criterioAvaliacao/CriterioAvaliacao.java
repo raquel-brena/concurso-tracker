@@ -41,6 +41,10 @@ public class CriterioAvaliacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Column(nullable = false)
+    private boolean ativo;
+
     @Column(nullable = false)
     private String nome;
 
