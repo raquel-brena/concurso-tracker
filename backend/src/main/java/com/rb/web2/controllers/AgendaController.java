@@ -32,7 +32,7 @@ public class AgendaController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> createAgenda(@Valid @RequestBody AgendaDTO dto) {
+    public ResponseEntity<RestSuccessMessage> createAgenda(@Valid @RequestBody AgendaDTO dto) {
         var agenda = service.create(dto);
 
         var location = ServletUriComponentsBuilder
@@ -41,7 +41,9 @@ public class AgendaController {
                 .buildAndExpand(agenda.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body("Nova agenda criada com o ID: " + agenda.getId());
+        RestSuccessMessage successMessage = new RestSuccessMessage("Nova agenda criada com o ID: ", agenda.getId());
+
+        return ResponseEntity.created(location).body(successMessage);
     }
 
     @GetMapping("{id}")
@@ -57,14 +59,17 @@ public class AgendaController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> removeAgenda(@PathVariable Long id) {
+    public ResponseEntity<RestSuccessMessage> removeAgenda(@PathVariable Long id) {
         this.service.deleteAgenda(id);
 
-        return ResponseEntity.ok().body("Agenda com o ID " + id + " removida com sucesso.");
+        RestSuccessMessage successMessage = new RestSuccessMessage("Agenda com o ID " + id + " removida com sucesso.",
+                null);
+
+        return ResponseEntity.ok().body(successMessage);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable Long id, @RequestBody AgendaDTO dto) {
+    public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable Long id, @Valid @RequestBody AgendaDTO dto) {
         var agenda = this.service.updateAgenda(id, dto);
         return ResponseEntity.ok().body(new RestSuccessMessage("Agenda atualizada com sucesso.", agenda));
     }

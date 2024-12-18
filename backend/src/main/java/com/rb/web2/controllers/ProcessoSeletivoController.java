@@ -1,6 +1,5 @@
 package com.rb.web2.controllers;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.services.ProcessoSeletivoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -55,27 +53,18 @@ public class ProcessoSeletivoController {
     }
 
     @PostMapping("/membro-comissao")
-    public ResponseEntity<String> adicionarMembroComissao(@Valid @RequestBody RequestMembroComissaoDTO dto) {
-        try {
-            this.service.adicionarMembroComissao(dto);
-            return ResponseEntity.ok("Membro adicionado com sucesso");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entidade não encontrada: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao adicionar membro: " + e.getMessage());
-        }
+    public ResponseEntity<RestSuccessMessage> adicionarMembroComissao(
+            @Valid @RequestBody RequestMembroComissaoDTO dto) {
+        this.service.adicionarMembroComissao(dto);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Membro adicionado com sucesso", dto);
+        return ResponseEntity.ok(successMessage);
     }
 
     @DeleteMapping("/membro-comissao")
-    public ResponseEntity<String> removerMembroComissao(@Valid @RequestBody RequestMembroComissaoDTO dto) {
-        try {
-            this.service.removerMembroComissao(dto);
-            return ResponseEntity.ok("Membro removido com sucesso");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entidade não encontrada: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao deletar membro: " + e.getMessage());
-        }
+    public ResponseEntity<RestSuccessMessage> removerMembroComissao(@Valid @RequestBody RequestMembroComissaoDTO dto) {
+        this.service.removerMembroComissao(dto);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Membro removido com sucesso");
+        return ResponseEntity.ok(successMessage);
     }
 
     public ResponseEntity<RestSuccessMessage> get(@PathVariable String id) {
@@ -132,7 +121,7 @@ public class ProcessoSeletivoController {
         String mensagem = "O edital com id " + id + " foi deletado com sucesso.";
 
         return ResponseEntity.ok()
-                .body(new RestSuccessMessage(mensagem, null));
+                .body(new RestSuccessMessage(mensagem));
     }
 
     // @PostMapping("{id}/edital/{filename:.+}")
@@ -154,12 +143,4 @@ public class ProcessoSeletivoController {
     // resource.getFilename() + "\"")
     // .body(resource);
     // }
-
-    // UPDATE
-    // vincular vagas
-    // vincular agenda
-    // vincular documentos
-    // vincular criterios
-    // vincular comissao
-    // vincular participantes
 }

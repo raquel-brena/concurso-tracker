@@ -57,14 +57,14 @@ public class InscricaoController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createInscricao(@Valid @RequestBody RequestInscricaoDTO dto) {
-        try {
-            Inscricao inscricaoCriada = service.create(dto);
-            service.create(dto);
-            return ResponseEntity.ok("Incrição com id: " + inscricaoCriada.getId() + " criada com sucesso");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error creating application: " + e.getMessage());
-        }
+    public ResponseEntity<RestSuccessMessage> createInscricao(@Valid @RequestBody RequestInscricaoDTO dto) {
+        Inscricao inscricaoCriada = service.create(dto);
+        service.create(dto);
+        RestSuccessMessage successMessage = new RestSuccessMessage(
+                "Inscrição com ID: " + inscricaoCriada.getId() + " criada com sucesso.");
+
+        // Retornando a resposta com status 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(successMessage);
     }
 
     @GetMapping("/{id}")
@@ -77,49 +77,38 @@ public class InscricaoController {
     public ResponseEntity<ResponseInscricaoDTO> updateInscricao(
             @PathVariable String id,
             @Valid @RequestBody @Validated UpdateReqInscricaoDTO dto) {
-    
-            var updatedApplication = this.service.atualizarInscricao(id, dto);
-            ResponseInscricaoDTO responseDTO = InscricaoMapper.toDTO(updatedApplication);
 
-            return ResponseEntity.ok(responseDTO);
-      
+        var updatedApplication = this.service.atualizarInscricao(id, dto);
+        ResponseInscricaoDTO responseDTO = InscricaoMapper.toDTO(updatedApplication);
+
+        return ResponseEntity.ok(responseDTO);
+
     }
 
     @GetMapping("processo")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoesPorProcessoSeletivo(@RequestParam("id") String processoId) {
-        try {
-            List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorProcessoSeletivo(processoId);
-            if (!applications.isEmpty()) {
-                return new ResponseEntity<>(applications, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoesPorProcessoSeletivo(
+            @RequestParam("id") String processoId) {
+        List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorProcessoSeletivo(processoId);
+        if (!applications.isEmpty()) {
+            return new ResponseEntity<>(applications, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
     @GetMapping("/{id}/nota")
     public ResponseEntity<BigDecimal> calcularNotaTotal(@PathVariable String id) {
-        try {
-            BigDecimal notaTotal = pontuacaoCriterioService.calcularNotaTotal(id);
-            if (notaTotal != null) {
-                return new ResponseEntity<>(notaTotal, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        BigDecimal notaTotal = pontuacaoCriterioService.calcularNotaTotal(id);
+        if (notaTotal != null) {
+            return new ResponseEntity<>(notaTotal, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> deleteInscricao(@PathVariable String id) {
-        try {
-            service.softDelete(id);
-            return new ResponseEntity<>(new RestSuccessMessage("Inscrição deletada com sucesso", id), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        service.softDelete(id);
+        return new ResponseEntity<>(new RestSuccessMessage("Inscrição deletada com sucesso", id), HttpStatus.OK);
     }
 }

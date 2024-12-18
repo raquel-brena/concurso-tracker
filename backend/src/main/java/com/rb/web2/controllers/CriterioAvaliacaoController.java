@@ -46,7 +46,8 @@ public class CriterioAvaliacaoController {
     }
 
     @GetMapping("/inscricao")
-    public ResponseEntity<List<ResponseCriterioDTO>> buscarCriteriosPorInscricao(@RequestParam("id") String inscricaoId) {
+    public ResponseEntity<List<ResponseCriterioDTO>> buscarCriteriosPorInscricao(
+            @RequestParam("id") String inscricaoId) {
         List<ResponseCriterioDTO> criterios = criterioAvaliacaoService.findAllByInscricao(inscricaoId);
         return new ResponseEntity<>(criterios, HttpStatus.OK);
     }
@@ -60,7 +61,7 @@ public class CriterioAvaliacaoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CriterioAvaliacao> atualizarCriterio(@PathVariable Long id,
-    @Valid @RequestBody RequestCriterioDTO requestCriterioDTO) {
+            @Valid @RequestBody RequestCriterioDTO requestCriterioDTO) {
 
         CriterioAvaliacao criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
         return new ResponseEntity<>(criterioAtualizado, HttpStatus.OK);
@@ -69,12 +70,7 @@ public class CriterioAvaliacaoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> deletarCriterio(@PathVariable Long id) {
-        try {
-            criterioAvaliacaoService.softDelete(id);
-            return ResponseEntity.ok().body(new RestSuccessMessage("Critério de avaliação deletado com sucesso.", id));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new RestSuccessMessage("Erro ao deletar critério de avaliação.", null),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        criterioAvaliacaoService.softDelete(id);
+        return ResponseEntity.ok().body(new RestSuccessMessage("Critério de avaliação deletado com sucesso.", id));
     }
 }
