@@ -21,7 +21,7 @@ import com.rb.web2.services.InstituicaoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/instituicaos")
+@RequestMapping("/api/instituicoes")
 public class InstituicaoController {
 
     // @TODO // Classe inteira. Por enquanto, apenas o esqueleto das funções foi
@@ -47,8 +47,8 @@ public class InstituicaoController {
     // Listar todas as instituições
     @GetMapping
     public ResponseEntity<List<Instituicao>> getAllInstituicaos() {
-        List<Instituicao> instituicaos = instituicaoService.getAllInstituicaos();
-        return ResponseEntity.ok(instituicaos);
+        List<Instituicao> instituicoes = instituicaoService.getAllInstituicaos();
+        return ResponseEntity.ok(instituicoes);
     }
 
     // Atualizar instituição
