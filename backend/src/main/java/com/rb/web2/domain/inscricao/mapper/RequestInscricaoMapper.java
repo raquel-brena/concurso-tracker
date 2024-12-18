@@ -12,18 +12,15 @@ public class RequestInscricaoMapper {
         return new RequestInscricaoDTO(
                 inscricao.getCandidato().getId(),
                 inscricao.getCandidato().getId(),
-                inscricao.getProcessoSeletivo().getId(),
                 inscricao.getVaga().getId());
     }
 
     public static Inscricao toEntity(
             RequestInscricaoDTO dto,
             User candidato,
-            ProcessoSeletivo processoSeletivo,
             Vaga vaga) {
         Inscricao inscricao = new Inscricao();
         inscricao.setCandidato(candidato);
-        inscricao.setProcessoSeletivo(processoSeletivo);
         inscricao.setVaga(vaga);
         inscricao.setAtivo(true);
         return inscricao;

@@ -3,14 +3,13 @@ package com.rb.web2.domain.processoSeletivo;
 import java.util.List;
 
 import com.rb.web2.domain.agenda.Agenda;
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.documento.Documento;
-import com.rb.web2.domain.inscricao.Inscricao;
+import com.rb.web2.domain.etapa.Etapa;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonIgnore; 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -66,7 +65,7 @@ public class ProcessoSeletivo {
     private List<Vaga> vagas;
 
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CriterioAvaliacao> criterios;
+    private List<Etapa> etapas;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agenda_id", referencedColumnName = "id")
@@ -75,9 +74,6 @@ public class ProcessoSeletivo {
     @ManyToMany
     @JoinTable(name = "processo_comissao", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> comissaoOrganizadora;
-
-    @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Inscricao> inscricoes;
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

@@ -51,10 +51,6 @@ public class Inscricao implements Serializable {
     @JoinColumn(name = "user_id", nullable = false)
     private User candidato;
 
-    @ManyToOne
-    @JoinColumn(name = "processo_seletivo_id", nullable = false)
-    private ProcessoSeletivo processoSeletivo;
-
     @OneToMany(mappedBy = "inscricao", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DocumentoInscricao> documentosInscricoes;
 

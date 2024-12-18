@@ -46,7 +46,7 @@ public class DocumentoInscricaoService {
 
     public DocumentoInscricao homologarDocumento(RequestHomologarDocInscricaoDTO dto) {
         DocumentoInscricao documentoInscricao = this.findById(dto.documentoInscricaoId());
-        Agenda agenda = documentoInscricao.getInscricao().getProcessoSeletivo().getAgenda();
+        Agenda agenda = documentoInscricao.getInscricao().getVaga().getProcessoSeletivo().getAgenda();
 
         if (!this.dataHomologacaoValida(agenda.getInicioHomologacao(), agenda.getFimHomologacao())) {
             throw new BadRequestException("Fora do período de homologação");

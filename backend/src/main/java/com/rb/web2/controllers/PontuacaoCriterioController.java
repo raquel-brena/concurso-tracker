@@ -64,7 +64,7 @@ public class PontuacaoCriterioController {
     }
 
     @GetMapping("/criterio")
-    public ResponseEntity<List<PontuacaoCriterio>> listarPontuacoesPorCriterio(@RequestParam("id") String criterioId) {
+    public ResponseEntity<List<PontuacaoCriterio>> listarPontuacoesPorCriterio(@RequestParam("id") Long criterioId) {
 
         List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioService.findByCriterio(criterioId);
         return new ResponseEntity<>(pontuacoes, HttpStatus.OK);

@@ -34,4 +34,5 @@ public class DocumentoInscricaoController {
         return ResponseEntity.ok()
             .body(new RestSuccessMessage("Documento homologado com sucesso.", docInscricao));
     }
+    
 }

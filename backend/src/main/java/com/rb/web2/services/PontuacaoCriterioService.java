@@ -55,7 +55,7 @@ public class PontuacaoCriterioService {
         return pontuacaoCriterioRepository.save(pontuacaoCriterio);
     }
 
-    public List<PontuacaoCriterio> findByCriterio(String criterioId) {
+    public List<PontuacaoCriterio> findByCriterio(Long criterioId) {
         CriterioAvaliacao criterio = criterioAvaliacaoService.getCriterioById(criterioId);
         return pontuacaoCriterioRepository.findByCriterio(criterio);
     }

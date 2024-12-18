@@ -101,7 +101,7 @@ public class ProcessoSeletivoController {
     public ResponseEntity<RestSuccessMessage> update(@PathVariable String id,
             @RequestBody UpdateProcessoDTO dto) {
         var processo = this.service.atualizar(id, dto);
-        return ResponseEntity.ok().body(new RestSuccessMessage("Proesso seletivo atualizado com sucesso",
+        return ResponseEntity.ok().body(new RestSuccessMessage("Processo seletivo atualizado com sucesso",
                 ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
     }
 
@@ -114,6 +114,8 @@ public class ProcessoSeletivoController {
                         "Consulta realizada com sucesso.",
                         id));
     }
+
+    
 
     
 

@@ -8,7 +8,7 @@ public record RequestPontuacaoDTO(
     BigDecimal nota,
 
     @NotEmpty(message = "CriterioId cannot be empty")
-    String criterioId,
+    Long criterioId,
 
     @NotEmpty(message = "InscricaoId cannot be empty")
     String inscricaoId

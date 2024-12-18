@@ -36,11 +36,10 @@ public class InscricaoService {
 
   public Inscricao create(RequestInscricaoDTO dto) {
     User candidato = userService.getUserById(dto.candidatoId());
-    ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
     Vaga vaga = vagaService.buscarVagaPorId(dto.vagaId());
 
     Inscricao inscricao = RequestInscricaoMapper
-        .toEntity(dto, candidato, processoSeletivo, vaga);
+        .toEntity(dto, candidato, vaga);
 
     return inscricaoRepository.save(inscricao);
   }
@@ -61,10 +60,6 @@ public class InscricaoService {
 
     if (dto.vagaId() != null) {
         existingInscricao.setVaga(vagaService.buscarVagaPorId(dto.vagaId()));
-    }
-
-    if (dto.processoSeletivoId() != null) {
-        existingInscricao.setProcessoSeletivo(processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId()));
     }
 
     if (dto.ativo() != null) {

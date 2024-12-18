@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
+import com.rb.web2.shared.exceptions.NotFoundException;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -27,18 +28,16 @@ public class CriterioAvaliacaoService {
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
         criterioAvaliacao.setNome(dto.nome());
         criterioAvaliacao.setPeso(dto.peso());
-        criterioAvaliacao.setProcessoSeletivo(processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId()));
+        // criterioAvaliacao.setProcessoSeletivo(processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId()));
         return repository.save(criterioAvaliacao);
     }
 
-    public CriterioAvaliacao getCriterioById(String id) {
-        return repository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Criterio not found"));
+    public CriterioAvaliacao getCriterioById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new NotFoundException(""));
     }
 
-    public CriterioAvaliacao update(String id, RequestCriterioDTO dto) {
-        CriterioAvaliacao criterioAvaliacao = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CriterioAvaliacao not found"));
+    public CriterioAvaliacao update(Long id, RequestCriterioDTO dto) {
+        CriterioAvaliacao criterioAvaliacao = this.getCriterioById(id);
 
         criterioAvaliacao.setNome(dto.nome());
         criterioAvaliacao.setPeso(dto.peso());
@@ -47,14 +46,14 @@ public class CriterioAvaliacaoService {
         return repository.save(criterioAvaliacao);
     }
 
-    public List<CriterioAvaliacao> findAllByProcessoSeletivo(String processoSeletivoId) {
-        ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(processoSeletivoId);
-        return repository.findByProcessoSeletivo(processoSeletivo);
-    }
+    // public List<CriterioAvaliacao> findAllByProcessoSeletivo(String processoSeletivoId) {
+    //     ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(processoSeletivoId);
+    //     return repository.findByProcessoSeletivo(processoSeletivo);
+    // }
 
-    public List<CriterioAvaliacao> findAllByInscricao(String inscricaoId) {
-        Inscricao inscricao = inscricaoService.buscarInscricaoPorId(inscricaoId);
+    // public List<CriterioAvaliacao> findAllByInscricao(String inscricaoId) {
+    //     Inscricao inscricao = inscricaoService.buscarInscricaoPorId(inscricaoId);
               
-        return repository.findByParticipantes(inscricao);
-    }
+    //     return repository.findByParticipantes(inscricao);
+    // }
 }

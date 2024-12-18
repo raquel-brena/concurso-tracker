@@ -33,23 +33,23 @@ public class CriterioAvaliacaoController {
 
     }
 
-    @GetMapping
-    public ResponseEntity<List<CriterioAvaliacao>> buscarCriterios(@RequestParam String processoSeletivoId) {
+    // @GetMapping
+    // public ResponseEntity<List<CriterioAvaliacao>> buscarCriterios(@RequestParam String processoSeletivoId) {
 
-        List<CriterioAvaliacao> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
-        return new ResponseEntity<>(criterios, HttpStatus.OK);
+    //     List<CriterioAvaliacao> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
+    //     return new ResponseEntity<>(criterios, HttpStatus.OK);
 
-    }
+    // }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CriterioAvaliacao> buscarCriterioPorId(@PathVariable String id) {
+    public ResponseEntity<CriterioAvaliacao> buscarCriterioPorId(@PathVariable Long id) {
         CriterioAvaliacao criterioOptional = criterioAvaliacaoService.getCriterioById(id);
         return new ResponseEntity<>(criterioOptional, HttpStatus.OK);
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CriterioAvaliacao> atualizarCriterio(@PathVariable String id,
+    public ResponseEntity<CriterioAvaliacao> atualizarCriterio(@PathVariable Long id,
             @RequestBody RequestCriterioDTO requestCriterioDTO) {
 
         CriterioAvaliacao criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);

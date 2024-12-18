@@ -1,16 +1,13 @@
-package com.rb.web2.domain.criterioAvaliacao;
+package com.rb.web2.domain.resultado;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.etapa.Etapa;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,46 +16,41 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "criterios")
 @Entity
+@Table(name = "resultados")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class CriterioAvaliacao {
+public class Resultado {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String nome;
-
-    @Column(nullable = false)
-    private int peso;
-
-    @OneToMany(mappedBy = "criterio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PontuacaoCriterio> pontuacoes;
-
+    
     @ManyToOne
     @JoinColumn(name = "etapa_id", nullable = false)
     private Etapa etapa;
 
-    @Column(name = "criado_em", updatable = false)
-    @CreationTimestamp
-    private LocalDateTime criadoEm;
+    private String status; 
 
-    @Column(name = "atualizado_em")
-    @UpdateTimestamp
-    private LocalDateTime atualizadoEm;
+    @Column(name = "divulgado_em", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime divulgadoEm;
+
+    @Column(name = "observacoes")
+    private String observacoes; 
 }
