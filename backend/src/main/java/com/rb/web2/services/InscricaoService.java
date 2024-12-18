@@ -112,4 +112,24 @@ public class InscricaoService {
     inscricao.setDeletadoEm(LocalDateTime.now());
     inscricaoRepository.save(inscricao);
   }
+
+  public List<Inscricao> findByProcesso(String processoId) {
+    return inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
+  }
+
+  public boolean existsByInscricaoId(String inscricaoId) {
+    return inscricaoRepository.existsById(inscricaoId);
+  }
+
+  public List<ResponseInscricaoDTO> getAllInscricoesPorProcessoSeletivo(String processoId) {
+    List<Inscricao> inscricoes = inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
+    List<ResponseInscricaoDTO> applications = inscricoes.stream()
+        .map(inscricao -> new ResponseInscricaoDTO(
+            inscricao.getId(),
+            inscricao.getCandidato().getId(),
+            inscricao.getVaga().getId(),
+            inscricao.getDeletadoEm()))
+        .toList();
+    return applications;
+  }
 }

@@ -86,6 +86,20 @@ public class InscricaoController {
         }
     }
 
+    @GetMapping("processo")
+    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoesPorProcessoSeletivo(@RequestParam("id") String processoId) {
+        try {
+            List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorProcessoSeletivo(processoId);
+            if (!applications.isEmpty()) {
+                return new ResponseEntity<>(applications, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/{id}/nota")
     public ResponseEntity<BigDecimal> calcularNotaTotal(@PathVariable String id) {
         try {
