@@ -6,25 +6,21 @@ import java.time.LocalDateTime;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 
 public record ResponsePontuacaoDTO(
-        String id,
+        Long id,
         BigDecimal nota,
-        String criterioId,
+        Long criterioId,
         String inscricaoId,
         boolean ehPublico,
-        boolean ativo,
         LocalDateTime criadoEm,
-        LocalDateTime atualizadoEm
-) {
+        LocalDateTime atualizadoEm) {
     public ResponsePontuacaoDTO(PontuacaoCriterio pontuacaoCriterio) {
         this(
-            pontuacaoCriterio.getId(),
-            pontuacaoCriterio.getNota(),
-            pontuacaoCriterio.getCriterio().getId(),
-            pontuacaoCriterio.getInscricao().getId(),
-            pontuacaoCriterio.isEhPublico(),
-            pontuacaoCriterio.isAtivo(),
-            pontuacaoCriterio.getCriado_em(),
-            pontuacaoCriterio.getAtualizado_em()
-        );
+                pontuacaoCriterio.getId(),
+                pontuacaoCriterio.getNota(),
+                pontuacaoCriterio.getCriterio().getId(),
+                pontuacaoCriterio.getInscricao().getId(),
+                pontuacaoCriterio.isPublico(),
+                pontuacaoCriterio.getCriadoEm(),
+                pontuacaoCriterio.getAtualizadoEm());
     }
 }

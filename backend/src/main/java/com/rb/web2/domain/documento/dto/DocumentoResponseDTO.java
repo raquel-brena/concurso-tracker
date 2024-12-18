@@ -9,9 +9,9 @@ public record DocumentoResponseDTO (
     String downloadUrl,
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    LocalDateTime criado_em,
+    LocalDateTime criadoEm,
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    LocalDateTime atualizado_em
+    LocalDateTime atualizadoEm
 ) {
 }

@@ -50,11 +50,11 @@ public class CandidateApplication {
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
-    private LocalDateTime criado_em;
+    private LocalDateTime criadoEm;
 
     @Column(name = "atualizado_em")
     @UpdateTimestamp
-    private LocalDateTime atualizado_em;
+    private LocalDateTime atualizadoEm;
 
     public CandidateApplication(User candidate, String jobPosition, String coverLetter, Boolean isActive, ProcessoSeletivo processoSeletivo) {
         this.candidate = candidate;

@@ -41,11 +41,11 @@ public class Permission {
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
-    private LocalDateTime criado_em;
+    private LocalDateTime criadoEm;
 
     @Column(name = "atualizado_em")
     @UpdateTimestamp
-    private LocalDateTime atualizado_em;
+    private LocalDateTime atualizadoEm;
 
     public Permission(String name) {
         this.name = name;

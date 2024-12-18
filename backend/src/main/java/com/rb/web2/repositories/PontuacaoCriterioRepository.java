@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 
 @Repository
-public interface PontuacaoCriterioRepository extends JpaRepository<PontuacaoCriterio, String> {
-    List<PontuacaoCriterio> findByCriterioId(String criterioId);
+public interface PontuacaoCriterioRepository extends JpaRepository<PontuacaoCriterio, Long> {
+    List<PontuacaoCriterio> findByCriterioId(Long criterioId);
     List<PontuacaoCriterio> findByInscricaoId(String inscricaoId);
 }

@@ -170,6 +170,10 @@ public class ProcessoSeletivoService {
     return repository.save(processo).getId();
   }
 
+  public void homologarDocumentacao(){
+    
+  }
+
   public ProcessoSeletivo atualizar(String id, UpdateProcessoDTO dto) {
     ProcessoSeletivo processo = this.getProcessoSeletivoById(id);
 
@@ -218,12 +222,13 @@ public class ProcessoSeletivoService {
       processo.setDocumentosNecessarios(dto.documentoNecessarios());
     }
 
-    if (dto.criteriosIds() != null) {
-      List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllByIdIn(dto.criteriosIds());
-      if (!criterios.isEmpty()) {
-        processo.setCriterios(criterios);
-      }
-    }
+    // if (dto.criteriosIds() != null) {
+    //   List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllById(dto.criteriosIds());
+    //   if (criterios.isEmpty()) {
+    //     throw new NotFoundException("Criterio de avaliação não encontrado");
+    //   }
+    //   processo.setCriterios(criterios);
+    // }
 
     if (dto.comissaoOrganizadoraIds() != null) {
       List<User> comissao = userService.findAllById(dto.comissaoOrganizadoraIds());

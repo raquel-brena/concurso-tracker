@@ -25,7 +25,6 @@ import com.rb.web2.domain.inscricao.mapper.InscricaoMapper;
 import com.rb.web2.services.InscricaoService;
 import com.rb.web2.services.PontuacaoCriterioService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
-import com.rb.web2.shared.exceptions.NotFoundException;
 
 @RestController
 @RequestMapping("/api/inscricoes")
@@ -58,9 +57,9 @@ public class InscricaoController {
     @PostMapping
     public ResponseEntity<String> createInscricao(@RequestBody @Validated RequestInscricaoDTO dto) {
         try {
-            Inscricao createdApplication = service.create(dto);
+            Inscricao inscricaoCriada = service.create(dto);
             service.create(dto);
-            return ResponseEntity.ok("Incrição com id: " + createdApplication.getId() + " criada com sucesso");
+            return ResponseEntity.ok("Incrição com id: " + inscricaoCriada.getId() + " criada com sucesso");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error creating application: " + e.getMessage());
         }
@@ -76,14 +75,12 @@ public class InscricaoController {
     public ResponseEntity<ResponseInscricaoDTO> updateInscricao(
             @PathVariable String id,
             @RequestBody @Validated UpdateReqInscricaoDTO dto) {
-        try {
+    
             var updatedApplication = this.service.atualizarInscricao(id, dto);
             ResponseInscricaoDTO responseDTO = InscricaoMapper.toDTO(updatedApplication);
 
             return ResponseEntity.ok(responseDTO);
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+      
     }
 
     @GetMapping("processo")

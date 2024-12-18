@@ -25,7 +25,6 @@ import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
 @RestController
 @RequestMapping("/api/documentos")
 public class DocumentoController {
@@ -59,18 +58,10 @@ public class DocumentoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getDocumentoById(@PathVariable Long id) {
-        try {
-            var documento = service.getDocumentoById(id);
-            if (documento.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok().body(documento.get());
-        } catch (Error e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Documento documento = service.buscarDocumentoPorId(id);
+        return ResponseEntity.ok().body(documento);
+
     }
-
-
 
     @GetMapping
     public ResponseEntity<List<Documento>> getAllDocumentos() {
@@ -80,16 +71,15 @@ public class DocumentoController {
 
     @GetMapping("/usuarios")
     public ResponseEntity<?> getAllDocumentosUsuarios() {
-            var documento = service.getAllDocumentosUsuarios();
-
-            return ResponseEntity.ok().body(documento);
+        var documento = service.getAllDocumentosUsuarios();
+        return ResponseEntity.ok().body(documento);
     }
-    
+
     @GetMapping("/processos")
     public ResponseEntity<?> getAllDocumentosProcessosSeletivos() {
-            var documento = service.getAllDocumentosProcessosSeletivos();
+        var documento = service.getAllDocumentosProcessosSeletivos();
 
-            return ResponseEntity.ok().body(documento);
+        return ResponseEntity.ok().body(documento);
     }
 
     @GetMapping("/download/{id}/{filename:.+}")

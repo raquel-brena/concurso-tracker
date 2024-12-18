@@ -45,7 +45,8 @@ public class Agenda {
 
     private LocalDate fimInscricao;
 
-    private LocalDate homologacao;
+    private LocalDate inicioHomologacao;
+    private LocalDate fimHomologacao;
 
     private LocalDate inicioRecurso;
 
@@ -61,10 +62,10 @@ public class Agenda {
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
-    private LocalDateTime criado_em;
+    private LocalDateTime criadoEm;
 
     @Column(name = "atualizado_em")
     @UpdateTimestamp
-    private LocalDateTime atualizado_em;
+    private LocalDateTime atualizadoEm;
 
 }

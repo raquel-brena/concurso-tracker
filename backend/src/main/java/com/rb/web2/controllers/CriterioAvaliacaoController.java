@@ -30,61 +30,37 @@ public class CriterioAvaliacaoController {
 
     @PostMapping
     public ResponseEntity<CriterioAvaliacao> criarCriterio(@RequestBody RequestCriterioDTO requestCriterioDTO) {
-        try {
-            CriterioAvaliacao criterioSalvo = criterioAvaliacaoService.create(requestCriterioDTO);
-            return new ResponseEntity<>(criterioSalvo, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        CriterioAvaliacao criterioSalvo = criterioAvaliacaoService.create(requestCriterioDTO);
+        return new ResponseEntity<>(criterioSalvo, HttpStatus.CREATED);
+
     }
 
-    @GetMapping
-    public ResponseEntity<List<CriterioAvaliacao>> buscarCriterios(@RequestParam String processoSeletivoId) {
-        try {
-            List<CriterioAvaliacao> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
+    // @GetMapping
+    // public ResponseEntity<List<CriterioAvaliacao>> buscarCriterios(@RequestParam String processoSeletivoId) {
 
-            if (!criterios.isEmpty()) {
-                return new ResponseEntity<>(criterios, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    //     List<CriterioAvaliacao> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
+    //     return new ResponseEntity<>(criterios, HttpStatus.OK);
+
+    // }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CriterioAvaliacao> buscarCriterioPorId(@PathVariable String id) {
-        try {
-            Optional<CriterioAvaliacao> criterioOptional = criterioAvaliacaoService.getCriterioById(id);
+    public ResponseEntity<CriterioAvaliacao> buscarCriterioPorId(@PathVariable Long id) {
+        CriterioAvaliacao criterioOptional = criterioAvaliacaoService.getCriterioById(id);
+        return new ResponseEntity<>(criterioOptional, HttpStatus.OK);
 
-            if (criterioOptional.isPresent()) {
-                return new ResponseEntity<>(criterioOptional.get(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CriterioAvaliacao> atualizarCriterio(@PathVariable String id,
+    public ResponseEntity<CriterioAvaliacao> atualizarCriterio(@PathVariable Long id,
             @RequestBody RequestCriterioDTO requestCriterioDTO) {
-        try {
-            CriterioAvaliacao criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
-            return new ResponseEntity<>(criterioAtualizado, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+        CriterioAvaliacao criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
+        return new ResponseEntity<>(criterioAtualizado, HttpStatus.OK);
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RestSuccessMessage> deletarCriterio(@PathVariable String id) {
+    public ResponseEntity<RestSuccessMessage> deletarCriterio(@PathVariable Long id) {
         try {
             criterioAvaliacaoService.softDelete(id);
             return ResponseEntity.ok().body(new RestSuccessMessage("Critério de avaliação deletado com sucesso.", id));

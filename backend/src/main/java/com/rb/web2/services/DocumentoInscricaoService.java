@@ -1,0 +1,65 @@
+package com.rb.web2.services;
+
+import java.time.LocalDate;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.rb.web2.domain.agenda.Agenda;
+import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.documentoInscricao.DocumentoInscricao;
+import com.rb.web2.domain.documentoInscricao.dto.RequestDocInscricaoDTO;
+import com.rb.web2.domain.documentoInscricao.dto.RequestHomologarDocInscricaoDTO;
+import com.rb.web2.domain.inscricao.Inscricao;
+import com.rb.web2.repositories.DocumentoInscricaoRepository;
+import com.rb.web2.shared.exceptions.BadRequestException;
+import com.rb.web2.shared.exceptions.NotFoundException;
+
+@Service
+public class DocumentoInscricaoService {
+
+    @Autowired
+    private DocumentoInscricaoRepository repository;
+
+    @Autowired
+    private DocumentoService documentoService;
+
+    @Autowired
+    private InscricaoService inscricaoService;
+
+    public DocumentoInscricao criarDocumentoInscricao(RequestDocInscricaoDTO dto) {
+        Inscricao inscricao = inscricaoService.buscarInscricaoPorId(dto.inscricaoId());
+
+        Documento documento = documentoService.buscarDocumentoPorId(dto.documentoId());
+
+        DocumentoInscricao documentoInscricao = new DocumentoInscricao();
+        documentoInscricao.setInscricao(inscricao);
+        documentoInscricao.setDocumento(documento);
+        documentoInscricao.setHomologado(false);
+        return repository.save(documentoInscricao);
+    }
+
+    public DocumentoInscricao findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Documento Inscricao não encontrado"));
+    }
+
+    public DocumentoInscricao homologarDocumento(RequestHomologarDocInscricaoDTO dto) {
+        DocumentoInscricao documentoInscricao = this.findById(dto.documentoInscricaoId());
+        Agenda agenda = documentoInscricao.getInscricao().getVaga().getProcessoSeletivo().getAgenda();
+
+        if (!this.dataHomologacaoValida(agenda.getInicioHomologacao(), agenda.getFimHomologacao())) {
+            throw new BadRequestException("Fora do período de homologação");
+        }
+
+        documentoInscricao.setHomologado(dto.homologado());
+        documentoInscricao.setMotivoRejeicao(dto.homologado() ? null : dto.motivoRejeicao());
+
+        return repository.save(documentoInscricao);
+    }
+
+    public boolean dataHomologacaoValida(LocalDate homologacaoInicio, LocalDate homologacaoFim) {
+        var dataAtual = LocalDate.now();
+        return dataAtual.isAfter(homologacaoFim) && dataAtual.isBefore(homologacaoInicio);
+    }
+}

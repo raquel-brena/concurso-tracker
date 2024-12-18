@@ -36,33 +36,31 @@ public class PontuacaoCriterioService {
 
         PontuacaoCriterio pontuacaoCriterio = new PontuacaoCriterio();
         pontuacaoCriterio.setNota(dto.nota());
-        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
-                .orElseThrow(() -> new RuntimeException("Criterio not found")));
-        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId()));
+        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId()));
+        pontuacaoCriterio.setInscricao(inscricaoService.buscarInscricaoPorId(dto.inscricaoId()));
 
         PontuacaoCriterio savedEntity = pontuacaoCriterioRepository.save(pontuacaoCriterio);
         return new ResponsePontuacaoDTO(savedEntity);
     }
 
-    public Optional<ResponsePontuacaoDTO> getPontuacaoCriterioById(String id) {
+    public Optional<ResponsePontuacaoDTO> getPontuacaoCriterioById(Long id) {
         return pontuacaoCriterioRepository.findById(id)
                 .map(ResponsePontuacaoDTO::new);
     }
 
-    public ResponsePontuacaoDTO update(String id, RequestPontuacaoDTO dto) {
+    public ResponsePontuacaoDTO update(Long id, RequestPontuacaoDTO dto) {
         PontuacaoCriterio pontuacaoCriterio = pontuacaoCriterioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pontuação Critério não encontrada"));
 
         pontuacaoCriterio.setNota(dto.nota());
-        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId())
-                .orElseThrow(() -> new RuntimeException("Critério de Avaliação não encontrado")));
-        pontuacaoCriterio.setInscricao(inscricaoService.getInscricaoById(dto.inscricaoId()));
+        pontuacaoCriterio.setCriterio(criterioAvaliacaoService.getCriterioById(dto.criterioId()));
+        pontuacaoCriterio.setInscricao(inscricaoService.buscarInscricaoPorId(dto.inscricaoId()));
 
         PontuacaoCriterio savedEntity = pontuacaoCriterioRepository.save(pontuacaoCriterio);
         return new ResponsePontuacaoDTO(savedEntity);
     }
 
-    public List<ResponsePontuacaoDTO> findByCriterio(String criterioId) {
+    public List<ResponsePontuacaoDTO> findByCriterio(Long criterioId) {
         boolean exists = criterioAvaliacaoService.existsByCriterioId(criterioId);
         if (!exists) {
             throw new NotFoundException("Critério de Avaliação não encontrado");
@@ -102,11 +100,10 @@ public class PontuacaoCriterioService {
         }
     }
 
-    public void softDelete(String id) {
+    public void delete(Long id) {
         PontuacaoCriterio pontuacaoCriterio = pontuacaoCriterioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pontuação Critério não encontrada"));
-        pontuacaoCriterio.setAtivo(false);
-        pontuacaoCriterioRepository.save(pontuacaoCriterio);
+        pontuacaoCriterioRepository.delete(pontuacaoCriterio);
     }
 
     public Map<String, BigDecimal> calcularNotaTotalPorInscricaoDoProcesso(String processoId) {

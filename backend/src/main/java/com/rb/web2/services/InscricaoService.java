@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
 import com.rb.web2.domain.inscricao.dto.ResponseInscricaoDTO;
@@ -45,10 +44,11 @@ public class InscricaoService {
     return inscricaoRepository.save(inscricao);
   }
 
-  public Inscricao getInscricaoById(String id) {
-    return inscricaoRepository.findById(id)
-        .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
+  public Inscricao buscarInscricaoPorId(String id) {
+    return inscricaoRepository.findById(id).orElseThrow(() 
+    -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
+ 
 
   public ResponseInscricaoDTO getResponseInscricaoDTOById(String id) {
     return inscricaoRepository.findById(id)
@@ -93,22 +93,31 @@ public class InscricaoService {
   }
 
   public Inscricao atualizarInscricao(String id, UpdateReqInscricaoDTO dto) {
-    Inscricao existingInscricao = this.getInscricaoById(id);
+    Inscricao existingInscricao = this.buscarInscricaoPorId(id);
 
     if (dto.vagaId() != null) {
       existingInscricao.setVaga(vagaService.buscarVagaPorId(dto.vagaId()));
     }
 
-    if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
-      List<CriterioAvaliacao> criterios = criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
-      existingInscricao.setAvaliacoes(criterios);
-    }
+    // if (dto.ativo() != null) {
+    //     existingInscricao.setAtivo(dto.ativo());
+    // }
+
+    // if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
+    //     List<CriterioAvaliacao> criterios = criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
+    //     existingInscricao.setAvaliacoes(criterios);
+    // }
+
+    // if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
+    //   List<CriterioAvaliacao> criterios = criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
+    //   existingInscricao.setAvaliacoes(criterios);
+    // }
 
     return inscricaoRepository.save(existingInscricao);
   }
 
   public void softDelete(String id) {
-    Inscricao inscricao = this.getInscricaoById(id);
+    Inscricao inscricao = this.buscarInscricaoPorId(id);
     inscricao.setDeletadoEm(LocalDateTime.now());
     inscricaoRepository.save(inscricao);
   }

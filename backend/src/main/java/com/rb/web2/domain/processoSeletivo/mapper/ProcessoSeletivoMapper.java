@@ -32,12 +32,12 @@ public class ProcessoSeletivoMapper {
                 List<DocumentoResponseDTO> documentosDTOS = null;
                 AgendaDTO agendaDTO = null;
 
-                if (!(processo.getCriterios() == null)) {
-                        criteriosDTOs = processo.getCriterios()
-                                        .stream()
-                                        .map(criterio -> CriterioAvalicaoMapper.toResponseCriterioDTO(criterio))
-                                        .toList();
-                }
+                // if (!(processo.getCriterios() == null)) {
+                //         criteriosDTOs = processo.getCriterios()
+                //                         .stream()
+                //                         .map(criterio -> CriterioAvalicaoMapper.toResponseCriterioDTO(criterio))
+                //                         .toList();
+                // }
 
                 if (!(processo.getComissaoOrganizadora() == null)) {
                         comissaoOrganizadoraDTOs = processo.getComissaoOrganizadora()

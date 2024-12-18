@@ -6,8 +6,8 @@ public record ResponseCriterioComProcessosDTO (
     boolean ativo,
     String nome, 
     int peso,
-    LocalDateTime criado_em,
-    LocalDateTime atualizado_em
+    LocalDateTime criadoEm,
+    LocalDateTime atualizadoEm
     
 ) {
     

@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 public record ResponseCriterioDTO (
     String nome, 
     int peso,
-    LocalDateTime criado_em,
-    LocalDateTime atualizado_em
+    LocalDateTime criadoEm,
+    LocalDateTime atualizadoEm
     
 ) {
     

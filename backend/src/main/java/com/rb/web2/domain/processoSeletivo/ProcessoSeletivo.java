@@ -8,8 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rb.web2.domain.agenda.Agenda;
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.etapa.Etapa;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 
@@ -50,7 +50,6 @@ public class ProcessoSeletivo {
     private int validadeMeses;
     private boolean temporario;
 
-
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Documento> editais;
 
@@ -62,7 +61,7 @@ public class ProcessoSeletivo {
     private List<Vaga> vagas;
 
     @OneToMany(mappedBy = "processoSeletivo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CriterioAvaliacao> criterios;
+    private List<Etapa> etapas;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agenda_id", referencedColumnName = "id")
