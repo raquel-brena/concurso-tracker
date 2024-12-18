@@ -1,7 +1,6 @@
 package com.rb.web2.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
 import com.rb.web2.services.CriterioAvaliacaoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
@@ -35,13 +35,19 @@ public class CriterioAvaliacaoController {
 
     }
 
-    // @GetMapping
-    // public ResponseEntity<List<CriterioAvaliacao>> buscarCriterios(@RequestParam String processoSeletivoId) {
+    @GetMapping("/processo")
+    public ResponseEntity<List<ResponseCriterioDTO>> buscarCriteriosPorProcessoSeletivo(
+            @RequestParam("id") String processoSeletivoId) {
 
-    //     List<CriterioAvaliacao> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
-    //     return new ResponseEntity<>(criterios, HttpStatus.OK);
+        List<ResponseCriterioDTO> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
+        return new ResponseEntity<>(criterios, HttpStatus.OK);
+    }
 
-    // }
+    @GetMapping("/inscricao")
+    public ResponseEntity<List<ResponseCriterioDTO>> buscarCriteriosPorInscricao(@RequestParam("id") String inscricaoId) {
+        List<ResponseCriterioDTO> criterios = criterioAvaliacaoService.findAllByInscricao(inscricaoId);
+        return new ResponseEntity<>(criterios, HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CriterioAvaliacao> buscarCriterioPorId(@PathVariable Long id) {

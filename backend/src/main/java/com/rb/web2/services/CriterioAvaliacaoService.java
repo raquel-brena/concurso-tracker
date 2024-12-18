@@ -1,26 +1,21 @@
 package com.rb.web2.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
-import com.rb.web2.repositories.InscricaoRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
 @Service
 public class CriterioAvaliacaoService {
     @Autowired
     private CriterioAvaliacaoRepository repository;
-
-    @Autowired
-    private ProcessoSeletivoService processoSeletivoService;
-
-    @Autowired
-    private InscricaoRepository inscricaoRepository;
 
     public CriterioAvaliacao create(RequestCriterioDTO dto) {
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
@@ -39,15 +34,25 @@ public class CriterioAvaliacaoService {
 
         criterioAvaliacao.setNome(dto.nome());
         criterioAvaliacao.setPeso(dto.peso());
-        /* criterioAvaliacao.setProcessoSeletivo(processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId())
-                .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"))); */ // Pode não ser necessário
+
         return repository.save(criterioAvaliacao);
     }
 
-    // public List<CriterioAvaliacao> findAllByProcessoSeletivo(String processoSeletivoId) {
-    //     ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(processoSeletivoId);
-    //     return repository.findByProcessoSeletivo(processoSeletivo);
-    // }
+    public List<ResponseCriterioDTO> findAllByProcessoSeletivo(String processoSeletivoId) {
+        List<CriterioAvaliacao> criterios = repository.findByEtapaProcessoSeletivoId(processoSeletivoId).orElseThrow(() -> new NotFoundException("Criterios de Avaliação não encontrados"));
+        
+        if (criterios.isEmpty()) {
+            throw new NotFoundException("Criterios de Avaliação não encontrados");
+        }
+    
+        return criterios.stream()
+                .map(ResponseCriterioDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<ResponseCriterioDTO> findAllByInscricao(String inscricaoId) {
+        return repository.findByPontuacoesInscricaoId(inscricaoId);
+    }
 
     // public List<CriterioAvaliacao> findAllByInscricao(String inscricaoId) {
     //     Inscricao inscricao = inscricaoRepository.findById(inscricaoId)
@@ -63,8 +68,10 @@ public class CriterioAvaliacaoService {
         repository.save(criterioAvaliacao);
     }
 
-    public List<CriterioAvaliacao> buscarCriteriosPorIds(List<Long> avaliacoes) {
-        return repository.findByIdIn(avaliacoes);
+    public List<ResponseCriterioDTO> buscarCriteriosPorIds(List<Long> avaliacoes) {
+        return repository.findAllById(avaliacoes).stream()
+                .map(ResponseCriterioDTO::from)
+                .collect(Collectors.toList());
     }
 
     public boolean existsByCriterioId(Long criterioId) {

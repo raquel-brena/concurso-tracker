@@ -20,7 +20,6 @@ public class InscricaoService {
 
   private final InscricaoRepository inscricaoRepository;
   private final UserService userService;
-  private final CriterioAvaliacaoService criterioAvaliacaoService;
   private final VagaService vagaService;
 
   public InscricaoService(
@@ -30,7 +29,6 @@ public class InscricaoService {
       VagaService vagaService) {
     this.inscricaoRepository = inscricaoRepository;
     this.userService = userService;
-    this.criterioAvaliacaoService = criterioAvaliacaoService;
     this.vagaService = vagaService;
   }
 

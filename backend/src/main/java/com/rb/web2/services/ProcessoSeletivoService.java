@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.agenda.Agenda;
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.processoComissao.ProcessoComissao;
 import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
@@ -22,7 +21,6 @@ import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.repositories.AgendaRepository;
-import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 import com.rb.web2.repositories.ProcessoComissaoRepository;
 import com.rb.web2.repositories.ProcessoSeletivoRepository;
 import com.rb.web2.repositories.VagaRepository;
@@ -40,9 +38,6 @@ public class ProcessoSeletivoService {
 
   @Autowired
   private AgendaRepository agendaRepository;
-
-  @Autowired
-  private CriterioAvaliacaoRepository criterioAvaliacaoRepository;
 
   @Autowired
   private ProcessoComissaoRepository processoComissaoRepository;
