@@ -97,11 +97,31 @@ public class ProcessoSeletivoController {
                         processos));
     }
 
+    @GetMapping("participante/{id}")
+    public ResponseEntity<RestSuccessMessage> getProcessoSeletivoByParticipante(@PathVariable String id) {
+        var processos = this.service.getProcessoSeletivoByParticipante(id);
+
+        return ResponseEntity.ok()
+                .body(new RestSuccessMessage(
+                        "Consulta realizada com sucesso.",
+                        processos));
+    }
+
+    @GetMapping("comissao/{id}")
+    public ResponseEntity<RestSuccessMessage> getProcessoSeletivoByComissao(@PathVariable String id) {
+        var processos = this.service.getProcessoSeletivoByComissao(id);
+
+        return ResponseEntity.ok()
+                .body(new RestSuccessMessage(
+                        "Consulta realizada com sucesso.",
+                        processos));
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<RestSuccessMessage> update(@PathVariable String id,
             @RequestBody UpdateProcessoDTO dto) {
         var processo = this.service.atualizar(id, dto);
-        return ResponseEntity.ok().body(new RestSuccessMessage("Proesso seletivo atualizado com sucesso",
+        return ResponseEntity.ok().body(new RestSuccessMessage("Processo seletivo atualizado com sucesso",
                 ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
     }
 

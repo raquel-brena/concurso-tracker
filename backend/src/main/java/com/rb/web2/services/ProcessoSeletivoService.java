@@ -238,4 +238,24 @@ public class ProcessoSeletivoService {
     return repository.save(processo);
   }
 
+  public List<ResponseProcessoDTO> getProcessoSeletivoByParticipante(String id) {
+    try {
+      return repository.findByVagasInscricoesCandidatoId(id).stream()
+          .map(ProcessoSeletivoMapper::toResponseProcessoDTO)
+          .toList();
+    } catch (Exception e) {
+      throw new NotFoundException("Processo não encontrado");
+    }
+  }
+
+  public List<ResponseProcessoDTO> getProcessoSeletivoByComissao(String id) {
+    try {
+      return repository.findByComissaoOrganizadoraId(id).stream()
+          .map(ProcessoSeletivoMapper::toResponseProcessoDTO)
+          .toList();
+    } catch (Exception e) {
+      throw new NotFoundException("Processo não encontrado");
+    }
+  }
+
 }
