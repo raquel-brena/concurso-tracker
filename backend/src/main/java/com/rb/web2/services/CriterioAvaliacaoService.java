@@ -69,4 +69,8 @@ public class CriterioAvaliacaoService {
     public List<CriterioAvaliacao> buscarCriteriosPorIds(List<Long> avaliacoes) {
         return repository.findByIdIn(avaliacoes);
     }
+
+    public boolean existsByCriterioId(String criterioId) {
+        return repository.existsById(criterioId);
+    }
 }
