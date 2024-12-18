@@ -34,8 +34,16 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id")
 public class CriterioAvaliacao {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
+
+    private String nome;
+    private int peso;
+    
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "processo_seletivo_id")
+    private ProcessoSeletivo processoSeletivo;
 
     @Column(nullable = false)
     private boolean ativo;
