@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.rb.web2.domain.etapa.Etapa;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -37,10 +38,6 @@ public class CriterioAvaliacao {
     @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
 
-    private String nome;
-    private int peso;
-    
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "processo_seletivo_id")
     private ProcessoSeletivo processoSeletivo;
