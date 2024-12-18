@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 import com.rb.web2.domain.pontuacaoCriterio.dto.RequestPontuacaoDTO;
+import com.rb.web2.domain.pontuacaoCriterio.dto.ResponsePontuacaoDTO;
 import com.rb.web2.services.PontuacaoCriterioService;
 
 import jakarta.validation.Valid;
@@ -41,7 +42,6 @@ public class PontuacaoCriterioController {
             Logger logger = LoggerFactory.getLogger(PontuacaoCriterioController.class);
             logger.error("Erro ao criar pontuação: ", e);
 
-            // Retorna uma resposta 400 com a mensagem de erro
             return ResponseEntity.badRequest().body(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Erro inesperado: " + e.getMessage();
@@ -49,16 +49,15 @@ public class PontuacaoCriterioController {
             Logger logger = LoggerFactory.getLogger(PontuacaoCriterioController.class);
             logger.error("Erro inesperado: ", e);
 
-            // Retorna uma resposta 500 para erro interno
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
 
     @GetMapping("/inscricao")
-    public ResponseEntity<List<PontuacaoCriterio>> listarPontuacoesPorInscricao(
+    public ResponseEntity<List<ResponsePontuacaoDTO>> listarPontuacoesPorInscricao(
             @RequestParam("id") String inscricaoId) {
         try {
-            List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioService.findByInscricao(inscricaoId);
+            List<ResponsePontuacaoDTO> pontuacoes = pontuacaoCriterioService.findByInscricao(inscricaoId);
             if (!pontuacoes.isEmpty()) {
                 return new ResponseEntity<>(pontuacoes, HttpStatus.OK);
             } else {
@@ -70,9 +69,9 @@ public class PontuacaoCriterioController {
     }
 
     @GetMapping("/criterio")
-    public ResponseEntity<List<PontuacaoCriterio>> listarPontuacoesPorCriterio(@RequestParam("id") String criterioId) {
+    public ResponseEntity<List<ResponsePontuacaoDTO>> listarPontuacoesPorCriterio(@RequestParam("id") String criterioId) {
         try {
-            List<PontuacaoCriterio> pontuacoes = pontuacaoCriterioService.findByCriterio(criterioId);
+            List<ResponsePontuacaoDTO> pontuacoes = pontuacaoCriterioService.findByCriterio(criterioId);
             if (!pontuacoes.isEmpty()) {
                 return new ResponseEntity<>(pontuacoes, HttpStatus.OK);
             } else {
@@ -84,9 +83,9 @@ public class PontuacaoCriterioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PontuacaoCriterio> buscarPontuacaoPorId(@PathVariable String id) {
+    public ResponseEntity<ResponsePontuacaoDTO> buscarPontuacaoPorId(@PathVariable String id) {
         try {
-            Optional<PontuacaoCriterio> pontuacao = pontuacaoCriterioService.getPontuacaoCriterioById(id);
+            Optional<ResponsePontuacaoDTO> pontuacao = pontuacaoCriterioService.getPontuacaoCriterioById(id);
             if (pontuacao.isPresent()) {
                 return new ResponseEntity<>(pontuacao.get(), HttpStatus.OK);
             } else {
@@ -98,15 +97,43 @@ public class PontuacaoCriterioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PontuacaoCriterio> atualizarPontuacao(@PathVariable String id,
+    public ResponseEntity<ResponsePontuacaoDTO> atualizarPontuacao(@PathVariable String id,
             @RequestBody RequestPontuacaoDTO dto) {
         try {
-            PontuacaoCriterio pontuacaoAtualizada = pontuacaoCriterioService.update(id, dto);
+            ResponsePontuacaoDTO pontuacaoAtualizada = pontuacaoCriterioService.update(id, dto);
             return new ResponseEntity<>(pontuacaoAtualizada, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @GetMapping("/total")
+    public ResponseEntity<String> calcularNotaTotalPorInscricao(@RequestParam("id") String inscricaoId) {
+        try {
+            return new ResponseEntity<>(pontuacaoCriterioService.calcularNotaTotal(inscricaoId).toString(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-    // @TODO: Implementar endpoint para deletar uma nota de um critério de avaliação
+    @GetMapping("/total/processo")
+    public String calcularNotaTotalPorProcesso(@RequestParam("id") String processoId) {
+        try {
+            return pontuacaoCriterioService.calcularNotaTotalPorInscricaoDoProcesso(processoId).toString();
+        } catch (Exception e) {
+            return "Erro ao calcular nota total por processo: " + e.getMessage();
+        }
+    }
+    
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletarPontuacao(@PathVariable String id) {
+        try {
+            pontuacaoCriterioService.softDelete(id);
+            return new ResponseEntity<>("Pontuação deletada com sucesso!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
