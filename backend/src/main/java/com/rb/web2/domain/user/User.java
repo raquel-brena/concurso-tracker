@@ -13,9 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.enums.Permissao;
 import com.rb.web2.domain.enums.Role;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+import com.rb.web2.services.PermissaoMapper;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -79,9 +81,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Inscricao> inscricoes;
 
+    @ManyToMany(mappedBy = "usuarios")
+    private List<Permissao> permissions;
 
     @Column(nullable = false)
-    private boolean ativo = true; 
+    private boolean ativo = true;
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp
@@ -91,19 +95,21 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
 
+    private PermissaoMapper permissaoMapper;
+
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
         this.role = role;
+        this.permissaoMapper =  new PermissaoMapper();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        this.role.getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority("ROLE_" + permission.name().toUpperCase()))
-                .forEach(authorities::add); 
+        this.permissaoMapper.getPermissoesPorRole(this.role).forEach(
+                permissao -> authorities.add(new SimpleGrantedAuthority("ROLE_" + permissao.name().toUpperCase())));
 
         return authorities;
     }

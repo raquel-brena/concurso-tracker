@@ -15,6 +15,7 @@ import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
 import com.rb.web2.domain.user.dto.RegisterDTO;
 import com.rb.web2.domain.user.dto.ResponseLoginDTO;
+import com.rb.web2.domain.user.dto.ResponseUserDTO;
 import com.rb.web2.infra.security.TokenService;
 
 @Service
@@ -24,7 +25,7 @@ public class AuthenticationService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
-    
+
     public AuthenticationService(UserService userService, @Lazy AuthenticationManager authenticationManager,
             TokenService tokenService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -46,13 +47,18 @@ public class AuthenticationService implements UserDetailsService {
 
         String encryptedPassword = passwordEncoder.encode(data.password());
 
-
-        return this.userService.create(new User (data.login(), encryptedPassword, Role.USER));
+        return this.userService.create(new User(data.login(), encryptedPassword, Role.USER));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.userService.loadUserByUsername(username);
+    }
+
+    public ResponseUserDTO getUsuarioAutenticado() {
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = (User) userService.loadUserByUsername(login);
+        return ResponseUserDTO.from(user);
     }
 
     public void logout() {
