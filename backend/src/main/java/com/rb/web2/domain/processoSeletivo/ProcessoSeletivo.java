@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.etapa.Etapa;
+import com.rb.web2.domain.instituicao.Instituicao;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 
@@ -71,6 +72,9 @@ public class ProcessoSeletivo {
     @JsonIgnore
     @JoinTable(name = "processo_comissao", joinColumns = @JoinColumn(name = "processo_seletivo_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> comissaoOrganizadora;
+
+    @ManyToMany(mappedBy = "processos", cascade = CascadeType.ALL)
+    private List<Instituicao> instituicoes;
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

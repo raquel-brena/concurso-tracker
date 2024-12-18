@@ -38,18 +38,15 @@ public class Agenda {
     private boolean ativo = true;
 
     private LocalDate inicioVigencia;
-
     private LocalDate fimVigencia;
 
     private LocalDate inicioInscricao;
-
     private LocalDate fimInscricao;
 
     private LocalDate inicioHomologacao;
     private LocalDate fimHomologacao;
 
     private LocalDate inicioRecurso;
-
     private LocalDate fimRecurso;
 
     private LocalDate resultadoPreliminar;
