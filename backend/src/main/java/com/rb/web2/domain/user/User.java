@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,16 +21,21 @@ import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.services.PermissaoMapper;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -81,8 +87,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Inscricao> inscricoes;
 
-    @ManyToMany(mappedBy = "usuarios")
-    private List<Permissao> permissions;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"))
+    private Set<Permissao> permissions;
 
     @Column(nullable = false)
     private boolean ativo = true;
@@ -95,13 +103,14 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
 
+    @Transient
     private PermissaoMapper permissaoMapper;
 
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
         this.role = role;
-        this.permissaoMapper =  new PermissaoMapper();
+        this.permissaoMapper = new PermissaoMapper();
     }
 
     @Override
@@ -137,5 +146,21 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean hasPermissionToCreateAgenda() {
+        return this.permissions.contains(Permissao.EDIT_AGENDA);
+    }
+
+    public boolean hasPermissionToCreateCargos() {
+        return this.permissions.contains(Permissao.EDIT_CARGOS);
+    }
+
+    public boolean hasPermissionToCreateCriterios() {
+        return this.permissions.contains(Permissao.EDIT_CRITERIOS);
+    }
+
+    public boolean hasPermissionToCreateDocumentoInscricao() {
+        return this.permissions.contains(Permissao.EDIT_DOCUMENTO);
     }
 }
