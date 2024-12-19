@@ -2,9 +2,11 @@ package com.rb.web2.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +38,7 @@ public class DocumentoController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createDocumento(
+    public ResponseEntity<RestSuccessMessage> createDocumento(
             @RequestParam("file") MultipartFile file,
             @RequestParam("nome") String nome,
             @RequestParam(value = "userId", required = false) String userId,
@@ -53,37 +55,41 @@ public class DocumentoController {
                 .toUri();
 
         DocumentoResponseDTO response = DocumentoMapper.toDocumentoResponseDTO(doc);
-        return ResponseEntity.created(location).body(new RestSuccessMessage("Upload realizado com sucesso.", response));
+        RestSuccessMessage successMessage = new RestSuccessMessage("Documento criado com sucesso", response);
+        return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getDocumentoById(@PathVariable Long id) {
+    public ResponseEntity<RestSuccessMessage> getDocumentoById(@PathVariable Long id) {
         Documento documento = service.buscarDocumentoPorId(id);
-        return ResponseEntity.ok().body(documento);
-
+        RestSuccessMessage successMessage = new RestSuccessMessage("Documento encontrado com sucesso", documento);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<Documento>> getAllDocumentos() {
+    public ResponseEntity<RestSuccessMessage> getAllDocumentos() {
         List<Documento> Documentos = service.getAllDocumentos();
-        return ResponseEntity.ok(Documentos);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Documentos encontrados com sucesso", Documentos);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/usuarios")
-    public ResponseEntity<?> getAllDocumentosUsuarios() {
+    public ResponseEntity<RestSuccessMessage> getAllDocumentosUsuarios() {
         var documento = service.getAllDocumentosUsuarios();
-        return ResponseEntity.ok().body(documento);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Documentos encontrados com sucesso", documento);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/processos")
-    public ResponseEntity<?> getAllDocumentosProcessosSeletivos() {
+    public ResponseEntity<RestSuccessMessage> getAllDocumentosProcessosSeletivos() {
         var documento = service.getAllDocumentosProcessosSeletivos();
-
-        return ResponseEntity.ok().body(documento);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Documentos encontrados com sucesso", documento);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
+    // @TODO: Checar resposta do download
     @GetMapping("/download/{id}/{filename:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String filename, @PathVariable String id,
+    public ResponseEntity<?> downloadFile(@PathVariable String filename, @PathVariable String id,
             HttpServletRequest request) throws IOException {
 
         Resource resource = this.service.downloadFile(filename, id, "documentos", String.valueOf(id));
@@ -93,9 +99,15 @@ public class DocumentoController {
             contentType = "application/octet-stream";
         }
 
+        RestSuccessMessage successMessage = new RestSuccessMessage(
+                "Download realizado com sucesso. Arquivo: " + resource.getFilename(),
+                Map.of(
+                        "filename", resource.getFilename(),
+                        "contentType", contentType));
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename =\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
 }

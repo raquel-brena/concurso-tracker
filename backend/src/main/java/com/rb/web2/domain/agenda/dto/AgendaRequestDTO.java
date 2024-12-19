@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 
-public record AgendaDTO (
+public record AgendaRequestDTO (
     @NotNull(message = "A data de início da vigência é obrigatória.")
     LocalDate inicioVigencia,
 

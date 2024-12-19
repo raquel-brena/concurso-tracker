@@ -39,7 +39,7 @@ public class InstituicaoService {
     return null;
   }
 
-  public boolean deleteInstituicao(String id) {
+  public boolean softDelete(String id) {
     Optional<Instituicao> existingInstituicao = getInstituicaoById(id);
     if (checkInstituicaoExists(id)) {
       Instituicao instituicao = existingInstituicao.get();

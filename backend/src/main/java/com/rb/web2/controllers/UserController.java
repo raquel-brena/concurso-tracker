@@ -16,6 +16,7 @@ import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
 import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.services.UserService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.validation.Valid;
 
@@ -27,23 +28,25 @@ public class UserController {
     UserService service;
     
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+    public ResponseEntity<RestSuccessMessage> getAllUsers() {
         List<UserResponseDTO> users = service.getAllUsers();
-        return ResponseEntity.ok(users);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Users found successfully", users);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable String id) {
+    public ResponseEntity<RestSuccessMessage> getUser(@PathVariable String id) {
         User user = this.service.getUserById(id);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                 .body(null);
         }
-        return ResponseEntity.ok(user);
+        RestSuccessMessage successMessage = new RestSuccessMessage("User found successfully", user);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     // @PatchMapping("/{id}")
-    // public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+    // public ResponseEntity<RestSuccessMessage> updateUser(@PathVariable String id, @RequestBody User user) {
     //     User updatedUser = this.service.updateUser(id, user);
     //     if (updatedUser == null) {
     //         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -53,7 +56,7 @@ public class UserController {
     // }
 
     @PutMapping
-    public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserDTO dto) {
+    public ResponseEntity<RestSuccessMessage> updateUser(@Valid @RequestBody UpdateUserDTO dto) {
         var user = this.service.getUserById(dto.userId());
 
         // var role = user.getRole();
@@ -68,7 +71,8 @@ public class UserController {
         // user.setRole(role);
         // this.service.create(user);
 
-        return ResponseEntity.ok().body("User updated with ID: " + user.getId());
+        RestSuccessMessage successMessage = new RestSuccessMessage("User updated successfully", user);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     public User getUserById(String id) {

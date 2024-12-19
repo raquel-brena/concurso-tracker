@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.services.ProcessoSeletivoService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 @RestController
 @RequestMapping("/api/buscar")
@@ -20,19 +21,21 @@ public class BuscarController {
     ProcessoSeletivoService processoSeletivoService;
 
     @GetMapping
-    public ResponseEntity<?> search(
-        @RequestParam String q, 
-        @RequestParam String type) {
+    public ResponseEntity<RestSuccessMessage> search(
+            @RequestParam String q,
+            @RequestParam String type) {
 
         if ("processos".equalsIgnoreCase(type)) {
             List<ProcessoSeletivo> result = processoSeletivoService
-                .buscarProcessos(q);
-            return ResponseEntity.ok(result);
+                    .buscarProcessos(q);
+            RestSuccessMessage successMessage = new RestSuccessMessage("Processos encontrados com sucesso", result);
+            return ResponseEntity.ok(successMessage);
         } else if ("vagas".equalsIgnoreCase(type)) {
             // Exemplo de outros tipos de busca
         }
 
         List<ProcessoSeletivo> result = processoSeletivoService.buscarProcessos(q);
-        return ResponseEntity.ok(result);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Processos encontrados com sucesso", result);
+        return ResponseEntity.ok(successMessage);
     }
 }

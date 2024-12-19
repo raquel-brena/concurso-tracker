@@ -41,48 +41,59 @@ public class VagaController {
     }
 
     @GetMapping("/todas")
-    public ResponseEntity<List<VagaResponseDTO>> buscarVagas() {
+    public ResponseEntity<RestSuccessMessage> buscarVagas() {
         List<VagaResponseDTO> vagas = vagasService.buscarTodasVagas();
 
         if (!vagas.isEmpty()) {
-            return new ResponseEntity<>(vagas, HttpStatus.OK);
+            RestSuccessMessage sucessoMessage = new RestSuccessMessage(
+                    "Vagas encontradas com sucesso.", vagas);
+            return new ResponseEntity<>(sucessoMessage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<VagaResponseDTO>> buscarVagas(@RequestParam String processoId) {
+    public ResponseEntity<RestSuccessMessage> buscarVagas(@RequestParam String processoId) {
         List<VagaResponseDTO> vagas = vagasService.buscarVagasPorProcessoSeletivo(processoId);
 
         if (!vagas.isEmpty()) {
-            return new ResponseEntity<>(vagas, HttpStatus.OK);
+            RestSuccessMessage sucessoMessage = new RestSuccessMessage(
+                    "Vagas encontradas com sucesso.", vagas);
+            return new ResponseEntity<>(sucessoMessage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VagaResponseDTO> buscarVagaPorId(@PathVariable Long id) {
+    public ResponseEntity<RestSuccessMessage> buscarVagaPorId(@PathVariable Long id) {
         VagaResponseDTO vaga = vagasService.buscarVagaResponseDTOPorId(id);
         if (vaga != null) {
-            return new ResponseEntity<>(vaga, HttpStatus.OK);
+            RestSuccessMessage sucessoMessage = new RestSuccessMessage(
+                    "Vaga encontrada com sucesso.", vaga);
+            return new ResponseEntity<>(sucessoMessage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/cargo")
-    public ResponseEntity<List<VagaResponseDTO>> buscarVagaPorCargo(@RequestParam("cn") String cargoNome) {
+    public ResponseEntity<RestSuccessMessage> buscarVagaPorCargo(@RequestParam("cn") String cargoNome) {
         List<VagaResponseDTO> vagas = vagasService.buscarVagasPorCargo(cargoNome);
-        return new ResponseEntity<>(vagas, HttpStatus.OK);
+        RestSuccessMessage sucessoMessage = new RestSuccessMessage(
+                "Vagas encontradas com sucesso.", vagas);
+        return new ResponseEntity<>(sucessoMessage, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VagaResponseDTO> atualizarVaga(@PathVariable Long id, @Valid @RequestBody VagaUpdateDTO dto) {
+    public ResponseEntity<RestSuccessMessage> atualizarVaga(@PathVariable Long id,
+            @Valid @RequestBody VagaUpdateDTO dto) {
         VagaResponseDTO vagaAtualizada = vagasService.atualizar(id, dto);
         if (vagaAtualizada != null) {
-            return new ResponseEntity<>(vagaAtualizada, HttpStatus.OK);
+            RestSuccessMessage sucessoMessage = new RestSuccessMessage(
+                    "Vaga atualizada com sucesso.", vagaAtualizada);
+            return new ResponseEntity<>(sucessoMessage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -91,6 +102,8 @@ public class VagaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> deletarVaga(@PathVariable Long id) {
         vagasService.softDelete(id);
-        return new ResponseEntity<>(new RestSuccessMessage("Vaga deletada com sucesso.", id), HttpStatus.OK);
+        RestSuccessMessage sucessoMessage = new RestSuccessMessage(
+                "Vaga deletada com sucesso.");
+        return new ResponseEntity<>(sucessoMessage, HttpStatus.OK);
     }
 }

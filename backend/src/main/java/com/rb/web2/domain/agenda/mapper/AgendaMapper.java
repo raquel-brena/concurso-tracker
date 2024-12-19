@@ -1,11 +1,11 @@
 package com.rb.web2.domain.agenda.mapper;
 
 import com.rb.web2.domain.agenda.Agenda;
-import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.dto.AgendaRequestDTO;
 
 public class AgendaMapper {
 
-    public static Agenda toEntity(AgendaDTO dto) {
+    public static Agenda toEntity(AgendaRequestDTO dto) {
         Agenda agenda = new Agenda();
 
         if (dto.inicioVigencia() != null) {

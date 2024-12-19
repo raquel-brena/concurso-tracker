@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.agenda.Agenda;
-import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.dto.AgendaRequestDTO;
 import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 import com.rb.web2.domain.agenda.mapper.AgendaMapper;
 import com.rb.web2.domain.user.User;
@@ -30,7 +30,7 @@ public class AgendaService {
     User user = (User) userService.loadUserByUsername(login);
   }
 
-  public Agenda create(AgendaDTO dto) {
+  public Agenda create(AgendaRequestDTO dto) {
     if (dto == null) {
       throw new IllegalArgumentException("AgendaDTO não pode ser nulo.");
     }
@@ -61,7 +61,7 @@ public class AgendaService {
     repository.save(agenda);
   }
 
-  public AgendaResponseDTO updateAgenda(Long id, AgendaDTO dto) {
+  public AgendaResponseDTO updateAgenda(Long id, AgendaRequestDTO dto) {
     verificarPermissaoDeCriacaoOuAlteracao();
 
     Agenda agenda = getAgendaById(id);

@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.rb.web2.domain.agenda.Agenda;
-import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.dto.AgendaRequestDTO;
 import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 import com.rb.web2.services.AgendaService;
 import com.rb.web2.services.AuthenticationService;
@@ -26,9 +25,9 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/agendas")
 public class AgendaController {
 
-    private AgendaService service;
+    private final AgendaService service;
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     public AgendaController(AgendaService service, AuthenticationService authenticationService) {
         this.service = service;
@@ -36,10 +35,9 @@ public class AgendaController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<RestSuccessMessage> createAgenda(@Valid @RequestBody AgendaDTO dto) {
+    public ResponseEntity<RestSuccessMessage> createAgenda(@Valid @RequestBody AgendaRequestDTO dto) {
         System.out.println(authenticationService.getUsuarioAutenticado() + " tentou criar a agenda ");
         var agenda = service.create(dto);
-
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -53,15 +51,21 @@ public class AgendaController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Agenda> getAgenda(@PathVariable Long id) {
+    public ResponseEntity<RestSuccessMessage> getAgenda(@PathVariable Long id) {
         var agenda = this.service.getAgendaById(id);
-        return ResponseEntity.ok().body(agenda);
+        var agendaDTO = AgendaResponseDTO.from(agenda); // Mapeia para o DTO
+
+        RestSuccessMessage successMessage = new RestSuccessMessage("Agenda encontrada com sucesso", agendaDTO);
+
+        return ResponseEntity.ok().body(successMessage);
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<AgendaResponseDTO>> getAllAgendas() {
+    public ResponseEntity<RestSuccessMessage> getAllAgendas() {
         List<AgendaResponseDTO> agendasDTO = this.service.getAllAgendas();
-        return ResponseEntity.ok().body(agendasDTO);
+        
+        RestSuccessMessage successMessage = new RestSuccessMessage("Agendas encontradas com sucesso", agendasDTO);
+        return ResponseEntity.ok().body(successMessage);
     }
 
     @DeleteMapping("{id}")
@@ -75,7 +79,7 @@ public class AgendaController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable Long id, @Valid @RequestBody AgendaDTO dto) {
+    public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable Long id, @Valid @RequestBody AgendaRequestDTO dto) {
         var agenda = this.service.updateAgenda(id, dto);
         return ResponseEntity.ok().body(new RestSuccessMessage("Agenda atualizada com sucesso.", agenda));
     }

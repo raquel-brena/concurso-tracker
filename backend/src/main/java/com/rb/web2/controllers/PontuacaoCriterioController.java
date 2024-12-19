@@ -37,36 +37,37 @@ public class PontuacaoCriterioController {
     }
 
     @GetMapping("/inscricao")
-    public ResponseEntity<List<PontuacaoResponseDTO>> listarPontuacoesPorInscricao(
+    public ResponseEntity<RestSuccessMessage> listarPontuacoesPorInscricao(
             @RequestParam("id") String inscricaoId) {
 
         List<PontuacaoResponseDTO> pontuacoes = pontuacaoCriterioService.findByInscricao(inscricaoId);
-        return new ResponseEntity<>(pontuacoes, HttpStatus.OK);
-
+        RestSuccessMessage successMessage = new RestSuccessMessage("Pontuações encontradas com sucesso!", pontuacoes);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/criterio")
-    public ResponseEntity<List<PontuacaoResponseDTO>> listarPontuacoesPorCriterio(@RequestParam("id") Long criterioId) {
+    public ResponseEntity<RestSuccessMessage> listarPontuacoesPorCriterio(@RequestParam("id") Long criterioId) {
 
         List<PontuacaoResponseDTO> pontuacoes = pontuacaoCriterioService.findByCriterio(criterioId);
-        return new ResponseEntity<>(pontuacoes, HttpStatus.OK);
-
+        RestSuccessMessage successMessage = new RestSuccessMessage("Pontuações encontradas com sucesso!", pontuacoes);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PontuacaoResponseDTO> buscarPontuacaoPorId(@PathVariable Long id) {
+    public ResponseEntity<RestSuccessMessage> buscarPontuacaoPorId(@PathVariable Long id) {
         PontuacaoResponseDTO pontuacao = pontuacaoCriterioService.getPontuacaoCriterioById(id).orElseThrow(
                 () -> new RuntimeException("Pontuação Critério não encontrada com o id " + id));
-        return new ResponseEntity<>(pontuacao, HttpStatus.OK);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Pontuação encontrada com sucesso!", pontuacao);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PontuacaoResponseDTO> atualizarPontuacao(@PathVariable Long id,
+    public ResponseEntity<RestSuccessMessage> atualizarPontuacao(@PathVariable Long id,
             @Valid @RequestBody PontuacaoRequestDTO dto) {
 
         PontuacaoResponseDTO pontuacaoAtualizada = pontuacaoCriterioService.update(id, dto);
-        return new ResponseEntity<>(pontuacaoAtualizada, HttpStatus.OK);
-
+        RestSuccessMessage successMessage = new RestSuccessMessage("Pontuação atualizada com sucesso!", pontuacaoAtualizada);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/total")
@@ -78,8 +79,10 @@ public class PontuacaoCriterioController {
     }
 
     @GetMapping("/total/processo")
-    public String calcularNotaTotalPorProcesso(@RequestParam("id") String processoId) {
-        return pontuacaoCriterioService.calcularNotaTotalPorInscricaoDoProcesso(processoId).toString();
+    public ResponseEntity<RestSuccessMessage> calcularNotaTotalPorProcesso(@RequestParam("id") String processoId) {
+        String notaTotal = pontuacaoCriterioService.calcularNotaTotalPorInscricaoDoProcesso(processoId).toString();
+        RestSuccessMessage successMessage = new RestSuccessMessage("Nota total calculada com sucesso!", notaTotal);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

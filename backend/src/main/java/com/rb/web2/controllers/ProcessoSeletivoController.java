@@ -46,9 +46,10 @@ public class ProcessoSeletivoController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<?> getProcessoSeletivo(@PathVariable String id) {
+    public ResponseEntity<RestSuccessMessage> getProcessoSeletivo(@PathVariable String id) {
         var processo = this.service.getProcessoSeletivoById(id);
-        return ResponseEntity.ok().body(processo);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Consulta realizada com sucesso", ProcessoResponseDTO.from(processo));
+        return ResponseEntity.ok(successMessage);
     }
 
     @PostMapping("/membro-comissao")
