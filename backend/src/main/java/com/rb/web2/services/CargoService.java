@@ -3,7 +3,6 @@ package com.rb.web2.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +24,6 @@ public class CargoService {
     private void verificarPermissaoDeCriacaoOuAlteracao() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = (User) userService.loadUserByUsername(login);
-
-        if (!user.hasPermissionToCreateCargos()) {
-            throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar cargos.");
-        }
     }
 
     public Cargo criarCargo(CargoRequestDTO dto) {

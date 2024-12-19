@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +28,6 @@ public class AgendaService {
   private void verificarPermissaoDeCriacaoOuAlteracao() {
     String login = SecurityContextHolder.getContext().getAuthentication().getName();
     User user = (User) userService.loadUserByUsername(login);
-
-    if (!user.hasPermissionToCreateAgenda()) {
-      throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar agendas.");
-    }
   }
 
   public Agenda create(AgendaDTO dto) {

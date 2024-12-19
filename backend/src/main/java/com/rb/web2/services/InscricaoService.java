@@ -3,7 +3,6 @@ package com.rb.web2.services;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -37,10 +36,6 @@ public class InscricaoService {
   private void verificarPermissaoDeCriacaoOuAlteracao() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = (User) userService.loadUserByUsername(login);
-
-        if (!user.hasPermissionToCreateCriterios()) {
-            throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar critérios.");
-        }
     }
 
   public Inscricao create(RequestInscricaoDTO dto) {

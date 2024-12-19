@@ -17,7 +17,7 @@ import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 import com.rb.web2.services.AgendaService;
-import com.rb.web2.services.UserService;
+import com.rb.web2.services.AuthenticationService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.validation.Valid;
@@ -26,17 +26,20 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/agendas")
 public class AgendaController {
 
-    AgendaService service;
-        private UserService userService;
-    
-        public AgendaController(AgendaService service) {
-            this.service = service;
-            this.userService = userService;
-        }
-    
-        @PostMapping("/")
-        public ResponseEntity<RestSuccessMessage> createAgenda(@Valid @RequestBody AgendaDTO dto) {
+    private AgendaService service;
+
+    private AuthenticationService authenticationService;
+
+    public AgendaController(AgendaService service, AuthenticationService authenticationService) {
+        this.service = service;
+        this.authenticationService = authenticationService;
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<RestSuccessMessage> createAgenda(@Valid @RequestBody AgendaDTO dto) {
+        System.out.println(authenticationService.getUsuarioAutenticado() + " tentou criar a agenda ");
         var agenda = service.create(dto);
+
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -51,10 +50,6 @@ public class DocumentoService {
   private void verificarPermissaoDeCriacaoOuAlteracao() {
     String login = SecurityContextHolder.getContext().getAuthentication().getName();
     User user = (User) userService.loadUserByUsername(login);
-
-    if (!user.hasPermissionToCreateCriterios()) {
-      throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar critérios.");
-    }
   }
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {

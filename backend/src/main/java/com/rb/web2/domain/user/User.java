@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,22 +15,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.enums.Perfil;
-import com.rb.web2.domain.enums.Permissao;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -85,11 +79,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Inscricao> inscricoes;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"))
-    private Set<Permissao> permissions;
-
     @Column(nullable = false)
     private boolean ativo = true;
 
@@ -117,8 +106,6 @@ public class User implements UserDetails {
 
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.perfil.name().toUpperCase()));
 
-        System.out.println("Authorities: " + authorities);
-
         return authorities;
     }
 
@@ -145,21 +132,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public boolean hasPermissionToCreateAgenda() {
-        return this.permissions.contains(Permissao.EDIT_AGENDA);
-    }
-
-    public boolean hasPermissionToCreateCargos() {
-        return this.permissions.contains(Permissao.EDIT_CARGOS);
-    }
-
-    public boolean hasPermissionToCreateCriterios() {
-        return this.permissions.contains(Permissao.EDIT_CRITERIOS);
-    }
-
-    public boolean hasPermissionToCreateDocumentoInscricao() {
-        return this.permissions.contains(Permissao.EDIT_DOCUMENTO);
     }
 }

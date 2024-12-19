@@ -1,8 +1,13 @@
 package com.rb.web2.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -58,6 +63,17 @@ public class AuthenticationService implements UserDetailsService {
     public ResponseUserDTO getUsuarioAutenticado() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = (User) userService.loadUserByUsername(login);
+
+        List<GrantedAuthority> authorities = user.getAuthorities().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.toString())) // Garantir que seja uma String
+                .collect(Collectors.toList());
+
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUsername(),
+                user.getPassword(), authorities);
+
+        // Imprimir o objeto UserDetails
+        System.out.println(userDetails + " foi autenticado");
+
         ResponseUserDTO userResponse = UserMapper.toResponseUserDTO(user);
         return userResponse;
     }
