@@ -3,7 +3,6 @@ package com.rb.web2.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -53,9 +52,9 @@ public class ProcessoSeletivoService {
     if (dto.titulo() == null || dto.validade() == null) {
       throw new NotFoundException("Titulo do processo seletivo não pode ser nulo");
     }
-    var existeProcesso = this.getProcessoSeletivoByTitulo(dto.titulo());
+    ProcessoSeletivo existeProcesso = this.getProcessoSeletivoByTitulo(dto.titulo());
 
-    if (existeProcesso.isPresent()) {
+    if (existeProcesso != null) {
       throw new NotFoundException("Processo seletivo com o nome " + dto.titulo() + " já existe");
     }
 
@@ -64,13 +63,24 @@ public class ProcessoSeletivoService {
     return ProcessoResponseDTO.from(processoCriado);
   }
 
+  public ProcessoResponseDTO getById(String id) {
+    return ProcessoResponseDTO.from(repository.findById(id)
+        .orElseThrow(() -> new NotFoundException("Processo não encontrado")));
+  }
+
   public ProcessoSeletivo getProcessoSeletivoById(String id) {
-    return repository.findById(id)
+    return repository.findById(id).orElseThrow(() -> new NotFoundException("Processo não encontrado"));
+  }
+
+  public ProcessoResponseDTO getByTitulo(String titulo) {
+    return repository.findByTitulo(titulo)
+        .map(ProcessoResponseDTO::from)
         .orElseThrow(() -> new NotFoundException("Processo não encontrado"));
   }
 
-  public Optional<ProcessoSeletivo> getProcessoSeletivoByTitulo(String titulo) {
-    return repository.findByTitulo(titulo);
+  public ProcessoSeletivo getProcessoSeletivoByTitulo(String titulo) {
+    return repository.findByTitulo(titulo)
+        .orElseThrow(() -> new NotFoundException("Processo não encontrado"));
   }
 
   public List<ProcessoResponseDTO> getAllProcessoSeletivos() {
@@ -79,7 +89,7 @@ public class ProcessoSeletivoService {
         .toList();
   }
 
-  public ProcessoSeletivo update(String processoId) {
+  public ProcessoResponseDTO update(String processoId) {
     ProcessoSeletivo processo = repository.findById(processoId)
         .orElseThrow(() -> new NotFoundException("Processo não encontrado"));
 
@@ -121,12 +131,16 @@ public class ProcessoSeletivoService {
     // processo.setParticipantes(participantes);
     // }
 
-    return repository.save(processo);
+    repository.save(processo);
+    return ProcessoResponseDTO.from(processo);
   }
 
-  public List<ProcessoSeletivo> buscarProcessos(String termo) {
-    return repository.findByTituloContainingIgnoreCaseOrDescricaoContainingOrderByAgendaInicioInscricaoDesc(termo,
-        termo);
+  public List<ProcessoResponseDTO> buscarProcessos(String termo) {
+    List<ProcessoSeletivo> processos = repository
+        .findByTituloContainingIgnoreCaseOrDescricaoContainingOrderByAgendaInicioInscricaoDesc(termo,
+            termo);
+
+    return processos.stream().map(ProcessoResponseDTO::from).toList();
   }
 
   public void adicionarMembroComissao(MembroComissaoRequestDTO dto) {
@@ -165,11 +179,11 @@ public class ProcessoSeletivoService {
     return repository.save(processo).getId();
   }
 
-  public void homologarDocumentacao(){
-    
+  public void homologarDocumentacao() {
+
   }
 
-  public ProcessoSeletivo atualizar(String id, UpdateProcessoDTO dto) {
+  public ProcessoResponseDTO atualizar(String id, UpdateProcessoDTO dto) {
     ProcessoSeletivo processo = this.getProcessoSeletivoById(id);
 
     if (dto.titulo() != null) {
@@ -218,11 +232,12 @@ public class ProcessoSeletivoService {
     }
 
     // if (dto.criteriosIds() != null) {
-    //   List<CriterioAvaliacao> criterios = criterioAvaliacaoRepository.findAllById(dto.criteriosIds());
-    //   if (criterios.isEmpty()) {
-    //     throw new NotFoundException("Criterio de avaliação não encontrado");
-    //   }
-    //   processo.setCriterios(criterios);
+    // List<CriterioAvaliacao> criterios =
+    // criterioAvaliacaoRepository.findAllById(dto.criteriosIds());
+    // if (criterios.isEmpty()) {
+    // throw new NotFoundException("Criterio de avaliação não encontrado");
+    // }
+    // processo.setCriterios(criterios);
     // }
 
     if (dto.comissaoOrganizadoraIds() != null) {
@@ -235,7 +250,8 @@ public class ProcessoSeletivoService {
       processo.setComissaoOrganizadora(comissao);
     }
 
-    return repository.save(processo);
+    repository.save(processo);
+    return ProcessoResponseDTO.from(processo);
   }
 
   public List<ProcessoResponseDTO> getProcessoSeletivoByParticipante(String id) {

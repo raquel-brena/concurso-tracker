@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.criterioAvaliacao.dto.CriterioRequestDTO;
 import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
 import com.rb.web2.services.CriterioAvaliacaoService;
@@ -32,7 +31,7 @@ public class CriterioAvaliacaoController {
 
     @PostMapping
     public ResponseEntity<RestSuccessMessage> criarCriterio(@Valid @RequestBody CriterioRequestDTO requestCriterioDTO) {
-        CriterioAvaliacao criterioSalvo = criterioAvaliacaoService.create(requestCriterioDTO);
+        CriterioResponseDTO criterioSalvo = criterioAvaliacaoService.create(requestCriterioDTO);
         RestSuccessMessage successMessage = new RestSuccessMessage("Critério de avaliação criado com sucesso",
                 criterioSalvo);
         return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
@@ -59,7 +58,7 @@ public class CriterioAvaliacaoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> buscarCriterioPorId(@PathVariable Long id) {
-        CriterioAvaliacao criterioOptional = criterioAvaliacaoService.getCriterioById(id);
+        CriterioResponseDTO criterioOptional = criterioAvaliacaoService.getById(id);
         RestSuccessMessage successMessage = new RestSuccessMessage("Critério de avaliação encontrado com sucesso",
                 criterioOptional);
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
@@ -69,7 +68,7 @@ public class CriterioAvaliacaoController {
     public ResponseEntity<RestSuccessMessage> atualizarCriterio(@PathVariable Long id,
             @Valid @RequestBody CriterioRequestDTO requestCriterioDTO) {
 
-        CriterioAvaliacao criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
+        CriterioResponseDTO criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
         RestSuccessMessage successMessage = new RestSuccessMessage("Critério de avaliação atualizado com sucesso",
                 criterioAtualizado);
         return new ResponseEntity<>(successMessage, HttpStatus.OK);

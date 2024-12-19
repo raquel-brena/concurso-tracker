@@ -32,13 +32,13 @@ public class InscricaoService {
     this.userService = userService;
     this.vagaService = vagaService;
   }
-  
-  private void verificarPermissaoDeCriacaoOuAlteracao() {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = (User) userService.loadUserByUsername(login);
-    }
 
-  public Inscricao create(InscricaoRequestDTO dto) {
+  private void verificarPermissaoDeCriacaoOuAlteracao() {
+    String login = SecurityContextHolder.getContext().getAuthentication().getName();
+    User user = (User) userService.loadUserByUsername(login);
+  }
+
+  public InscricaoResponseDTO create(InscricaoRequestDTO dto) {
     verificarPermissaoDeCriacaoOuAlteracao();
 
     User candidato = userService.getUserById(dto.candidatoId());
@@ -46,15 +46,22 @@ public class InscricaoService {
 
     Inscricao inscricao = InscricaoMapper
         .toEntity(dto, candidato, vaga);
+    inscricaoRepository.save(inscricao);
 
-    return inscricaoRepository.save(inscricao);
+    return InscricaoMapper.toDTO(inscricao);
+  }
+
+  public InscricaoResponseDTO buscarPorId(String id) {
+    return inscricaoRepository.findById(id)
+        .map(InscricaoMapper::toDTO)
+        .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
 
   public Inscricao buscarInscricaoPorId(String id) {
-    return inscricaoRepository.findById(id).orElseThrow(() 
-    -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
+    return inscricaoRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
- 
+
   public InscricaoResponseDTO getResponseInscricaoDTOById(String id) {
     return inscricaoRepository.findById(id)
         .map(InscricaoMapper::toDTO)
@@ -97,7 +104,7 @@ public class InscricaoService {
     return applications;
   }
 
-  public Inscricao atualizarInscricao(String id, UpdateInscricaoDTO dto) {
+  public InscricaoResponseDTO atualizarInscricao(String id, UpdateInscricaoDTO dto) {
     verificarPermissaoDeCriacaoOuAlteracao();
     Inscricao existingInscricao = this.buscarInscricaoPorId(id);
 
@@ -106,20 +113,23 @@ public class InscricaoService {
     }
 
     // if (dto.ativo() != null) {
-    //     existingInscricao.setAtivo(dto.ativo());
+    // existingInscricao.setAtivo(dto.ativo());
     // }
 
     // if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
-    //     List<CriterioAvaliacao> criterios = criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
-    //     existingInscricao.setAvaliacoes(criterios);
+    // List<CriterioAvaliacao> criterios =
+    // criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
+    // existingInscricao.setAvaliacoes(criterios);
     // }
 
     // if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
-    //   List<CriterioAvaliacao> criterios = criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
-    //   existingInscricao.setAvaliacoes(criterios);
+    // List<CriterioAvaliacao> criterios =
+    // criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
+    // existingInscricao.setAvaliacoes(criterios);
     // }
 
-    return inscricaoRepository.save(existingInscricao);
+    inscricaoRepository.save(existingInscricao);
+    return InscricaoMapper.toDTO(existingInscricao);
   }
 
   public void softDelete(String id) {
@@ -129,8 +139,20 @@ public class InscricaoService {
     inscricaoRepository.save(inscricao);
   }
 
-  public List<Inscricao> findByProcesso(String processoId) {
+  public List<Inscricao> findInscricaoByProcesso(String processoId) {
     return inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
+  }
+
+  public List<InscricaoResponseDTO> findByProcesso(String processoId) {
+    List<Inscricao> inscricoes = inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+        .map(inscricao -> new InscricaoResponseDTO(
+            inscricao.getId(),
+            inscricao.getCandidato().getId(),
+            inscricao.getVaga().getId(),
+            inscricao.getDeletadoEm()))
+        .toList();
+    return applications;
   }
 
   public boolean existsByInscricaoId(String inscricaoId) {

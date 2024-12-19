@@ -47,12 +47,14 @@ public class AuthenticationService implements UserDetailsService {
         return new LoginResponseDTO(token);
     }
 
-    public User register(RegisterDTO data) {
+    public UserResponseDTO register(RegisterDTO data) {
         this.userService.checkUserExists(data.login());
 
         String encryptedPassword = passwordEncoder.encode(data.password());
 
-        return this.userService.create(new User(data.login(), encryptedPassword, Perfil.USER));
+        User user = this.userService.create(new User(data.login(), encryptedPassword, Perfil.USER));
+        
+        return UserResponseDTO.from(user);
     }
 
     @Override

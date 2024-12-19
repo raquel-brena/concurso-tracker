@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> getUser(@PathVariable String id) {
-        User user = this.service.getUserById(id);
+        UserResponseDTO user = this.service.getById(id);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                 .body(null);
@@ -57,7 +57,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<RestSuccessMessage> updateUser(@Valid @RequestBody UpdateUserDTO dto) {
-        var user = this.service.getUserById(dto.userId());
+        UserResponseDTO user = this.service.getById(dto.userId());
 
         // var role = user.getRole();
         // // if (!(dto.roleId() == null)) {

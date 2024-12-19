@@ -23,6 +23,11 @@ public class UserService {
         return this.repository.save(user);
     }
 
+    public UserResponseDTO getById(String userId) {
+        User user = this.getUserById(userId);
+        return UserMapper.toResponseUserDTO(user);
+    }
+
     public User getUserById(String userId) {
         User user = repository.findById(userId).orElseThrow(
             () -> new NotFoundException(userId));
@@ -30,7 +35,6 @@ public class UserService {
         return user;
     }
     
-
     public UserDetails loadUserByUsername(String login) {
         return this.repository.findByLogin(login)
                 .orElseThrow(() -> new NotFoundException("User doesn't exist"));

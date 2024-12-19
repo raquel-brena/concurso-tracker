@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
 import com.rb.web2.services.ProcessoSeletivoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
@@ -26,7 +26,7 @@ public class BuscarController {
             @RequestParam String type) {
 
         if ("processos".equalsIgnoreCase(type)) {
-            List<ProcessoSeletivo> result = processoSeletivoService
+            List<ProcessoResponseDTO> result = processoSeletivoService
                     .buscarProcessos(q);
             RestSuccessMessage successMessage = new RestSuccessMessage("Processos encontrados com sucesso", result);
             return ResponseEntity.ok(successMessage);
@@ -34,7 +34,7 @@ public class BuscarController {
             // Exemplo de outros tipos de busca
         }
 
-        List<ProcessoSeletivo> result = processoSeletivoService.buscarProcessos(q);
+        List<ProcessoResponseDTO> result = processoSeletivoService.buscarProcessos(q);
         RestSuccessMessage successMessage = new RestSuccessMessage("Processos encontrados com sucesso", result);
         return ResponseEntity.ok(successMessage);
     }

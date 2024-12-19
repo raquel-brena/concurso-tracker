@@ -27,28 +27,39 @@ public class CriterioAvaliacaoService {
         User user = (User) userService.loadUserByUsername(login);
     }
 
-    public CriterioAvaliacao create(CriterioRequestDTO dto) {
+    public CriterioResponseDTO create(CriterioRequestDTO dto) {
         verificarPermissaoDeCriacaoOuAlteracao();
 
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
         criterioAvaliacao.setNome(dto.nome());
         criterioAvaliacao.setPeso(dto.peso());
         // criterioAvaliacao.setProcessoSeletivo(processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId()));
-        return repository.save(criterioAvaliacao);
+        repository.save(criterioAvaliacao);
+        return CriterioResponseDTO.from(criterioAvaliacao);
+    }
+
+    public CriterioResponseDTO getById(Long id) {
+        CriterioAvaliacao criterio = repository.findById(id).orElseThrow(() -> new NotFoundException(""));
+        return CriterioResponseDTO.from(criterio);
     }
 
     public CriterioAvaliacao getCriterioById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException(""));
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("CriterioAvaliacao not found"));
     }
 
-    public CriterioAvaliacao update(Long id, CriterioRequestDTO dto) {
+    public CriterioResponseDTO update(Long id, CriterioRequestDTO dto) {
         verificarPermissaoDeCriacaoOuAlteracao();
-        CriterioAvaliacao criterioAvaliacao = this.getCriterioById(id);
+        this.repository.existsById(id);
+
+        CriterioAvaliacao criterioAvaliacao = this.repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("CriterioAvaliacao not found"));
 
         criterioAvaliacao.setNome(dto.nome());
         criterioAvaliacao.setPeso(dto.peso());
 
-        return repository.save(criterioAvaliacao);
+        criterioAvaliacao = repository.save(criterioAvaliacao);
+        return CriterioResponseDTO.from(criterioAvaliacao);
     }
 
     public List<CriterioResponseDTO> findAllByProcessoSeletivo(String processoSeletivoId) {

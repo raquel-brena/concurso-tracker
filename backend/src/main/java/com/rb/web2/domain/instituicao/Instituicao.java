@@ -34,10 +34,10 @@ public class Instituicao {
     private String id; 
 
     @Column(nullable = false)
-    private String name;
+    private String nome;
 
     @Column
-    private String location;
+    private String local;
 
     @ManyToMany
     private List<ProcessoSeletivo> processos;
@@ -54,8 +54,8 @@ public class Instituicao {
     private LocalDateTime atualizadoEm;
 
     public Instituicao(String name, String location) {
-        this.name = name;
-        this.location = location;
+        this.nome = name;
+        this.local = location;
         this.ativo = true;
     }
 }

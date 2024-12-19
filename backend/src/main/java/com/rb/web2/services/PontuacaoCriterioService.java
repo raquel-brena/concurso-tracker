@@ -107,7 +107,7 @@ public class PontuacaoCriterioService {
     }
 
     public Map<String, BigDecimal> calcularNotaTotalPorInscricaoDoProcesso(String processoId) {
-        List<Inscricao> inscricoes = inscricaoService.findByProcesso(processoId);
+        List<Inscricao> inscricoes = inscricaoService.findInscricaoByProcesso(processoId);
         List<Inscricao> inscricoesComPontuacoes = inscricoes.stream()
                 .filter(inscricao -> !pontuacaoCriterioRepository.findByInscricaoId(inscricao.getId()).isEmpty())
                 .toList();

@@ -7,6 +7,7 @@ import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
 import com.rb.web2.domain.user.User;
 
 public record UserResponseDTO(
+                String id,
                 boolean ativo,
                 String nome,
                 String email,
@@ -16,6 +17,7 @@ public record UserResponseDTO(
                 List<String> permissoes) {
         public static UserResponseDTO from(User user) {
                 return new UserResponseDTO(
+                                user.getId(),
                                 user.isAtivo(),
                                 user.getNome(),
                                 user.getEmail(),

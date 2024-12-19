@@ -9,8 +9,9 @@ import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
 
 public record InstituicaoResponseDTO(
     String id,
-    String name,
-    String location,
+    String nome,
+    String local,
+    // String cnpj,
     List<ProcessoResponseDTO> processos,
     boolean ativo,
     LocalDateTime criadoEm,
@@ -20,9 +21,9 @@ public record InstituicaoResponseDTO(
     public static InstituicaoResponseDTO from(Instituicao instituicao) {
         return new InstituicaoResponseDTO(
                 instituicao.getId(),
-                instituicao.getName(),
-                instituicao.getLocation(),
-                // Convertendo a lista de processos seletivos para o DTO
+                instituicao.getNome(),
+                instituicao.getLocal(),
+                // instituicao.getCnpj(),
                 instituicao.getProcessos().stream()
                         .map(ProcessoResponseDTO::from)
                         .collect(Collectors.toList()),

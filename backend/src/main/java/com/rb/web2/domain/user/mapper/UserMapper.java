@@ -30,6 +30,7 @@ public class UserMapper {
                 .toList();
 
         return new UserResponseDTO(
+                user.getId(),
                 user.isAtivo(),
                 user.getNome(),
                 user.getEmail(),

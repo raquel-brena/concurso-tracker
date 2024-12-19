@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.inscricao.dto.InscricaoRequestDTO;
 import com.rb.web2.domain.inscricao.dto.InscricaoResponseDTO;
 import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
-import com.rb.web2.domain.inscricao.mapper.InscricaoMapper;
 import com.rb.web2.services.InscricaoService;
 import com.rb.web2.services.PontuacaoCriterioService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
@@ -49,14 +47,15 @@ public class InscricaoController {
     public ResponseEntity<RestSuccessMessage> getAllInscricoes(@RequestParam String candidatoId) {
         List<InscricaoResponseDTO> applications = service.getAllInscricoesPorCandidato(candidatoId);
         RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso", applications);
-        return new ResponseEntity<>(successMessage, HttpStatus.OK);        
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/vaga")
     public ResponseEntity<RestSuccessMessage> getAllInscricoes(@RequestParam Long vagaId) {
         List<InscricaoResponseDTO> applications = service.getAllInscricoesPorVaga(vagaId);
         if (!applications.isEmpty()) {
-            RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso", applications);
+            RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso",
+                    applications);
             return new ResponseEntity<>(successMessage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -65,10 +64,10 @@ public class InscricaoController {
 
     @PostMapping
     public ResponseEntity<RestSuccessMessage> createInscricao(@Valid @RequestBody InscricaoRequestDTO dto) {
-        Inscricao inscricaoCriada = service.create(dto);
+        InscricaoResponseDTO inscricaoCriada = service.create(dto);
         service.create(dto);
         RestSuccessMessage successMessage = new RestSuccessMessage(
-                "Inscrição com ID: " + inscricaoCriada.getId() + " criada com sucesso.");
+                "Inscrição com ID: " + inscricaoCriada.id() + " criada com sucesso.");
 
         return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
     }
@@ -85,10 +84,8 @@ public class InscricaoController {
             @PathVariable String id,
             @Valid @RequestBody @Validated UpdateInscricaoDTO dto) {
 
-        var updatedApplication = this.service.atualizarInscricao(id, dto);
-        InscricaoResponseDTO responseDTO = InscricaoMapper.toDTO(updatedApplication);
-        
-        RestSuccessMessage successMessage = new RestSuccessMessage("Inscrição atualizada com sucesso", responseDTO);
+        InscricaoResponseDTO updatedApplication = this.service.atualizarInscricao(id, dto);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Inscrição atualizada com sucesso", updatedApplication);
 
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
@@ -98,7 +95,8 @@ public class InscricaoController {
             @RequestParam("id") String processoId) {
         List<InscricaoResponseDTO> applications = service.getAllInscricoesPorProcessoSeletivo(processoId);
         if (!applications.isEmpty()) {
-            RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso", applications);
+            RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso",
+                    applications);
             return new ResponseEntity<>(successMessage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
