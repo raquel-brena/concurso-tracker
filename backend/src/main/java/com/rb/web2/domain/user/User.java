@@ -15,8 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.enums.Permissao;
-import com.rb.web2.domain.enums.Role;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
@@ -66,7 +66,7 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Perfil perfil;
 
     @Column(unique = true)
     private String email;
@@ -101,21 +101,21 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
 
-    public User(String login, String password, Role role) {
+    public User(String login, String password, Perfil perfil) {
         this.login = login;
         this.password = password;
-        this.role = role;
+        this.perfil = perfil;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        authorities.addAll(this.role.getPermissions().stream()
+        authorities.addAll(this.perfil.getPermissoes().stream()
                 .map(p -> new SimpleGrantedAuthority(p.name()))
                 .collect(Collectors.toList()));
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.role.name().toUpperCase()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.perfil.name().toUpperCase()));
 
         System.out.println("Authorities: " + authorities);
 

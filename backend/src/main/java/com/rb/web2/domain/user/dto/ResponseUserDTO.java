@@ -1,5 +1,9 @@
 package com.rb.web2.domain.user.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
 import com.rb.web2.domain.user.User;
 
 public record ResponseUserDTO(
@@ -8,14 +12,7 @@ public record ResponseUserDTO(
         String email,
         String cpf,
         String telefone,
-        String cargo) {
-    public static ResponseUserDTO from(User user) {
-        return new ResponseUserDTO(
-                user.isAtivo(),
-                user.getNome(),
-                user.getEmail(),
-                user.getCpf(),
-                user.getTelefone(),
-                user.getRole() != null ? user.getRole().name() : null);
-    }
+        List<DocumentoResponseDTO> documentos,
+        List<String> permissoes) {
+  
 }
