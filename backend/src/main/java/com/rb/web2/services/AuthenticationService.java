@@ -39,7 +39,6 @@ public class AuthenticationService implements UserDetailsService {
         var auth = this.authenticationManager.authenticate(userNamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
         return new ResponseLoginDTO(token);
-
     }
 
     public User register(RegisterDTO data) {

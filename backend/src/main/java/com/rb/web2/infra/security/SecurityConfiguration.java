@@ -31,42 +31,46 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Rotas públicas (não requerem autenticação)
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()  // Permite acesso ao Swagger UI
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Permite acesso ao Swagger
+                                                                                          // UI
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/buscar/**").permitAll()
 
                         // Rotas de usuário básico (USER role)
-                        .requestMatchers(HttpMethod.GET, "/api/user/**").hasAuthority("ROLE_VIEW_USER")
-                        .requestMatchers(HttpMethod.POST, "/api/user/**").hasAuthority("ROLE_REGISTER_USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/user/**").hasAuthority("ROLE_EDIT_USER")
+                        .requestMatchers(HttpMethod.GET, "/api/user/**").hasAuthority("VIEW_USER")
+                        .requestMatchers(HttpMethod.POST, "/api/user/**").hasAuthority("REGISTER_USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/user/**").hasAuthority("EDIT_USER")
 
                         // Rotas relacionadas a processos seletivos
-                        .requestMatchers(HttpMethod.GET, "/api/processo/**").hasAuthority("ROLE_VIEW_PROCESSO_SELETIVO")
+                        .requestMatchers(HttpMethod.GET, "/api/processo/**").hasAuthority("VIEW_PROCESSO_SELETIVO")
                         .requestMatchers(HttpMethod.POST, "/api/processo/**")
-                        .hasAuthority("ROLE_EDIT_PROCESSO_SELETIVO")
-                        .requestMatchers(HttpMethod.PUT, "/api/processo/**").hasAuthority("ROLE_EDIT_PROCESSO_SELETIVO")
+                        .hasAuthority("EDIT_PROCESSO_SELETIVO")
+                        .requestMatchers(HttpMethod.PUT, "/api/processo/**").hasAuthority("EDIT_PROCESSO_SELETIVO")
 
                         // Rotas relacionadas a critérios
-                        .requestMatchers(HttpMethod.GET, "/api/criterios/**").hasAuthority("ROLE_VIEW_CRITERIOS")
-                        .requestMatchers(HttpMethod.POST, "/api/criterios/**").hasAuthority("ROLE_EDIT_CRITERIOS")
-                        .requestMatchers(HttpMethod.PUT, "/api/criterios/**").hasAuthority("ROLE_EDIT_CRITERIOS")
+                        .requestMatchers(HttpMethod.GET, "/api/criterios/**").hasAuthority("VIEW_CRITERIOS")
+                        .requestMatchers(HttpMethod.POST, "/api/criterios/**").hasAuthority("EDIT_CRITERIOS")
+                        .requestMatchers(HttpMethod.PUT, "/api/criterios/**").hasAuthority("EDIT_CRITERIOS")
 
                         // Rotas relacionadas a inscrições
-                        .requestMatchers(HttpMethod.GET, "/api/inscricoes/**").hasAuthority("ROLE_VIEW_INSCRICOES")
-                        .requestMatchers(HttpMethod.POST, "/api/inscricoes/**").hasAuthority("ROLE_EDIT_INSCRICOES")
-                        .requestMatchers(HttpMethod.PUT, "/api/inscricoes/**").hasAuthority("ROLE_EDIT_INSCRICOES")
+                        .requestMatchers(HttpMethod.GET, "/api/inscricoes/**").hasAuthority("VIEW_INSCRICOES")
+                        .requestMatchers(HttpMethod.POST, "/api/inscricoes/**").hasAuthority("EDIT_INSCRICOES")
+                        .requestMatchers(HttpMethod.PUT, "/api/inscricoes/**").hasAuthority("EDIT_INSCRICOES")
 
                         // Rotas relacionadas a agendas
-                        .requestMatchers(HttpMethod.GET, "/api/agenda/**").hasAuthority("ROLE_VIEW_AGENDA")
-                        .requestMatchers(HttpMethod.POST, "/api/agenda/**").hasAuthority("ROLE_EDIT_AGENDA")
-                        .requestMatchers(HttpMethod.PUT, "/api/agenda/**").hasAuthority("ROLE_EDIT_AGENDA")
+                        .requestMatchers(HttpMethod.GET, "/api/agenda/**").hasAuthority("VIEW_AGENDA")
+                        .requestMatchers(HttpMethod.POST, "/api/agenda/**").hasAuthority("EDIT_AGENDA")
+                        .requestMatchers(HttpMethod.PUT, "/api/agenda/**").hasAuthority("EDIT_AGENDA")
 
                         // Rotas relacionadas a documentos
-                        .requestMatchers(HttpMethod.GET, "/api/documentos/**").hasAuthority("ROLE_VIEW_DOCUMENTOS")
-                        .requestMatchers(HttpMethod.POST, "/api/documentos/**").hasAuthority("ROLE_EDIT_DOCUMENTOS")
-                        .requestMatchers(HttpMethod.PUT, "/api/documentos/**").hasAuthority("ROLE_EDIT_DOCUMENTOS")
+                        .requestMatchers(HttpMethod.GET, "/api/documentos/**").hasAuthority("VIEW_DOCUMENTOS")
+                        .requestMatchers(HttpMethod.POST, "/api/documentos/**").hasAuthority("EDIT_DOCUMENTOS")
+                        .requestMatchers(HttpMethod.PUT, "/api/documentos/**").hasAuthority("EDIT_DOCUMENTOS")
 
                         // Rotas administrativas (ADMIN role)
+                        .requestMatchers(HttpMethod.GET, "/api/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("ROLE_ADMIN")
 
                         // Qualquer outra rota requer autenticação

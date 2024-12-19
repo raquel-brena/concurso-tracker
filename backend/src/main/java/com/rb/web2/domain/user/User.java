@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -18,7 +19,6 @@ import com.rb.web2.domain.enums.Permissao;
 import com.rb.web2.domain.enums.Role;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.services.PermissaoMapper;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -35,7 +35,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -58,10 +57,9 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String login;
 
-    @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String cpf;
 
     @Column(nullable = false)
@@ -103,22 +101,23 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
 
-    @Transient
-    private PermissaoMapper permissaoMapper;
-
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
         this.role = role;
-        this.permissaoMapper = new PermissaoMapper();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        this.permissaoMapper.getPermissoesPorRole(this.role).forEach(
-                permissao -> authorities.add(new SimpleGrantedAuthority("ROLE_" + permissao.name().toUpperCase())));
+        authorities.addAll(this.role.getPermissions().stream()
+                .map(p -> new SimpleGrantedAuthority(p.name()))
+                .collect(Collectors.toList()));
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.role.name().toUpperCase()));
+
+        System.out.println("Authorities: " + authorities);
 
         return authorities;
     }
