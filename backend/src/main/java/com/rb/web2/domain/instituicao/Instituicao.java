@@ -21,13 +21,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "instituicoes")
-@Entity(name = "instituicoes")
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Table(name = "instituicoes")
 public class Instituicao { 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -53,9 +53,9 @@ public class Instituicao {
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
 
-    public Instituicao(String name, String location) {
-        this.nome = name;
-        this.local = location;
+    public Instituicao(String nome, String local) {
+        this.nome = nome;
+        this.local = local;
         this.ativo = true;
     }
 }
