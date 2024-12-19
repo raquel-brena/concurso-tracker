@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
-import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.CriterioRequestDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
 import com.rb.web2.services.CriterioAvaliacaoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
@@ -31,24 +31,24 @@ public class CriterioAvaliacaoController {
     private CriterioAvaliacaoService criterioAvaliacaoService;
 
     @PostMapping
-    public ResponseEntity<CriterioAvaliacao> criarCriterio(@Valid @RequestBody RequestCriterioDTO requestCriterioDTO) {
+    public ResponseEntity<CriterioAvaliacao> criarCriterio(@Valid @RequestBody CriterioRequestDTO requestCriterioDTO) {
         CriterioAvaliacao criterioSalvo = criterioAvaliacaoService.create(requestCriterioDTO);
         return new ResponseEntity<>(criterioSalvo, HttpStatus.CREATED);
 
     }
 
     @GetMapping("/processo")
-    public ResponseEntity<List<ResponseCriterioDTO>> buscarCriteriosPorProcessoSeletivo(
+    public ResponseEntity<List<CriterioResponseDTO>> buscarCriteriosPorProcessoSeletivo(
             @RequestParam("id") String processoSeletivoId) {
 
-        List<ResponseCriterioDTO> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
+        List<CriterioResponseDTO> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
         return new ResponseEntity<>(criterios, HttpStatus.OK);
     }
 
     @GetMapping("/inscricao")
-    public ResponseEntity<List<ResponseCriterioDTO>> buscarCriteriosPorInscricao(
+    public ResponseEntity<List<CriterioResponseDTO>> buscarCriteriosPorInscricao(
             @RequestParam("id") String inscricaoId) {
-        List<ResponseCriterioDTO> criterios = criterioAvaliacaoService.findAllByInscricao(inscricaoId);
+        List<CriterioResponseDTO> criterios = criterioAvaliacaoService.findAllByInscricao(inscricaoId);
         return new ResponseEntity<>(criterios, HttpStatus.OK);
     }
 
@@ -61,7 +61,7 @@ public class CriterioAvaliacaoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CriterioAvaliacao> atualizarCriterio(@PathVariable Long id,
-            @Valid @RequestBody RequestCriterioDTO requestCriterioDTO) {
+            @Valid @RequestBody CriterioRequestDTO requestCriterioDTO) {
 
         CriterioAvaliacao criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
         return new ResponseEntity<>(criterioAtualizado, HttpStatus.OK);

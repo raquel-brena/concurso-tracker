@@ -7,12 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
 
 @Repository
 public interface CriterioAvaliacaoRepository extends JpaRepository<CriterioAvaliacao, Long> {
     Optional<CriterioAvaliacao> findAllByIdIn(List<String> ids);
     Optional<CriterioAvaliacao> findByIdIn(List<Long> avaliacoes);
     Optional<List<CriterioAvaliacao>> findByEtapaProcessoSeletivoId(String processoSeletivoId);
-    List<ResponseCriterioDTO> findByPontuacoesInscricaoId(String inscricaoId);
+    List<CriterioResponseDTO> findByPontuacoesInscricaoId(String inscricaoId);
 }

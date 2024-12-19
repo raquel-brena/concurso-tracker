@@ -3,7 +3,7 @@ package com.rb.web2.domain.processoSeletivo.mapper;
 import java.util.List;
 
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
-import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
 import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
 import com.rb.web2.domain.documento.mapper.DocumentoMapper;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -25,7 +25,7 @@ public class ProcessoSeletivoMapper {
         }
 
         public static ResponseProcessoDTO toResponseProcessoDTO(ProcessoSeletivo processo) {
-                List<ResponseCriterioDTO> criteriosDTOs = null;
+                List<CriterioResponseDTO> criteriosDTOs = null;
                 List<ResponseUserDTO> comissaoOrganizadoraDTOs = null;
                 List<ResponseUserDTO> participantesDTOs = null;
                 List<DocumentoResponseDTO> documentosDTOS = null;

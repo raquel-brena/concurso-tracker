@@ -8,8 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
-import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.CriterioRequestDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
@@ -27,7 +27,7 @@ public class CriterioAvaliacaoService {
         User user = (User) userService.loadUserByUsername(login);
     }
 
-    public CriterioAvaliacao create(RequestCriterioDTO dto) {
+    public CriterioAvaliacao create(CriterioRequestDTO dto) {
         verificarPermissaoDeCriacaoOuAlteracao();
 
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
@@ -41,7 +41,7 @@ public class CriterioAvaliacaoService {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(""));
     }
 
-    public CriterioAvaliacao update(Long id, RequestCriterioDTO dto) {
+    public CriterioAvaliacao update(Long id, CriterioRequestDTO dto) {
         verificarPermissaoDeCriacaoOuAlteracao();
         CriterioAvaliacao criterioAvaliacao = this.getCriterioById(id);
 
@@ -51,7 +51,7 @@ public class CriterioAvaliacaoService {
         return repository.save(criterioAvaliacao);
     }
 
-    public List<ResponseCriterioDTO> findAllByProcessoSeletivo(String processoSeletivoId) {
+    public List<CriterioResponseDTO> findAllByProcessoSeletivo(String processoSeletivoId) {
         List<CriterioAvaliacao> criterios = repository.findByEtapaProcessoSeletivoId(processoSeletivoId)
                 .orElseThrow(() -> new NotFoundException("Criterios de Avaliação não encontrados"));
 
@@ -60,11 +60,11 @@ public class CriterioAvaliacaoService {
         }
 
         return criterios.stream()
-                .map(ResponseCriterioDTO::from)
+                .map(CriterioResponseDTO::from)
                 .collect(Collectors.toList());
     }
 
-    public List<ResponseCriterioDTO> findAllByInscricao(String inscricaoId) {
+    public List<CriterioResponseDTO> findAllByInscricao(String inscricaoId) {
         return repository.findByPontuacoesInscricaoId(inscricaoId);
     }
 
@@ -83,9 +83,9 @@ public class CriterioAvaliacaoService {
         repository.save(criterioAvaliacao);
     }
 
-    public List<ResponseCriterioDTO> buscarCriteriosPorIds(List<Long> avaliacoes) {
+    public List<CriterioResponseDTO> buscarCriteriosPorIds(List<Long> avaliacoes) {
         return repository.findAllById(avaliacoes).stream()
-                .map(ResponseCriterioDTO::from)
+                .map(CriterioResponseDTO::from)
                 .collect(Collectors.toList());
     }
 
