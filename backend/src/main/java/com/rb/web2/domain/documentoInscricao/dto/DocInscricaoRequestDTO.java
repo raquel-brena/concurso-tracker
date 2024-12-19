@@ -2,7 +2,7 @@ package com.rb.web2.domain.documentoInscricao.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record RequestDocInscricaoDTO (
+public record DocInscricaoRequestDTO (
     @NotBlank(message = "O documento não pode ser vazio.")
     Long documentoId,
 

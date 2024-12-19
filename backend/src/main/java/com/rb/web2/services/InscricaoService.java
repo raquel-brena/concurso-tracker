@@ -7,9 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.inscricao.Inscricao;
-import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.ResponseInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.UpdateReqInscricaoDTO;
+import com.rb.web2.domain.inscricao.dto.InscricaoRequestDTO;
+import com.rb.web2.domain.inscricao.dto.InscricaoResponseDTO;
+import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
 import com.rb.web2.domain.inscricao.mapper.InscricaoMapper;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
@@ -38,7 +38,7 @@ public class InscricaoService {
         User user = (User) userService.loadUserByUsername(login);
     }
 
-  public Inscricao create(RequestInscricaoDTO dto) {
+  public Inscricao create(InscricaoRequestDTO dto) {
     verificarPermissaoDeCriacaoOuAlteracao();
 
     User candidato = userService.getUserById(dto.candidatoId());
@@ -55,16 +55,16 @@ public class InscricaoService {
     -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
  
-  public ResponseInscricaoDTO getResponseInscricaoDTOById(String id) {
+  public InscricaoResponseDTO getResponseInscricaoDTOById(String id) {
     return inscricaoRepository.findById(id)
         .map(InscricaoMapper::toDTO)
         .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
 
-  public List<ResponseInscricaoDTO> getAllInscricoes() {
+  public List<InscricaoResponseDTO> getAllInscricoes() {
     List<Inscricao> inscricoes = inscricaoRepository.findAllByDeletadoEmNull();
-    List<ResponseInscricaoDTO> applications = inscricoes.stream()
-        .map(inscricao -> new ResponseInscricaoDTO(
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+        .map(inscricao -> new InscricaoResponseDTO(
             inscricao.getId(),
             inscricao.getCandidato().getId(),
             inscricao.getVaga().getId(),
@@ -73,10 +73,10 @@ public class InscricaoService {
     return applications;
   }
 
-  public List<ResponseInscricaoDTO> getAllInscricoesPorCandidato(String candidatoId) {
+  public List<InscricaoResponseDTO> getAllInscricoesPorCandidato(String candidatoId) {
     List<Inscricao> inscricoes = inscricaoRepository.findAllByCandidatoId(candidatoId);
-    List<ResponseInscricaoDTO> applications = inscricoes.stream()
-        .map(inscricao -> new ResponseInscricaoDTO(
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+        .map(inscricao -> new InscricaoResponseDTO(
             inscricao.getId(),
             inscricao.getCandidato().getId(),
             inscricao.getVaga().getId(),
@@ -85,10 +85,10 @@ public class InscricaoService {
     return applications;
   }
 
-  public List<ResponseInscricaoDTO> getAllInscricoesPorVaga(Long vagaId) {
+  public List<InscricaoResponseDTO> getAllInscricoesPorVaga(Long vagaId) {
     List<Inscricao> inscricoes = inscricaoRepository.findAllByVagaId(vagaId);
-    List<ResponseInscricaoDTO> applications = inscricoes.stream()
-        .map(inscricao -> new ResponseInscricaoDTO(
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+        .map(inscricao -> new InscricaoResponseDTO(
             inscricao.getId(),
             inscricao.getCandidato().getId(),
             inscricao.getVaga().getId(),
@@ -97,7 +97,7 @@ public class InscricaoService {
     return applications;
   }
 
-  public Inscricao atualizarInscricao(String id, UpdateReqInscricaoDTO dto) {
+  public Inscricao atualizarInscricao(String id, UpdateInscricaoDTO dto) {
     verificarPermissaoDeCriacaoOuAlteracao();
     Inscricao existingInscricao = this.buscarInscricaoPorId(id);
 
@@ -137,10 +137,10 @@ public class InscricaoService {
     return inscricaoRepository.existsById(inscricaoId);
   }
 
-  public List<ResponseInscricaoDTO> getAllInscricoesPorProcessoSeletivo(String processoId) {
+  public List<InscricaoResponseDTO> getAllInscricoesPorProcessoSeletivo(String processoId) {
     List<Inscricao> inscricoes = inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
-    List<ResponseInscricaoDTO> applications = inscricoes.stream()
-        .map(inscricao -> new ResponseInscricaoDTO(
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+        .map(inscricao -> new InscricaoResponseDTO(
             inscricao.getId(),
             inscricao.getCandidato().getId(),
             inscricao.getVaga().getId(),

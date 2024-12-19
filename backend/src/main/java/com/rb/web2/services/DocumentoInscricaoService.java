@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.documentoInscricao.DocumentoInscricao;
-import com.rb.web2.domain.documentoInscricao.dto.RequestDocInscricaoDTO;
-import com.rb.web2.domain.documentoInscricao.dto.RequestHomologarDocInscricaoDTO;
+import com.rb.web2.domain.documentoInscricao.dto.DocInscricaoRequestDTO;
+import com.rb.web2.domain.documentoInscricao.dto.HomologarDocInscricaoRequestDTO;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.repositories.DocumentoInscricaoRepository;
 import com.rb.web2.shared.exceptions.BadRequestException;
@@ -27,7 +27,7 @@ public class DocumentoInscricaoService {
     @Autowired
     private InscricaoService inscricaoService;
 
-    public DocumentoInscricao criarDocumentoInscricao(RequestDocInscricaoDTO dto) {
+    public DocumentoInscricao criarDocumentoInscricao(DocInscricaoRequestDTO dto) {
         Inscricao inscricao = inscricaoService.buscarInscricaoPorId(dto.inscricaoId());
 
         Documento documento = documentoService.buscarDocumentoPorId(dto.documentoId());
@@ -44,7 +44,7 @@ public class DocumentoInscricaoService {
                 .orElseThrow(() -> new NotFoundException("Documento Inscricao não encontrado"));
     }
 
-    public DocumentoInscricao homologarDocumento(RequestHomologarDocInscricaoDTO dto) {
+    public DocumentoInscricao homologarDocumento(HomologarDocInscricaoRequestDTO dto) {
         DocumentoInscricao documentoInscricao = this.findById(dto.documentoInscricaoId());
         Agenda agenda = documentoInscricao.getInscricao().getVaga().getProcessoSeletivo().getAgenda();
 

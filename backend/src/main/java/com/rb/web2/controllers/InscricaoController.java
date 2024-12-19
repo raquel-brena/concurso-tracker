@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.inscricao.Inscricao;
-import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.ResponseInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.UpdateReqInscricaoDTO;
+import com.rb.web2.domain.inscricao.dto.InscricaoRequestDTO;
+import com.rb.web2.domain.inscricao.dto.InscricaoResponseDTO;
+import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
 import com.rb.web2.domain.inscricao.mapper.InscricaoMapper;
 import com.rb.web2.services.InscricaoService;
 import com.rb.web2.services.PontuacaoCriterioService;
@@ -39,25 +39,25 @@ public class InscricaoController {
     PontuacaoCriterioService pontuacaoCriterioService;
 
     @GetMapping("/todas")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoes() {
-        List<ResponseInscricaoDTO> applications = service.getAllInscricoes();
+    public ResponseEntity<List<InscricaoResponseDTO>> getAllInscricoes() {
+        List<InscricaoResponseDTO> applications = service.getAllInscricoes();
         return ResponseEntity.ok(applications);
     }
 
     @GetMapping("/candidato")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoes(@RequestParam String candidatoId) {
-        List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorCandidato(candidatoId);
+    public ResponseEntity<List<InscricaoResponseDTO>> getAllInscricoes(@RequestParam String candidatoId) {
+        List<InscricaoResponseDTO> applications = service.getAllInscricoesPorCandidato(candidatoId);
         return ResponseEntity.ok(applications);
     }
 
     @GetMapping("/vaga")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoes(@RequestParam Long vagaId) {
-        List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorVaga(vagaId);
+    public ResponseEntity<List<InscricaoResponseDTO>> getAllInscricoes(@RequestParam Long vagaId) {
+        List<InscricaoResponseDTO> applications = service.getAllInscricoesPorVaga(vagaId);
         return ResponseEntity.ok(applications);
     }
 
     @PostMapping
-    public ResponseEntity<RestSuccessMessage> createInscricao(@Valid @RequestBody RequestInscricaoDTO dto) {
+    public ResponseEntity<RestSuccessMessage> createInscricao(@Valid @RequestBody InscricaoRequestDTO dto) {
         Inscricao inscricaoCriada = service.create(dto);
         service.create(dto);
         RestSuccessMessage successMessage = new RestSuccessMessage(
@@ -68,27 +68,27 @@ public class InscricaoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseInscricaoDTO> getInscricao(@PathVariable String id) {
-        ResponseInscricaoDTO incricao = this.service.getResponseInscricaoDTOById(id);
+    public ResponseEntity<InscricaoResponseDTO> getInscricao(@PathVariable String id) {
+        InscricaoResponseDTO incricao = this.service.getResponseInscricaoDTOById(id);
         return ResponseEntity.ok(incricao);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseInscricaoDTO> updateInscricao(
+    public ResponseEntity<InscricaoResponseDTO> updateInscricao(
             @PathVariable String id,
-            @Valid @RequestBody @Validated UpdateReqInscricaoDTO dto) {
+            @Valid @RequestBody @Validated UpdateInscricaoDTO dto) {
 
         var updatedApplication = this.service.atualizarInscricao(id, dto);
-        ResponseInscricaoDTO responseDTO = InscricaoMapper.toDTO(updatedApplication);
+        InscricaoResponseDTO responseDTO = InscricaoMapper.toDTO(updatedApplication);
 
         return ResponseEntity.ok(responseDTO);
 
     }
 
     @GetMapping("processo")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoesPorProcessoSeletivo(
+    public ResponseEntity<List<InscricaoResponseDTO>> getAllInscricoesPorProcessoSeletivo(
             @RequestParam("id") String processoId) {
-        List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorProcessoSeletivo(processoId);
+        List<InscricaoResponseDTO> applications = service.getAllInscricoesPorProcessoSeletivo(processoId);
         if (!applications.isEmpty()) {
             return new ResponseEntity<>(applications, HttpStatus.OK);
         } else {
