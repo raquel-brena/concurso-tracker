@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.cargo.Cargo;
 import com.rb.web2.domain.cargo.dto.CargoRequestDTO;
+import com.rb.web2.domain.cargo.dto.CargoResponseDTO;
 import com.rb.web2.services.CargoService;
 
 import jakarta.validation.Valid;
@@ -30,27 +31,27 @@ public class CargoController {
     }
 
     @PostMapping
-    public ResponseEntity<Cargo> criarCargo(@Valid @RequestBody CargoRequestDTO dto) {    
-        Cargo createdCargo = cargoService.criarCargo(dto);
+    public ResponseEntity<CargoResponseDTO> criarCargo(@Valid @RequestBody CargoRequestDTO dto) {    
+        CargoResponseDTO createdCargo = cargoService.criarCargo(dto);
         return new ResponseEntity<>(createdCargo, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Cargo>> listarCargos() {
-        List<Cargo> cargos = cargoService.listarTodos();
+    public ResponseEntity<List<CargoResponseDTO>> listarCargos() {
+        List<CargoResponseDTO> cargos = cargoService.listarTodos();
         return new ResponseEntity<>(cargos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cargo> buscarCargoPorId(@PathVariable Long id) {
-        Cargo cargo = cargoService.buscarPorId(id);
+    public ResponseEntity<CargoResponseDTO> buscarCargoPorId(@PathVariable Long id) {
+        CargoResponseDTO cargo = cargoService.buscarPorId(id);
         return new ResponseEntity<>(cargo, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cargo> atualizarCargo(@PathVariable Long id, 
+    public ResponseEntity<CargoResponseDTO> atualizarCargo(@PathVariable Long id, 
                                                 @Valid @RequestBody CargoRequestDTO dto) {
-        Cargo updatedCargo = cargoService.atualizar(id, dto);
+        CargoResponseDTO updatedCargo = cargoService.atualizar(id, dto);
         return updatedCargo != null ? new ResponseEntity<>(updatedCargo, HttpStatus.OK) 
                                     : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

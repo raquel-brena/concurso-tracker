@@ -32,7 +32,7 @@ public class VagaService {
     public VagaResponseDTO salvar(VagasRequestDTO dto) {
         try {
             ProcessoSeletivo processoSeletivo = processoSeletivoService.getProcessoSeletivoById(dto.processoSeletivoId());
-            Cargo cargo = formacaoService.buscarPorId(dto.cargoId());
+            Cargo cargo = formacaoService.buscarCargoPorId(dto.cargoId());
 
             if (dto.quantidade() <= 0) {
                 throw new BadRequestException("A quantidade de vagas deve ser maior que zero.");
@@ -112,7 +112,7 @@ public class VagaService {
             }
 
             if (vaga.getProcessoSeletivo().getId() == null ? dto.getProcessoSeletivoId() != null : !vaga.getProcessoSeletivo().getId().equals(dto.getProcessoSeletivoId())) {
-                Cargo cargo = formacaoService.buscarPorId(dto.getCargoId());
+                Cargo cargo = formacaoService.buscarCargoPorId(dto.getCargoId());
                 vaga.setCargo(cargo);
             }
 
