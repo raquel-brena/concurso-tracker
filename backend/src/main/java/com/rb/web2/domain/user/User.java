@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.enums.Permissao;
-import com.rb.web2.domain.enums.Role;
+import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.services.PermissaoMapper;
@@ -68,7 +68,7 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Perfil perfil;
 
     @Column(unique = true)
     private String email;
@@ -106,10 +106,10 @@ public class User implements UserDetails {
     @Transient
     private PermissaoMapper permissaoMapper;
 
-    public User(String login, String password, Role role) {
+    public User(String login, String password, Perfil perfil) {
         this.login = login;
         this.password = password;
-        this.role = role;
+        this.perfil = perfil;
         this.permissaoMapper = new PermissaoMapper();
     }
 
@@ -117,8 +117,9 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        this.permissaoMapper.getPermissoesPorRole(this.role).forEach(
-                permissao -> authorities.add(new SimpleGrantedAuthority("ROLE_" + permissao.name().toUpperCase())));
+        this.perfil.getPermissoes().forEach(
+                permissao -> authorities
+                .add(new SimpleGrantedAuthority("ROLE_" + permissao.name().toUpperCase())));
 
         return authorities;
     }

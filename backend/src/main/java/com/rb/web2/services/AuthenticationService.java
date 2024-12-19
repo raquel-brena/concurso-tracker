@@ -10,12 +10,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.rb.web2.domain.enums.Role;
+import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
 import com.rb.web2.domain.user.dto.RegisterDTO;
 import com.rb.web2.domain.user.dto.ResponseLoginDTO;
 import com.rb.web2.domain.user.dto.ResponseUserDTO;
+import com.rb.web2.domain.user.mapper.UserMapper;
 import com.rb.web2.infra.security.TokenService;
 
 @Service
@@ -47,7 +48,7 @@ public class AuthenticationService implements UserDetailsService {
 
         String encryptedPassword = passwordEncoder.encode(data.password());
 
-        return this.userService.create(new User(data.login(), encryptedPassword, Role.USER));
+        return this.userService.create(new User(data.login(), encryptedPassword, Perfil.USER));
     }
 
     @Override
@@ -58,7 +59,8 @@ public class AuthenticationService implements UserDetailsService {
     public ResponseUserDTO getUsuarioAutenticado() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = (User) userService.loadUserByUsername(login);
-        return ResponseUserDTO.from(user);
+        ResponseUserDTO userResponse = UserMapper.toResponseUserDTO(user);
+        return userResponse;
     }
 
     public void logout() {

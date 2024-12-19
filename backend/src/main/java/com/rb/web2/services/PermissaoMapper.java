@@ -2,12 +2,12 @@ package com.rb.web2.services;
 
 import java.util.Set;
 
+import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.enums.Permissao;
-import com.rb.web2.domain.enums.Role;
 
 public class PermissaoMapper {
 
-    public Set<Permissao> getPermissoesPorRole(Role role) {
+    public Set<Permissao> getPermissoesPorRole(Perfil role) {
         return switch (role) {
             case CANDIDATO -> getCandidatoPermissoes();
             case COORDENADOR -> getCoordenadorPermissoes();
