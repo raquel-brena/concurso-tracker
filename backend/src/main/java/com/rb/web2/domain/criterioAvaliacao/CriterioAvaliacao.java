@@ -8,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.rb.web2.domain.etapa.Etapa;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
-import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,12 +34,8 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id")
 public class CriterioAvaliacao {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "processo_seletivo_id")
-    private ProcessoSeletivo processoSeletivo;
 
     @Column(nullable = false)
     private boolean ativo;
