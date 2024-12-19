@@ -14,8 +14,6 @@ public record DocumentoInscricaoResponseDTO(
         String motivoRejeicao,
         LocalDateTime criadoEm,
         LocalDateTime atualizadoEm) {
-
-    // Método estático para converter a entidade DocumentoInscricao em DTO
     public static DocumentoInscricaoResponseDTO from(DocumentoInscricao documentoInscricao) {
         return new DocumentoInscricaoResponseDTO(
                 documentoInscricao.getId(),
@@ -24,7 +22,6 @@ public record DocumentoInscricaoResponseDTO(
                 documentoInscricao.isHomologado(),
                 documentoInscricao.getMotivoRejeicao(),
                 documentoInscricao.getCriadoEm(),
-                documentoInscricao.getAtualizadoEm()
-        );
+                documentoInscricao.getAtualizadoEm());
     }
 }

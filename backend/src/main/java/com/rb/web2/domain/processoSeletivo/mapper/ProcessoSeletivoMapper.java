@@ -1,20 +1,11 @@
 package com.rb.web2.domain.processoSeletivo.mapper;
 
-import java.util.List;
-
-import com.rb.web2.domain.agenda.dto.AgendaDTO;
-import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
-import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
-import com.rb.web2.domain.documento.mapper.DocumentoMapper;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
-import com.rb.web2.domain.processoSeletivo.dto.ResponseProcessoDTO;
-import com.rb.web2.domain.user.dto.ResponseUserDTO;
-import com.rb.web2.domain.user.mapper.UserMapper;
+import com.rb.web2.domain.processoSeletivo.dto.ProcessoRequestDTO;
 
 public class ProcessoSeletivoMapper {
 
-        public static ProcessoSeletivo toEntity(RequestProcessoDTO dto) {
+        public static ProcessoSeletivo toEntity(ProcessoRequestDTO dto) {
                 ProcessoSeletivo processo = new ProcessoSeletivo();
                 processo.setTitulo(dto.titulo());
                 processo.setDescricao(dto.descricao());
@@ -22,52 +13,5 @@ public class ProcessoSeletivoMapper {
                 processo.setTemporario(dto.temporario());
                 // processo.setLinkEdital(dto.linkEdital());
                 return processo;
-        }
-
-        public static ResponseProcessoDTO toResponseProcessoDTO(ProcessoSeletivo processo) {
-                List<CriterioResponseDTO> criteriosDTOs = null;
-                List<ResponseUserDTO> comissaoOrganizadoraDTOs = null;
-                List<ResponseUserDTO> participantesDTOs = null;
-                List<DocumentoResponseDTO> documentosDTOS = null;
-                AgendaDTO agendaDTO = null;
-
-                // if (!(processo.getCriterios() == null)) {
-                //         criteriosDTOs = processo.getCriterios()
-                //                         .stream()
-                //                         .map(criterio -> CriterioAvalicaoMapper.toResponseCriterioDTO(criterio))
-                //                         .toList();
-                // }
-
-                if (!(processo.getComissaoOrganizadora() == null)) {
-                        comissaoOrganizadoraDTOs = processo.getComissaoOrganizadora()
-                                        .stream()
-                                        .map(user -> UserMapper.toResponseUserDTO(user))
-                                        .toList();
-
-                }
-
-                if (!(processo.getEditais() == null)) {
-                        documentosDTOS = processo.getEditais()
-                                        .stream()
-                                        .map(edital -> DocumentoMapper.toDocumentoResponseDTO(edital))
-                                        .toList();
-                }
-
-                if (processo.getAgenda() != null) {
-                        processo.getAgenda();
-                }
-
-                return new ResponseProcessoDTO(
-                                processo.getId(),
-                                processo.getTitulo(),
-                                processo.getDescricao(),
-                                processo.getValidadeMeses(),
-                                processo.isTemporario(),
-                                documentosDTOS,
-                                criteriosDTOs,
-                                agendaDTO,
-                                processo.getDocumentosNecessarios(),
-                                comissaoOrganizadoraDTOs,
-                                participantesDTOs);
         }
 }

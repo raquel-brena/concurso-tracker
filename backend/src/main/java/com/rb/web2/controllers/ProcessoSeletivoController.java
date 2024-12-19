@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
-import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
-import com.rb.web2.domain.processoSeletivo.dto.ResponseProcessoDTO;
+import com.rb.web2.domain.processoSeletivo.dto.ProcessoRequestDTO;
+import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
-import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.services.ProcessoSeletivoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
@@ -32,9 +31,9 @@ public class ProcessoSeletivoController {
     }
 
     @PostMapping()
-    public ResponseEntity<RestSuccessMessage> create(@Valid @RequestBody RequestProcessoDTO dto) {
+    public ResponseEntity<RestSuccessMessage> create(@Valid @RequestBody ProcessoRequestDTO dto) {
 
-        ResponseProcessoDTO processo = service.create(dto);
+        ProcessoResponseDTO processo = service.create(dto);
 
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -73,7 +72,7 @@ public class ProcessoSeletivoController {
         return ResponseEntity.ok()
                 .body(new RestSuccessMessage(
                         "Consulta realizada com sucesso.",
-                        ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
+                        ProcessoResponseDTO.from(processo)));
     }
 
     @GetMapping()
@@ -111,7 +110,7 @@ public class ProcessoSeletivoController {
             @Valid @RequestBody UpdateProcessoDTO dto) {
         var processo = this.service.atualizar(id, dto);
         return ResponseEntity.ok().body(new RestSuccessMessage("Processo seletivo atualizado com sucesso",
-                ProcessoSeletivoMapper.toResponseProcessoDTO(processo)));
+                ProcessoResponseDTO.from(processo)));
     }
 
     @DeleteMapping("{id}")

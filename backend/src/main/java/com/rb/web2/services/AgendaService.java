@@ -49,7 +49,7 @@ public class AgendaService {
 
   public List<AgendaResponseDTO> getAllAgendas() {
     List<Agenda> agendas = repository.findAllByAtivoTrue();
-    List<AgendaResponseDTO> agendasDTO = agendas.stream().map(AgendaMapper::toDTO).collect(Collectors.toList());
+    List<AgendaResponseDTO> agendasDTO = agendas.stream().map(AgendaResponseDTO::from).collect(Collectors.toList());
     return agendasDTO;
   }
 
@@ -70,7 +70,7 @@ public class AgendaService {
     this.isConsistent(agendaAtualizada);
 
     repository.save(agendaAtualizada);
-    AgendaResponseDTO agendaAtualizadaDTO = AgendaMapper.toDTO(agendaAtualizada);
+    AgendaResponseDTO agendaAtualizadaDTO = AgendaResponseDTO.from(agendaAtualizada);
     return agendaAtualizadaDTO;
   }
 

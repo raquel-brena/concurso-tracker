@@ -14,8 +14,8 @@ import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.processoComissao.ProcessoComissao;
 import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.processoSeletivo.dto.RequestProcessoDTO;
-import com.rb.web2.domain.processoSeletivo.dto.ResponseProcessoDTO;
+import com.rb.web2.domain.processoSeletivo.dto.ProcessoRequestDTO;
+import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.domain.user.User;
@@ -49,7 +49,7 @@ public class ProcessoSeletivoService {
   @Autowired
   private DocumentoService documentoService;
 
-  public ResponseProcessoDTO create(RequestProcessoDTO dto) {
+  public ProcessoResponseDTO create(ProcessoRequestDTO dto) {
     if (dto.titulo() == null || dto.validade() == null) {
       throw new NotFoundException("Titulo do processo seletivo não pode ser nulo");
     }
@@ -61,7 +61,7 @@ public class ProcessoSeletivoService {
 
     ProcessoSeletivo processoCriado = repository.save(ProcessoSeletivoMapper.toEntity(dto));
 
-    return ProcessoSeletivoMapper.toResponseProcessoDTO(processoCriado);
+    return ProcessoResponseDTO.from(processoCriado);
   }
 
   public ProcessoSeletivo getProcessoSeletivoById(String id) {
@@ -73,9 +73,9 @@ public class ProcessoSeletivoService {
     return repository.findByTitulo(titulo);
   }
 
-  public List<ResponseProcessoDTO> getAllProcessoSeletivos() {
+  public List<ProcessoResponseDTO> getAllProcessoSeletivos() {
     return repository.findAll().stream()
-        .map(ProcessoSeletivoMapper::toResponseProcessoDTO)
+        .map(ProcessoResponseDTO::from)
         .toList();
   }
 
@@ -238,20 +238,20 @@ public class ProcessoSeletivoService {
     return repository.save(processo);
   }
 
-  public List<ResponseProcessoDTO> getProcessoSeletivoByParticipante(String id) {
+  public List<ProcessoResponseDTO> getProcessoSeletivoByParticipante(String id) {
     try {
       return repository.findByVagasInscricoesCandidatoId(id).stream()
-          .map(ProcessoSeletivoMapper::toResponseProcessoDTO)
+          .map(ProcessoResponseDTO::from)
           .toList();
     } catch (Exception e) {
       throw new NotFoundException("Processo não encontrado");
     }
   }
 
-  public List<ResponseProcessoDTO> getProcessoSeletivoByComissao(String id) {
+  public List<ProcessoResponseDTO> getProcessoSeletivoByComissao(String id) {
     try {
       return repository.findByComissaoOrganizadoraId(id).stream()
-          .map(ProcessoSeletivoMapper::toResponseProcessoDTO)
+          .map(ProcessoResponseDTO::from)
           .toList();
     } catch (Exception e) {
       throw new NotFoundException("Processo não encontrado");
