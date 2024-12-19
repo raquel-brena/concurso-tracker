@@ -10,6 +10,6 @@ import com.rb.web2.domain.instituicao.Instituicao;
 
 @Repository
 public interface InstituicaoRepository extends JpaRepository<Instituicao, String> {
-    Optional<Instituicao> findByName(String name);
+    Optional<Instituicao> findByNome(String name);
     List<Instituicao> findByLocation(String location);
 }
