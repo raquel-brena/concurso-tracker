@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
+import com.rb.web2.domain.user.dto.LoginResponseDTO;
 import com.rb.web2.domain.user.dto.RegisterDTO;
-import com.rb.web2.domain.user.dto.ResponseLoginDTO;
-import com.rb.web2.domain.user.dto.ResponseUserDTO;
+import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.domain.user.mapper.UserMapper;
 import com.rb.web2.infra.security.TokenService;
 
@@ -40,11 +40,11 @@ public class AuthenticationService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public ResponseLoginDTO login(AuthenticatedDTO data) {
+    public LoginResponseDTO login(AuthenticatedDTO data) {
         var userNamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(userNamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
-        return new ResponseLoginDTO(token);
+        return new LoginResponseDTO(token);
     }
 
     public User register(RegisterDTO data) {
@@ -60,7 +60,7 @@ public class AuthenticationService implements UserDetailsService {
         return this.userService.loadUserByUsername(username);
     }
 
-    public ResponseUserDTO getUsuarioAutenticado() {
+    public UserResponseDTO getUsuarioAutenticado() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = (User) userService.loadUserByUsername(login);
 
@@ -74,7 +74,7 @@ public class AuthenticationService implements UserDetailsService {
         // Imprimir o objeto UserDetails
         System.out.println(userDetails + " foi autenticado");
 
-        ResponseUserDTO userResponse = UserMapper.toResponseUserDTO(user);
+        UserResponseDTO userResponse = UserMapper.toResponseUserDTO(user);
         return userResponse;
     }
 

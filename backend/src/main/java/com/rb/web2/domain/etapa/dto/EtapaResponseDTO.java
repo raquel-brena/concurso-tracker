@@ -17,8 +17,6 @@ public record EtapaResponseDTO(
         List<ResultadoResponseDTO> resultados,
         LocalDateTime criadoEm,
         LocalDateTime atualizadoEm) {
-
-    // Método estático para converter a entidade Etapa para o DTO
     public static EtapaResponseDTO from(Etapa etapa) {
         return new EtapaResponseDTO(
                 etapa.getId(),
@@ -31,7 +29,6 @@ public record EtapaResponseDTO(
                         .map(ResultadoResponseDTO::from) // Converte cada Resultado para DTO
                         .collect(Collectors.toList()),
                 etapa.getCriadoEm(),
-                etapa.getAtualizadoEm()
-        );
+                etapa.getAtualizadoEm());
     }
 }

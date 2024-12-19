@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
-import com.rb.web2.domain.pontuacaoCriterio.dto.RequestPontuacaoDTO;
-import com.rb.web2.domain.pontuacaoCriterio.dto.ResponsePontuacaoDTO;
+import com.rb.web2.domain.pontuacaoCriterio.dto.PontuacaoRequestDTO;
+import com.rb.web2.domain.pontuacaoCriterio.dto.PontuacaoResponseDTO;
 import com.rb.web2.repositories.PontuacaoCriterioRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
@@ -29,7 +29,7 @@ public class PontuacaoCriterioService {
     @Autowired
     private InscricaoService inscricaoService;
 
-    public ResponsePontuacaoDTO create(RequestPontuacaoDTO dto) {
+    public PontuacaoResponseDTO create(PontuacaoRequestDTO dto) {
         if (dto.criterioId() == null) {
             throw new IllegalArgumentException("Criterio ID cannot be null");
         }
@@ -40,15 +40,15 @@ public class PontuacaoCriterioService {
         pontuacaoCriterio.setInscricao(inscricaoService.buscarInscricaoPorId(dto.inscricaoId()));
 
         PontuacaoCriterio savedEntity = pontuacaoCriterioRepository.save(pontuacaoCriterio);
-        return new ResponsePontuacaoDTO(savedEntity);
+        return new PontuacaoResponseDTO(savedEntity);
     }
 
-    public Optional<ResponsePontuacaoDTO> getPontuacaoCriterioById(Long id) {
+    public Optional<PontuacaoResponseDTO> getPontuacaoCriterioById(Long id) {
         return pontuacaoCriterioRepository.findById(id)
-                .map(ResponsePontuacaoDTO::new);
+                .map(PontuacaoResponseDTO::new);
     }
 
-    public ResponsePontuacaoDTO update(Long id, RequestPontuacaoDTO dto) {
+    public PontuacaoResponseDTO update(Long id, PontuacaoRequestDTO dto) {
         PontuacaoCriterio pontuacaoCriterio = pontuacaoCriterioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pontuação Critério não encontrada"));
 
@@ -57,28 +57,28 @@ public class PontuacaoCriterioService {
         pontuacaoCriterio.setInscricao(inscricaoService.buscarInscricaoPorId(dto.inscricaoId()));
 
         PontuacaoCriterio savedEntity = pontuacaoCriterioRepository.save(pontuacaoCriterio);
-        return new ResponsePontuacaoDTO(savedEntity);
+        return new PontuacaoResponseDTO(savedEntity);
     }
 
-    public List<ResponsePontuacaoDTO> findByCriterio(Long criterioId) {
+    public List<PontuacaoResponseDTO> findByCriterio(Long criterioId) {
         boolean exists = criterioAvaliacaoService.existsByCriterioId(criterioId);
         if (!exists) {
             throw new NotFoundException("Critério de Avaliação não encontrado");
         }
 
         return pontuacaoCriterioRepository.findByCriterioId(criterioId).stream()
-                .map(ResponsePontuacaoDTO::new)
+                .map(PontuacaoResponseDTO::new)
                 .toList();
     }
 
-    public List<ResponsePontuacaoDTO> findByInscricao(String inscricaoId) {
+    public List<PontuacaoResponseDTO> findByInscricao(String inscricaoId) {
         boolean exists = inscricaoService.existsByInscricaoId(inscricaoId);
         if (!exists) {
             throw new NotFoundException("Inscrição não encontrada");
         }
 
         return pontuacaoCriterioRepository.findByInscricaoId(inscricaoId).stream()
-                .map(ResponsePontuacaoDTO::new)
+                .map(PontuacaoResponseDTO::new)
                 .toList();
     }
 

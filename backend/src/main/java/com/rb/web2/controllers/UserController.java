@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.user.dto.ResponseUserDTO;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
-import com.rb.web2.domain.user.mapper.UserMapper;
+import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.services.UserService;
 
 import jakarta.validation.Valid;
@@ -28,8 +27,8 @@ public class UserController {
     UserService service;
     
     @GetMapping
-    public ResponseEntity<List<ResponseUserDTO>> getAllUsers() {
-        List<ResponseUserDTO> users = service.getAllUsers();
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        List<UserResponseDTO> users = service.getAllUsers();
         return ResponseEntity.ok(users);
     }
 

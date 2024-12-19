@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
 import com.rb.web2.domain.user.User;
 
-public record ResponseUserDTO(
+public record UserResponseDTO(
                 boolean ativo,
                 String nome,
                 String email,
@@ -14,8 +14,8 @@ public record ResponseUserDTO(
                 String telefone,
                 List<DocumentoResponseDTO> documentos,
                 List<String> permissoes) {
-        public static ResponseUserDTO from(User user) {
-                return new ResponseUserDTO(
+        public static UserResponseDTO from(User user) {
+                return new UserResponseDTO(
                                 user.isAtivo(),
                                 user.getNome(),
                                 user.getEmail(),

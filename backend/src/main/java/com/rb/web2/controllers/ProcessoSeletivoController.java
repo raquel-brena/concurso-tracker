@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
+import com.rb.web2.domain.processoComissao.dto.MembroComissaoRequestDTO;
 import com.rb.web2.domain.processoSeletivo.dto.ProcessoRequestDTO;
 import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
@@ -53,14 +53,14 @@ public class ProcessoSeletivoController {
 
     @PostMapping("/membro-comissao")
     public ResponseEntity<RestSuccessMessage> adicionarMembroComissao(
-            @Valid @RequestBody RequestMembroComissaoDTO dto) {
+            @Valid @RequestBody MembroComissaoRequestDTO dto) {
         this.service.adicionarMembroComissao(dto);
         RestSuccessMessage successMessage = new RestSuccessMessage("Membro adicionado com sucesso", dto);
         return ResponseEntity.ok(successMessage);
     }
 
     @DeleteMapping("/membro-comissao")
-    public ResponseEntity<RestSuccessMessage> removerMembroComissao(@Valid @RequestBody RequestMembroComissaoDTO dto) {
+    public ResponseEntity<RestSuccessMessage> removerMembroComissao(@Valid @RequestBody MembroComissaoRequestDTO dto) {
         this.service.removerMembroComissao(dto);
         RestSuccessMessage successMessage = new RestSuccessMessage("Membro removido com sucesso");
         return ResponseEntity.ok(successMessage);

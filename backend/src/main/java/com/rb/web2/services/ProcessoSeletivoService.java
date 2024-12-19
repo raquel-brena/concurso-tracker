@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.processoComissao.ProcessoComissao;
-import com.rb.web2.domain.processoComissao.dto.RequestMembroComissaoDTO;
+import com.rb.web2.domain.processoComissao.dto.MembroComissaoRequestDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.processoSeletivo.dto.ProcessoRequestDTO;
 import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
@@ -129,7 +129,7 @@ public class ProcessoSeletivoService {
         termo);
   }
 
-  public void adicionarMembroComissao(RequestMembroComissaoDTO dto) {
+  public void adicionarMembroComissao(MembroComissaoRequestDTO dto) {
     ProcessoSeletivo processoSeletivo = repository.findById(dto.processoSeletivoId())
         .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
 
@@ -143,7 +143,7 @@ public class ProcessoSeletivoService {
     }
   }
 
-  public void removerMembroComissao(RequestMembroComissaoDTO dto) {
+  public void removerMembroComissao(MembroComissaoRequestDTO dto) {
     ProcessoComissao processoComissao = processoComissaoRepository
         .findByProcessoSeletivoIdIgnoreCaseAndUserIdIgnoreCase(dto.processoSeletivoId(), dto.userId());
 

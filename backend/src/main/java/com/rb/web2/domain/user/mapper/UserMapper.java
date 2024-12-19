@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
 import com.rb.web2.domain.documento.mapper.DocumentoMapper;
 import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.user.dto.ResponseUserDTO;
+import com.rb.web2.domain.user.dto.UserResponseDTO;
 
 public class UserMapper {
 
@@ -20,7 +20,7 @@ public class UserMapper {
     // return processo;
     // }
 
-    public static ResponseUserDTO toResponseUserDTO(User user) {
+    public static UserResponseDTO toResponseUserDTO(User user) {
         if (user == null) {
             return null;
         }
@@ -29,7 +29,7 @@ public class UserMapper {
                 .map(documento -> DocumentoMapper.toDocumentoResponseDTO(documento))
                 .toList();
 
-        return new ResponseUserDTO(
+        return new UserResponseDTO(
                 user.isAtivo(),
                 user.getNome(),
                 user.getEmail(),

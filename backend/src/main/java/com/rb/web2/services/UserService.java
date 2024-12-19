@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.user.dto.ResponseUserDTO;
+import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.domain.user.mapper.UserMapper;
 import com.rb.web2.repositories.UserRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
@@ -42,9 +42,9 @@ public class UserService {
         }
     }
 
-    public List<ResponseUserDTO> getAllUsers() {
+    public List<UserResponseDTO> getAllUsers() {
         List<User> users = repository.findAll();
-        List<ResponseUserDTO> usersResponse = new ArrayList<>();
+        List<UserResponseDTO> usersResponse = new ArrayList<>();
         for (User user : users) { 
             usersResponse.add(UserMapper.toResponseUserDTO(user));
         }

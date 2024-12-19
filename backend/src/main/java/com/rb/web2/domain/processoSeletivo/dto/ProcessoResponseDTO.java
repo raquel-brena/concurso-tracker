@@ -7,7 +7,7 @@ import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
 import com.rb.web2.domain.instituicao.dto.InstituicaoResponseDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.domain.user.dto.ResponseUserDTO;
+import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.domain.vaga.dto.VagaResponseDTO;
 
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +21,7 @@ public record ProcessoResponseDTO(
         List<DocumentoResponseDTO> editais,
         AgendaResponseDTO agenda,
         List<String> documentoNecessarios,
-        List<ResponseUserDTO> comissaoOrganizadora,
+        List<UserResponseDTO> comissaoOrganizadora,
         List<VagaResponseDTO> vagas,
         List<InstituicaoResponseDTO> instituicoes) {
 
@@ -41,7 +41,7 @@ public record ProcessoResponseDTO(
                 processoSeletivo.getDocumentosNecessarios(),
                 // Mapeando a lista de comissão organizadora para o DTO
                 processoSeletivo.getComissaoOrganizadora().stream()
-                        .map(ResponseUserDTO::from)
+                        .map(UserResponseDTO::from)
                         .collect(Collectors.toList()),
                 // Mapeando a lista de vagas para o DTO
                 processoSeletivo.getVagas().stream()
