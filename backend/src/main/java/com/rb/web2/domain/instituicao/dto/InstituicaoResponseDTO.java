@@ -1,18 +1,19 @@
 package com.rb.web2.domain.instituicao.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.rb.web2.domain.instituicao.Instituicao;
-import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
 public record InstituicaoResponseDTO(
     String id,
     String nome,
     String local,
     // String cnpj,
-    List<ProcessoResponseDTO> processos,
+    List<String> processosIds,
     boolean ativo,
     LocalDateTime criadoEm,
     LocalDateTime atualizadoEm
@@ -24,9 +25,11 @@ public record InstituicaoResponseDTO(
                 instituicao.getNome(),
                 instituicao.getLocal(),
                 // instituicao.getCnpj(),
-                instituicao.getProcessos().stream()
-                        .map(ProcessoResponseDTO::from)
-                        .collect(Collectors.toList()),
+                instituicao.getProcessos() != null ? 
+                        instituicao.getProcessos().stream()
+                        .map(ProcessoSeletivo::getId) // Mapeando os IDs dos processos
+                        .collect(Collectors.toList()) :
+                        new ArrayList<>(),
                 instituicao.isAtivo(),
                 instituicao.getCriadoEm(),
                 instituicao.getAtualizadoEm()
