@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
-import com.rb.web2.domain.criterioAvaliacao.mapper.CriterioAvalicaoMapper;
 import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
 import com.rb.web2.domain.documento.mapper.DocumentoMapper;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;

@@ -22,14 +22,14 @@ public class DocumentoInscricaoController {
     private DocumentoInscricaoService service;
     
     @PostMapping
-    public ResponseEntity criarDocumentoInscricao(@Valid @RequestBody RequestDocInscricaoDTO dto) {
+    public ResponseEntity<RestSuccessMessage> criarDocumentoInscricao(@Valid @RequestBody RequestDocInscricaoDTO dto) {
         var docInscricao = service.criarDocumentoInscricao(dto);
         return ResponseEntity.ok()
         .body(new RestSuccessMessage("Documento adicionado na inscrição com sucesso.", docInscricao));
     }
 
     @PostMapping("/homologar")
-    public ResponseEntity homologarDocumento (@Valid @RequestBody RequestHomologarDocInscricaoDTO dto) {
+    public ResponseEntity<RestSuccessMessage> homologarDocumento (@Valid @RequestBody RequestHomologarDocInscricaoDTO dto) {
         var docInscricao = service.homologarDocumento(dto);
         return ResponseEntity.ok()
             .body(new RestSuccessMessage("Documento homologado com sucesso.", docInscricao));

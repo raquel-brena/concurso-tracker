@@ -1,23 +1,28 @@
 package com.rb.web2.domain.instituicao;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-@Table(name = "instituicaos")
-@Entity(name = "instituicaos")
+@Table(name = "instituicoes")
+@Entity(name = "instituicoes")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -33,6 +38,9 @@ public class Instituicao {
 
     @Column
     private String location;
+
+    @ManyToMany
+    private List<ProcessoSeletivo> processos;
 
     @Column(nullable = false)
     private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados

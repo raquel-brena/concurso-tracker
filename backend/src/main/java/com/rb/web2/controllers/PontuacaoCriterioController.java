@@ -2,8 +2,6 @@ package com.rb.web2.controllers;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rb.web2.domain.pontuacaoCriterio.dto.RequestPontuacaoDTO;
 import com.rb.web2.domain.pontuacaoCriterio.dto.ResponsePontuacaoDTO;
 import com.rb.web2.services.PontuacaoCriterioService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.validation.Valid;
 
@@ -31,25 +30,10 @@ public class PontuacaoCriterioController {
     private PontuacaoCriterioService pontuacaoCriterioService;
 
     @PostMapping
-    public ResponseEntity<String> criarPontuacao(@Valid @RequestBody RequestPontuacaoDTO dto) {
-        try {
-            pontuacaoCriterioService.create(dto);
-            return new ResponseEntity<>("Pontuação criada com sucesso!", HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            String errorMessage = "Erro ao criar pontuação: " + e.getMessage();
-
-            Logger logger = LoggerFactory.getLogger(PontuacaoCriterioController.class);
-            logger.error("Erro ao criar pontuação: ", e);
-
-            return ResponseEntity.badRequest().body(errorMessage);
-        } catch (Exception e) {
-            String errorMessage = "Erro inesperado: " + e.getMessage();
-
-            Logger logger = LoggerFactory.getLogger(PontuacaoCriterioController.class);
-            logger.error("Erro inesperado: ", e);
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
-        }
+    public ResponseEntity<RestSuccessMessage> criarPontuacao(@Valid @RequestBody RequestPontuacaoDTO dto) {
+        pontuacaoCriterioService.create(dto);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Pontuação criada com sucesso!", dto);
+        return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
     }
 
     @GetMapping("/inscricao")
@@ -78,7 +62,7 @@ public class PontuacaoCriterioController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponsePontuacaoDTO> atualizarPontuacao(@PathVariable Long id,
-            @RequestBody RequestPontuacaoDTO dto) {
+            @Valid @RequestBody RequestPontuacaoDTO dto) {
 
         ResponsePontuacaoDTO pontuacaoAtualizada = pontuacaoCriterioService.update(id, dto);
         return new ResponseEntity<>(pontuacaoAtualizada, HttpStatus.OK);
@@ -86,32 +70,23 @@ public class PontuacaoCriterioController {
     }
 
     @GetMapping("/total")
-    public ResponseEntity<String> calcularNotaTotalPorInscricao(@RequestParam("id") String inscricaoId) {
-        try {
-            return new ResponseEntity<>(pontuacaoCriterioService.calcularNotaTotal(inscricaoId).toString(),
-                    HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<RestSuccessMessage> calcularNotaTotalPorInscricao(@RequestParam("id") String inscricaoId) {
+        String notaTotal = pontuacaoCriterioService.calcularNotaTotal(inscricaoId).toString();
+
+        RestSuccessMessage successMessage = new RestSuccessMessage("Nota total calculada com sucesso!", notaTotal);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/total/processo")
     public String calcularNotaTotalPorProcesso(@RequestParam("id") String processoId) {
-        try {
-            return pontuacaoCriterioService.calcularNotaTotalPorInscricaoDoProcesso(processoId).toString();
-        } catch (Exception e) {
-            return "Erro ao calcular nota total por processo: " + e.getMessage();
-        }
+        return pontuacaoCriterioService.calcularNotaTotalPorInscricaoDoProcesso(processoId).toString();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarPontuacao(@PathVariable Long id) {
-        try {
-            pontuacaoCriterioService.delete(id);
-            return new ResponseEntity<>("Pontuação deletada com sucesso!", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<RestSuccessMessage> deletarPontuacao(@PathVariable Long id) {
+        pontuacaoCriterioService.delete(id);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Pontuação deletada com sucesso!");
+        return ResponseEntity.ok(successMessage);
     }
 
 }

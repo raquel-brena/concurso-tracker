@@ -11,6 +11,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,9 +48,18 @@ public class DocumentoService {
         .toAbsolutePath().normalize();
   }
 
+  private void verificarPermissaoDeCriacaoOuAlteracao() {
+    String login = SecurityContextHolder.getContext().getAuthentication().getName();
+    User user = (User) userService.loadUserByUsername(login);
+
+    if (!user.hasPermissionToCreateCriterios()) {
+      throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar critérios.");
+    }
+  }
+
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
-
-
+    verificarPermissaoDeCriacaoOuAlteracao();
+    
     String id = null;
     Documento documento = new Documento();
 
@@ -59,8 +70,7 @@ public class DocumentoService {
     }
 
     if (dto.processoId() != null) {
-      ProcessoSeletivo processo 
-      = this.processoSeletivoService.getProcessoSeletivoById(dto.processoId());
+      ProcessoSeletivo processo = this.processoSeletivoService.getProcessoSeletivoById(dto.processoId());
       id = dto.processoId();
       documento.setProcessoSeletivo(processo);
     }
@@ -76,7 +86,7 @@ public class DocumentoService {
   public Documento buscarDocumentoPorId(Long id) {
     return repository.findById(id).orElseThrow(() -> new NotFoundException("Documento não encontrado. ID: " + id));
   }
-  
+
   public Optional<Documento> getDocumentoByUrl(String link) {
     return repository.findByDownloadUrl(link);
   }
@@ -85,24 +95,22 @@ public class DocumentoService {
     return repository.findAll();
   }
 
-  public List<DocumentoResponseDTO> getAllDocumentosUsuarios () {
-    List <Documento> documentos = repository.findByUsuarioIsNotNull().orElseThrow(
-        () -> new NotFoundException("Nenhum documento encontrado.")
-    );
+  public List<DocumentoResponseDTO> getAllDocumentosUsuarios() {
+    List<Documento> documentos = repository.findByUsuarioIsNotNull().orElseThrow(
+        () -> new NotFoundException("Nenhum documento encontrado."));
     return documentos.stream().map(DocumentoMapper::toDocumentoResponseDTO).toList();
   }
-  
-  public List<DocumentoResponseDTO> getAllDocumentosProcessosSeletivos () {
-    List <Documento> documentos = repository.findByProcessoSeletivoIsNotNull().orElseThrow(
-        () -> new NotFoundException("Nenhum documento encontrado.")
-    );
+
+  public List<DocumentoResponseDTO> getAllDocumentosProcessosSeletivos() {
+    List<Documento> documentos = repository.findByProcessoSeletivoIsNotNull().orElseThrow(
+        () -> new NotFoundException("Nenhum documento encontrado."));
     return documentos.stream().map(DocumentoMapper::toDocumentoResponseDTO).toList();
   }
 
   public String uploadFile(MultipartFile file, String id) throws IOException {
     String originalFilename = file.getOriginalFilename();
     if (originalFilename == null || originalFilename.isBlank()) {
-        throw new IllegalArgumentException("O arquivo enviado não possui um nome válido.");
+      throw new IllegalArgumentException("O arquivo enviado não possui um nome válido.");
     }
 
     String fileName = StringUtils.cleanPath(originalFilename);
@@ -125,9 +133,9 @@ public class DocumentoService {
     return fileDonwloadUri;
   }
 
+  public Resource downloadFile(String filename, String id, String directoryName1, String directoryName2)
+      throws MalformedURLException {
 
-  public Resource downloadFile(String filename, String id, String directoryName1,String directoryName2) throws MalformedURLException {
-    
     Path directory = fileStorageLocation.resolve(directoryName2).normalize();
 
     if (!Files.exists(directory)) {

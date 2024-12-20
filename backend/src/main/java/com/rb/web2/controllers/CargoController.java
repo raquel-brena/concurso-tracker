@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rb.web2.domain.cargo.Cargo;
 import com.rb.web2.domain.cargo.dto.CargoRequestDTO;
 import com.rb.web2.services.CargoService;
+
+import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/cargo")
 public class CargoController {
@@ -27,9 +29,8 @@ public class CargoController {
         this.cargoService = cargoService;
     }
 
-    // Endpoint para criar um novo cargo
     @PostMapping
-    public ResponseEntity<Cargo> criarCargo(@RequestBody CargoRequestDTO dto) {    
+    public ResponseEntity<Cargo> criarCargo(@Valid @RequestBody CargoRequestDTO dto) {    
         Cargo createdCargo = cargoService.criarCargo(dto);
         return new ResponseEntity<>(createdCargo, HttpStatus.CREATED);
     }
@@ -48,7 +49,7 @@ public class CargoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Cargo> atualizarCargo(@PathVariable Long id, 
-                                                @RequestBody CargoRequestDTO dto) {
+                                                @Valid @RequestBody CargoRequestDTO dto) {
         Cargo updatedCargo = cargoService.atualizar(id, dto);
         return updatedCargo != null ? new ResponseEntity<>(updatedCargo, HttpStatus.OK) 
                                     : new ResponseEntity<>(HttpStatus.NOT_FOUND);

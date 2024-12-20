@@ -36,8 +36,7 @@ public class UserMapper {
             user.getEmail(), 
             user.getCpf(), 
             user.getTelefone(), 
-            user.getCargo(), 
-            documentos
+            user.getCargo()
         );
     }
 }

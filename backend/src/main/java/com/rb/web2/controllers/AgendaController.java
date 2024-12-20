@@ -17,6 +17,7 @@ import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.agenda.dto.AgendaDTO;
 import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 import com.rb.web2.services.AgendaService;
+import com.rb.web2.services.UserService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.validation.Valid;
@@ -26,13 +27,15 @@ import jakarta.validation.Valid;
 public class AgendaController {
 
     AgendaService service;
-
-    public AgendaController(AgendaService service) {
-        this.service = service;
-    }
-
-    @PostMapping("/")
-    public ResponseEntity<String> createAgenda(@Valid @RequestBody AgendaDTO dto) {
+        private UserService userService;
+    
+        public AgendaController(AgendaService service) {
+            this.service = service;
+            this.userService = userService;
+        }
+    
+        @PostMapping("/")
+        public ResponseEntity<RestSuccessMessage> createAgenda(@Valid @RequestBody AgendaDTO dto) {
         var agenda = service.create(dto);
 
         var location = ServletUriComponentsBuilder
@@ -41,7 +44,9 @@ public class AgendaController {
                 .buildAndExpand(agenda.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body("Nova agenda criada com o ID: " + agenda.getId());
+        RestSuccessMessage successMessage = new RestSuccessMessage("Nova agenda criada com o ID: ", agenda.getId());
+
+        return ResponseEntity.created(location).body(successMessage);
     }
 
     @GetMapping("{id}")
@@ -57,14 +62,17 @@ public class AgendaController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> removeAgenda(@PathVariable Long id) {
+    public ResponseEntity<RestSuccessMessage> removeAgenda(@PathVariable Long id) {
         this.service.deleteAgenda(id);
 
-        return ResponseEntity.ok().body("Agenda com o ID " + id + " removida com sucesso.");
+        RestSuccessMessage successMessage = new RestSuccessMessage("Agenda com o ID " + id + " removida com sucesso.",
+                null);
+
+        return ResponseEntity.ok().body(successMessage);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable Long id, @RequestBody AgendaDTO dto) {
+    public ResponseEntity<RestSuccessMessage> updateAgenda(@PathVariable Long id, @Valid @RequestBody AgendaDTO dto) {
         var agenda = this.service.updateAgenda(id, dto);
         return ResponseEntity.ok().body(new RestSuccessMessage("Agenda atualizada com sucesso.", agenda));
     }

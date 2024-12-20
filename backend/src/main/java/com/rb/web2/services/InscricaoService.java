@@ -3,6 +3,8 @@ package com.rb.web2.services;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.inscricao.Inscricao;
@@ -20,7 +22,6 @@ public class InscricaoService {
 
   private final InscricaoRepository inscricaoRepository;
   private final UserService userService;
-  private final CriterioAvaliacaoService criterioAvaliacaoService;
   private final VagaService vagaService;
 
   public InscricaoService(
@@ -30,11 +31,21 @@ public class InscricaoService {
       VagaService vagaService) {
     this.inscricaoRepository = inscricaoRepository;
     this.userService = userService;
-    this.criterioAvaliacaoService = criterioAvaliacaoService;
     this.vagaService = vagaService;
   }
+  
+  private void verificarPermissaoDeCriacaoOuAlteracao() {
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = (User) userService.loadUserByUsername(login);
+
+        if (!user.hasPermissionToCreateCriterios()) {
+            throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar critérios.");
+        }
+    }
 
   public Inscricao create(RequestInscricaoDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao();
+
     User candidato = userService.getUserById(dto.candidatoId());
     Vaga vaga = vagaService.buscarVagaPorId(dto.vagaId());
 
@@ -49,7 +60,6 @@ public class InscricaoService {
     -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
  
-
   public ResponseInscricaoDTO getResponseInscricaoDTOById(String id) {
     return inscricaoRepository.findById(id)
         .map(InscricaoMapper::toDTO)
@@ -93,6 +103,7 @@ public class InscricaoService {
   }
 
   public Inscricao atualizarInscricao(String id, UpdateReqInscricaoDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao();
     Inscricao existingInscricao = this.buscarInscricaoPorId(id);
 
     if (dto.vagaId() != null) {
@@ -117,6 +128,7 @@ public class InscricaoService {
   }
 
   public void softDelete(String id) {
+    verificarPermissaoDeCriacaoOuAlteracao();
     Inscricao inscricao = this.buscarInscricaoPorId(id);
     inscricao.setDeletadoEm(LocalDateTime.now());
     inscricaoRepository.save(inscricao);
