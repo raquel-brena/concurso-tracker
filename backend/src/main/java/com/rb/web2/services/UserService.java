@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.user.dto.UpdatePerfilDTO;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
 import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.domain.user.mapper.UserMapper;
@@ -36,10 +37,24 @@ public class UserService {
                 userId,
                 "EDIT_USER",
                 id -> repository.findById(id)
-                            .orElseThrow(() -> new NotFoundException("Usuário não encontrado.")),
+                        .orElseThrow(() -> new NotFoundException("Usuário não encontrado.")),
                 (entity, user) -> {
                     User usuario = (User) entity;
                     return usuario.equals(user);
+                });
+    }
+
+    private void verificarPermissaoDeAlterarUsuarios(String userId) {
+        authorizationUtil.<String>verificarPermissaoOuComissao(
+                userId,
+                "EDIT_USERS",
+                id -> repository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("Usuário não encontrado.")),
+                (entity, user) -> {
+                    User usuario = (User) entity;
+                    var isUserAdmin = usuario.getPerfil().equals(Perfil.ADMIN);
+                    var isUserCoordenador = usuario.getPerfil().equals(Perfil.COORDENADOR);
+                    return !isUserAdmin && !isUserCoordenador;
                 });
     }
 
@@ -93,7 +108,6 @@ public class UserService {
 
         this.verificarLogicaDePerfil(user);
 
-
         User userToUpdate = this.getUserById(userId);
         userToUpdate.setLogin(user.login());
         userToUpdate.setNome(user.nome());
@@ -110,6 +124,22 @@ public class UserService {
         if (!user.getPerfil().equals(Perfil.ADMIN)) {
             user.setPerfil(Perfil.COORDENADOR);
             this.repository.save(user);
+        }
+    }
+
+    public void editarPerfil(String id, UpdatePerfilDTO perfilDto) {
+        verificarPermissaoDeAlterarUsuarios(null);
+
+        User user = this.getUserById(id);
+
+        if (!user.getPerfil().equals(Perfil.ADMIN)) {
+            try {
+                Perfil novoPerfil = Perfil.valueOf(perfilDto.perfil().toUpperCase());
+                user.setPerfil(novoPerfil); 
+                this.repository.save(user);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Perfil inválido");
+            }
         }
     }
 

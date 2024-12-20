@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.user.dto.UpdatePerfilDTO;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
 import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.services.UserService;
@@ -45,15 +47,12 @@ public class UserController {
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
-    // @PatchMapping("/{id}")
-    // public ResponseEntity<RestSuccessMessage> updateUser(@PathVariable String id, @RequestBody User user) {
-    //     User updatedUser = this.service.updateUser(id, user);
-    //     if (updatedUser == null) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    //                             .body(null);
-    //     }
-    //     return ResponseEntity.ok(updatedUser);
-    // }
+    @PatchMapping
+    public ResponseEntity<RestSuccessMessage> updateUser(@RequestBody UpdatePerfilDTO user) {
+        this.service.editarPerfil(user.userId(), user);
+        RestSuccessMessage successMessage = new RestSuccessMessage("User updated successfully");
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
+    }
 
     @PutMapping
     public ResponseEntity<RestSuccessMessage> updateUser(@Valid @RequestBody UpdateUserDTO dto) {
