@@ -3,7 +3,6 @@ package com.rb.web2.services;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.inscricao.Inscricao;
@@ -13,12 +12,16 @@ import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
 import com.rb.web2.domain.inscricao.mapper.InscricaoMapper;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.InscricaoRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class InscricaoService {
 
+  private AuthorizationUtil authorizationUtil;
   private final InscricaoRepository inscricaoRepository;
   private final UserService userService;
   private final VagaService vagaService;
@@ -33,13 +36,26 @@ public class InscricaoService {
     this.vagaService = vagaService;
   }
 
-  private void verificarPermissaoDeCriacaoOuAlteracao() {
-    String login = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = (User) userService.loadUserByUsername(login);
+  @PostConstruct
+  public void init() {
+    this.authorizationUtil = new AuthorizationUtil(userService);
+  }
+
+  // @TODO: Fazer a verificação de permissão de Visualização
+
+  private void verificarPermissaoDeCriacaoOuAlteracao(String userId) {
+    authorizationUtil.<String>verificarPermissaoOuComissao(
+        userId,
+        "EDIT_INSCRICAO",
+        id -> userService.getUserById(id),
+        (entity, user) -> {
+          User usuario = (User) entity;
+          return usuario.equals(user);
+        });
   }
 
   public InscricaoResponseDTO create(InscricaoRequestDTO dto) {
-    verificarPermissaoDeCriacaoOuAlteracao();
+    verificarPermissaoDeCriacaoOuAlteracao(dto.candidatoId());
 
     User candidato = userService.getUserById(dto.candidatoId());
     Vaga vaga = vagaService.buscarVagaPorId(dto.vagaId());
@@ -105,7 +121,7 @@ public class InscricaoService {
   }
 
   public InscricaoResponseDTO atualizarInscricao(String id, UpdateInscricaoDTO dto) {
-    verificarPermissaoDeCriacaoOuAlteracao();
+    verificarPermissaoDeCriacaoOuAlteracao(id);
     Inscricao existingInscricao = this.buscarInscricaoPorId(id);
 
     if (dto.vagaId() != null) {
@@ -133,7 +149,7 @@ public class InscricaoService {
   }
 
   public void softDelete(String id) {
-    verificarPermissaoDeCriacaoOuAlteracao();
+    verificarPermissaoDeCriacaoOuAlteracao(id);
     Inscricao inscricao = this.buscarInscricaoPorId(id);
     inscricao.setDeletadoEm(LocalDateTime.now());
     inscricaoRepository.save(inscricao);
