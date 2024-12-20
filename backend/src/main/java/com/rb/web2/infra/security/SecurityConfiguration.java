@@ -43,8 +43,7 @@ public class SecurityConfiguration {
 
                         // Rotas relacionadas a processos seletivos
                         .requestMatchers(HttpMethod.GET, "/api/processo/**").hasAuthority("VIEW_PROCESSO_SELETIVO")
-                        .requestMatchers(HttpMethod.POST, "/api/processo/**")
-                        .hasAuthority("EDIT_PROCESSO_SELETIVO")
+                        .requestMatchers(HttpMethod.POST, "/api/processo/**").hasAuthority("EDIT_PROCESSO_SELETIVO")
                         .requestMatchers(HttpMethod.PUT, "/api/processo/**").hasAuthority("EDIT_PROCESSO_SELETIVO")
 
                         // Rotas relacionadas a critérios
