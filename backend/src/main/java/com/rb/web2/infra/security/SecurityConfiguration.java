@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/user/**").hasAuthority("VIEW_USER")
                         .requestMatchers(HttpMethod.POST, "/api/user/**").hasAuthority("REGISTER_USER")
                         .requestMatchers(HttpMethod.PUT, "/api/user/**").hasAuthority("EDIT_USER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/user/**").hasAuthority("EDIT_USERS")
 
                         // Rotas relacionadas a processos seletivos
                         .requestMatchers(HttpMethod.GET, "/api/processo/**").hasAuthority("VIEW_PROCESSO_SELETIVO")
@@ -71,6 +72,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/**").hasAuthority("ROLE_ADMIN")
 
                         // Qualquer outra rota requer autenticação
                         .anyRequest().authenticated())

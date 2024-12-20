@@ -118,15 +118,6 @@ public class UserService {
         return UserMapper.toResponseUserDTO(this.repository.save(userToUpdate));
     }
 
-    public void upgradeToCoordenador(String id) {
-        User user = this.getUserById(id);
-
-        if (!user.getPerfil().equals(Perfil.ADMIN)) {
-            user.setPerfil(Perfil.COORDENADOR);
-            this.repository.save(user);
-        }
-    }
-
     public void editarPerfil(String id, UpdatePerfilDTO perfilDto) {
         verificarPermissaoDeAlterarUsuarios(null);
 
@@ -140,6 +131,15 @@ public class UserService {
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Perfil inválido");
             }
+        }
+    }
+
+    public void upgradeToCoordenador(String id) {
+        User user = this.getUserById(id);
+
+        if (!user.getPerfil().equals(Perfil.ADMIN)) {
+            user.setPerfil(Perfil.COORDENADOR);
+            this.repository.save(user);
         }
     }
 
