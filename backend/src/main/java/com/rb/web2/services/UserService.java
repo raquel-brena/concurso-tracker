@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,9 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private UserService userService;
 
     private AuthorizationUtil authorizationUtil;
 
@@ -138,7 +142,12 @@ public class UserService {
     public void editarPerfil(String id, UpdatePerfilDTO perfilDto) {
         verificarPermissaoDeAlterarUsuarios(null);
 
-        User user = this.getUserById(id);
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = repository.findByLogin(login).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+        verificarLogicaDePerfil(user.getPerfil(), UpdatePerfilDTO.getPerfilEnum(perfilDto.perfil()));
+
+        user = this.getUserById(id);
 
         if (!user.getPerfil().equals(Perfil.ADMIN)) {
             try {
@@ -179,19 +188,17 @@ public class UserService {
     }
 
     private void verificarLogicaDePerfil(Perfil perfilEditor, Perfil perfilEditado) {
-        if (perfilEditor.equals(perfilEditado)) {
-            return;
-        }
-
-        if (perfilEditado == Perfil.ADMIN) {
-            throw new IllegalArgumentException("Não é possível alterar o perfil para ADMIN");
-        }
-        if (perfilEditado == Perfil.COORDENADOR) {
-            throw new IllegalArgumentException("Não é possível alterar o perfil para COORDENADOR");
-        }
-        if (perfilEditado == Perfil.ASSISTENTE) {
-            throw new IllegalArgumentException("Não é possível alterar o perfil para ASSISTENTE");
-        }
+        if (perfilEditado.equals(Perfil.ADMIN) && !perfilEditor.equals(Perfil.ADMIN)) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um administrador");
+        } else if (perfilEditado.equals(Perfil.COORDENADOR) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um coordenador");
+        } else if (perfilEditado.equals(Perfil.ASSISTENTE) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um assistente");
+        } else if (perfilEditado.equals(Perfil.USER) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um usuário");
+        }  else if (perfilEditado.equals(Perfil.CANDIDATO)) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um candidato");
+        } 
     }
 
 }
