@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.criterioAvaliacao.dto.CriterioRequestDTO;
 import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
+import com.rb.web2.domain.inscricao.Inscricao;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
+import com.rb.web2.repositories.InscricaoRepository;
+import com.rb.web2.repositories.ProcessoSeletivoRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
 import jakarta.annotation.PostConstruct;
@@ -19,6 +23,12 @@ import jakarta.annotation.PostConstruct;
 public class CriterioAvaliacaoService {
     @Autowired
     private CriterioAvaliacaoRepository repository;
+
+    @Autowired
+    private ProcessoSeletivoRepository processoRepository;
+
+    @Autowired
+    private InscricaoRepository inscricaoRepository;
 
     @Autowired
     private UserService userService;
@@ -42,6 +52,55 @@ public class CriterioAvaliacaoService {
                 });
     }
 
+    private void verificarPermissaoDeLeitura(Long criterioId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                criterioId,
+                "VIEW_CRITERIOS",
+                id -> repository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Critério de Avaliação não encontrado.")),
+                (entity, user) -> {
+                    CriterioAvaliacao criterio = (CriterioAvaliacao) entity;
+                    var isComissao = criterio.getEtapa().getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+                    var isParticipante = criterio.getEtapa().getProcessoSeletivo().getVagas().stream()
+                            .anyMatch(vaga -> vaga.getInscricoes().stream()
+                                    .anyMatch(inscricao -> inscricao.getCandidato().equals(user)));
+
+                    return isComissao || isParticipante;
+                });
+    }
+
+    private void verificarPermissaoDeLeituraPorProcesso(String processoId) {
+        authorizationUtil.<String>verificarPermissaoOuComissao(
+                processoId,
+                "VIEW_CRITERIOS",
+                id -> processoRepository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Critério de Avaliação não encontrado.")),
+                (entity, user) -> {
+                    ProcessoSeletivo processo = (ProcessoSeletivo) entity;
+                    var isComissao = processo.getComissaoOrganizadora().contains(user);
+                    var isParticipante = processo.getVagas().stream()
+                            .anyMatch(vaga -> vaga.getInscricoes().stream()
+                                    .anyMatch(inscricao -> inscricao.getCandidato().equals(user)));
+
+                    return isComissao || isParticipante;
+                });
+    }
+
+    private void verificarPermissaoDeLeituraPorParticipante(String inscricaoId) {
+        authorizationUtil.<String>verificarPermissaoOuComissao(
+                inscricaoId,
+                "VIEW_CRITERIOS",
+                id -> inscricaoRepository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Critério de Avaliação não encontrado.")),
+                (entity, user) -> {
+                    Inscricao inscricao = (Inscricao) entity;
+                    var isParticipante = inscricao.getVaga().getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+                    var isComissao = inscricao.getCandidato().equals(user);
+
+                    return isParticipante || isComissao;
+                });
+    }
+
     public CriterioResponseDTO create(CriterioRequestDTO dto) {
         verificarPermissaoDeCriacaoOuAlteracao(null);
 
@@ -54,6 +113,8 @@ public class CriterioAvaliacaoService {
     }
 
     public CriterioResponseDTO getById(Long id) {
+        verificarPermissaoDeLeitura(id);
+
         CriterioAvaliacao criterio = repository.findById(id).orElseThrow(() -> new NotFoundException(""));
         return CriterioResponseDTO.from(criterio);
     }
@@ -78,6 +139,8 @@ public class CriterioAvaliacaoService {
     }
 
     public List<CriterioResponseDTO> findAllByProcessoSeletivo(String processoSeletivoId) {
+        this.verificarPermissaoDeLeituraPorProcesso(processoSeletivoId);
+
         List<CriterioAvaliacao> criterios = repository.findByEtapaProcessoSeletivoId(processoSeletivoId)
                 .orElseThrow(() -> new NotFoundException("Criterios de Avaliação não encontrados"));
 
@@ -91,6 +154,8 @@ public class CriterioAvaliacaoService {
     }
 
     public List<CriterioResponseDTO> findAllByInscricao(String inscricaoId) {
+        verificarPermissaoDeLeituraPorParticipante(inscricaoId);
+
         return repository.findByPontuacoesInscricaoId(inscricaoId);
     }
 
@@ -109,10 +174,10 @@ public class CriterioAvaliacaoService {
         repository.save(criterioAvaliacao);
     }
 
-    public List<CriterioResponseDTO> buscarCriteriosPorIds(List<Long> avaliacoes) {
-        return repository.findAllById(avaliacoes).stream()
+    public List<CriterioResponseDTO> buscarCriteriosPorIds(List<Long> criteriosIds) {
+        return repository.findAllByIdIn(criteriosIds).stream()
                 .map(CriterioResponseDTO::from)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());  
     }
 
     public boolean existsByCriterioId(Long criterioId) {

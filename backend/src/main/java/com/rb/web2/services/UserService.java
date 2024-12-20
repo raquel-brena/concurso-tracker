@@ -58,6 +58,21 @@ public class UserService {
                 });
     }
 
+    private void verificarPermissaoDeLeitura(String userId) {
+        authorizationUtil.<String>verificarPermissaoOuComissao(
+                userId,
+                "VIEW_USER",
+                id -> repository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("Usuário não encontrado.")),
+                (entity, user) -> {
+                    User usuario = (User) entity;
+                    var isUserAdmin = usuario.getPerfil().equals(Perfil.ADMIN);
+                    var isUserCoordenador = usuario.getPerfil().equals(Perfil.COORDENADOR);
+                    var isUser = usuario.equals(user);
+                    return !isUserAdmin && !isUserCoordenador && !isUser;
+                });
+    }
+
     public User create(User user) {
         return this.repository.save(user);
     }
@@ -68,6 +83,8 @@ public class UserService {
     }
 
     public User getUserById(String userId) {
+        verificarPermissaoDeLeitura(userId);
+
         User user = repository.findById(userId).orElseThrow(
                 () -> new NotFoundException(userId));
 

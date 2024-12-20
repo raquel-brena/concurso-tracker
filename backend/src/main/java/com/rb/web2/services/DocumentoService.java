@@ -72,6 +72,20 @@ public class DocumentoService {
         });
   }
 
+  private void verificarPermissaoDeLeitura(Long documentoId) {
+    authorizationUtil.<Long>verificarPermissaoOuComissao(
+        documentoId,
+        "VIEW_DOCUMENTO",
+        id -> repository.findById(id)
+              .orElseThrow(() -> new NotFoundException("Documento não encontrado.")),
+        (entity, user) -> {
+          Documento documento = (Documento) entity;
+          boolean isUsuarioCandidato = documento.getUsuario().equals(user);
+          boolean isUsuarioComissao = documento.getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+          return isUsuarioCandidato || isUsuarioComissao;
+        });
+  }
+
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
     verificarPermissaoDeCriacaoOuAlteracao(null);
 
@@ -99,12 +113,18 @@ public class DocumentoService {
   }
 
   public Documento buscarDocumentoPorId(Long id) {
+    verificarPermissaoDeLeitura(id);
     return repository.findById(id).orElseThrow(() -> new NotFoundException("Documento não encontrado. ID: " + id));
   }
 
   public Optional<Documento> getDocumentoByUrl(String link) {
+    Documento documento = repository.findByDownloadUrl(link).orElseThrow(() -> new NotFoundException("Documento não encontrado."));
+    verificarPermissaoDeLeitura(documento.getId());
+
     return repository.findByDownloadUrl(link);
   }
+
+  // Rotas de Admin
 
   public List<Documento> getAllDocumentos() {
     return repository.findAll();
@@ -122,7 +142,11 @@ public class DocumentoService {
     return documentos.stream().map(DocumentoMapper::toDocumentoResponseDTO).toList();
   }
 
+  // Fecha Rotas de Admin
+
   public String uploadFile(MultipartFile file, String id) throws IOException {
+    verificarPermissaoDeCriacaoOuAlteracao(null);
+
     String originalFilename = file.getOriginalFilename();
     if (originalFilename == null || originalFilename.isBlank()) {
       throw new IllegalArgumentException("O arquivo enviado não possui um nome válido.");
@@ -148,8 +172,10 @@ public class DocumentoService {
     return fileDonwloadUri;
   }
 
-  public Resource downloadFile(String filename, String id, String directoryName1, String directoryName2)
+  public Resource downloadFile(String filename, Long id, String directoryName1, String directoryName2)
       throws MalformedURLException {
+
+        verificarPermissaoDeLeitura(id);
 
     Path directory = fileStorageLocation.resolve(directoryName2).normalize();
 

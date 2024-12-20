@@ -36,9 +36,15 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/buscar/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/processo/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/agendas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/cargo/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/vagas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/instituicoes/**").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
 
                         // Rotas de usuário básico (USER role)
-                        .requestMatchers(HttpMethod.GET, "/api/user/**").hasAuthority("VIEW_USER")
+                        .requestMatchers(HttpMethod.GET, "/api/user").hasAuthority("VIEW_USERS")
+                        .requestMatchers(HttpMethod.GET, "/api/user/{id}").hasAuthority("VIEW_USER")
                         .requestMatchers(HttpMethod.POST, "/api/user/**").hasAuthority("REGISTER_USER")
                         .requestMatchers(HttpMethod.PUT, "/api/user/**").hasAuthority("EDIT_USER")
                         .requestMatchers(HttpMethod.PATCH, "/api/user/**").hasAuthority("EDIT_USERS")
@@ -65,6 +71,27 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/documentos/**").hasAuthority("VIEW_DOCUMENTOS")
                         .requestMatchers(HttpMethod.POST, "/api/documentos/**").hasAuthority("EDIT_DOCUMENTOS")
                         .requestMatchers(HttpMethod.PUT, "/api/documentos/**").hasAuthority("EDIT_DOCUMENTOS")
+
+                        // Rotas relacionadas a cargos
+                        .requestMatchers(HttpMethod.POST, "/api/cargo/**").hasAuthority("EDIT_CARGOS")
+                        .requestMatchers(HttpMethod.PUT, "/api/cargo/**").hasAuthority("EDIT_CARGOS")
+
+                        // Rotas relacionadas a vagas
+                        .requestMatchers(HttpMethod.POST, "/api/vagas/**").hasAuthority("EDIT_VAGAS")
+                        .requestMatchers(HttpMethod.PUT, "/api/vagas/**").hasAuthority("EDIT_VAGAS")
+
+                        // Rotas relacionadas a instituições
+                        .requestMatchers(HttpMethod.POST, "/api/instituicoes/**").hasAuthority("EDIT_INSTITUICAO")
+                        .requestMatchers(HttpMethod.PUT, "/api/instituicoes/**").hasAuthority("EDIT_INSTITUICAO")
+
+                        // Rotas relacionadas aos documentos de inscrição
+                        .requestMatchers(HttpMethod.POST, "/api/documentos-inscricao/**").hasAuthority("HOMOLOGAR_DOCUMENTO_INSCRICAO")
+
+                        // Rotas relacionadas a pontuação
+                        .requestMatchers(HttpMethod.GET, "/api/pontuacao/**").hasAuthority("VIEW_PONTUACOES")
+                        .requestMatchers(HttpMethod.POST, "/api/pontuacao/**").hasAuthority("EDIT_PONTUACOES")
+                        .requestMatchers(HttpMethod.PUT, "/api/pontuacao/**").hasAuthority("EDIT_PONTUACOES")
+                        .requestMatchers(HttpMethod.DELETE, "/api/pontuacao/**").hasAuthority("EDIT_PONTUACOES")
 
                         // Rotas administrativas (ADMIN role)
                         .requestMatchers(HttpMethod.GET, "/api/**").hasAuthority("ROLE_ADMIN")

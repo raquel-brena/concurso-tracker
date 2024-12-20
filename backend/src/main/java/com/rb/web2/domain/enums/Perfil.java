@@ -94,8 +94,10 @@ public enum Perfil {
         Permissao.VIEW_USER,
         Permissao.VIEW_INSCRICAO,
         Permissao.VIEW_RESULTADO,
+        Permissao.VIEW_PONTUACOES,
         Permissao.VIEW_DOCUMENTOS,
-        Permissao.VIEW_PROCESSO_SELETIVO
+        Permissao.VIEW_PROCESSO_SELETIVO,
+        Permissao.VIEW_CRITERIOS
     )),
     USER(EnumSet.of(
         Permissao.LOGIN_USER,
