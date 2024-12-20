@@ -26,9 +26,6 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    @Autowired
-    private UserService userService;
-
     private AuthorizationUtil authorizationUtil;
 
     @PostConstruct
