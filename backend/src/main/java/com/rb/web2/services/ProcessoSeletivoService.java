@@ -181,6 +181,16 @@ public class ProcessoSeletivoService {
     return ProcessoResponseDTO.from(processo);
   }
 
+  public void adicionarAgenda(Agenda agenda, String processoId) {
+    verificarPermissaoDeCriacaoOuAlteracao(processoId);
+
+    ProcessoSeletivo processo = repository.findById(processoId)
+        .orElseThrow(() -> new NotFoundException("Processo não encontrado"));
+
+    processo.setAgenda(agenda);
+    repository.save(processo);
+  }
+
   public List<ProcessoResponseDTO> buscarProcessos(String termo) {
     List<ProcessoSeletivo> processos = repository
         .findByTituloContainingIgnoreCaseOrDescricaoContainingOrderByAgendaInicioInscricaoDesc(termo,

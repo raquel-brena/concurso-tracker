@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +23,12 @@ import com.rb.web2.domain.documento.mapper.DocumentoMapper;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.infra.properties.FileStorageProperties;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.DocumentoRepository;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class DocumentoService {
@@ -42,19 +44,37 @@ public class DocumentoService {
   @Autowired
   private ProcessoSeletivoService processoSeletivoService;
 
+  private AuthorizationUtil authorizationUtil;
+
   public DocumentoService(FileStorageProperties fileStorageProperties) {
     this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
         .toAbsolutePath().normalize();
   }
 
-  private void verificarPermissaoDeCriacaoOuAlteracao() {
-    String login = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = (User) userService.loadUserByUsername(login);
+  @PostConstruct
+  public void init() {
+    this.authorizationUtil = new AuthorizationUtil(userService);
+  }
+
+  // @TODO: Fazer a verificação de permissão de Visualização
+
+  private void verificarPermissaoDeCriacaoOuAlteracao(Long documentoId) {
+    authorizationUtil.<Long>verificarPermissaoOuComissao(
+        documentoId,
+        "EDIT_DOCUMENTO",
+        id -> repository.findById(id)
+              .orElseThrow(() -> new NotFoundException("Documento não encontrado.")),
+        (entity, user) -> {
+          Documento documento = (Documento) entity;
+          boolean isUsuarioCandidato = documento.getUsuario().equals(user);
+          boolean isUsuarioComissao = documento.getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+          return isUsuarioCandidato || isUsuarioComissao;
+        });
   }
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
-    verificarPermissaoDeCriacaoOuAlteracao();
-    
+    verificarPermissaoDeCriacaoOuAlteracao(null);
+
     String id = null;
     Documento documento = new Documento();
 

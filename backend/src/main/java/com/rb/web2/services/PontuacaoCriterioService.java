@@ -14,8 +14,11 @@ import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 import com.rb.web2.domain.pontuacaoCriterio.dto.PontuacaoRequestDTO;
 import com.rb.web2.domain.pontuacaoCriterio.dto.PontuacaoResponseDTO;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.PontuacaoCriterioRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class PontuacaoCriterioService {
@@ -29,7 +32,31 @@ public class PontuacaoCriterioService {
     @Autowired
     private InscricaoService inscricaoService;
 
+    @Autowired
+    private UserService userService;
+
+    private AuthorizationUtil authorizationUtil;
+
+    @PostConstruct
+    public void init() {
+        this.authorizationUtil = new AuthorizationUtil(userService);
+    }
+
+    private void verificarPermissaoDeCriacaoOuAlteracao(Long pontuacaoId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                pontuacaoId,
+                "EDIT_PONTUACOES",
+                id -> pontuacaoCriterioRepository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Pontuação não encontrada.")),
+                (entity, user) -> {
+                    PontuacaoCriterio pontuacao = (PontuacaoCriterio) entity;
+                    return pontuacao.getCriterio().getEtapa().getProcessoSeletivo().getComissaoOrganizadora()
+                            .contains(user);
+                });
+    }
+
     public PontuacaoResponseDTO create(PontuacaoRequestDTO dto) {
+        verificarPermissaoDeCriacaoOuAlteracao(null);
         if (dto.criterioId() == null) {
             throw new IllegalArgumentException("Criterio ID cannot be null");
         }
@@ -49,6 +76,8 @@ public class PontuacaoCriterioService {
     }
 
     public PontuacaoResponseDTO update(Long id, PontuacaoRequestDTO dto) {
+        verificarPermissaoDeCriacaoOuAlteracao(id);
+
         PontuacaoCriterio pontuacaoCriterio = pontuacaoCriterioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pontuação Critério não encontrada"));
 
@@ -101,6 +130,8 @@ public class PontuacaoCriterioService {
     }
 
     public void delete(Long id) {
+        verificarPermissaoDeCriacaoOuAlteracao(id);
+
         PontuacaoCriterio pontuacaoCriterio = pontuacaoCriterioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pontuação Critério não encontrada"));
         pontuacaoCriterioRepository.delete(pontuacaoCriterio);
