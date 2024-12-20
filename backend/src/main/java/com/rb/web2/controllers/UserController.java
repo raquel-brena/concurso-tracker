@@ -57,21 +57,9 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<RestSuccessMessage> updateUser(@Valid @RequestBody UpdateUserDTO dto) {
-        UserResponseDTO user = this.service.getById(dto.userId());
+        UserResponseDTO user = this.service.updateUser(dto.userId(), dto);
 
-        // var role = user.getRole();
-        // // if (!(dto.roleId() == null)) {
-        // //     role = this.roleRepository.findById(dto.roleId()).orElseThrow(() -> new NotFoundException("Role doesnt exist"));
-        // // }
-
-        // if (dto.login() != null) {
-        //     user.setLogin(dto.login());
-        // }
-
-        // user.setRole(role);
-        // this.service.create(user);
-
-        RestSuccessMessage successMessage = new RestSuccessMessage("User updated successfully", user);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Usuario atualizado com sucesso", user);
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 

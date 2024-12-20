@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.documento.Documento;
+import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.processoComissao.ProcessoComissao;
 import com.rb.web2.domain.processoComissao.dto.MembroComissaoRequestDTO;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
@@ -99,7 +100,7 @@ public class ProcessoSeletivoService {
     if (processoCriado.getComissaoOrganizadora() == null) {
       processoCriado.setComissaoOrganizadora(new ArrayList<>());
     }
-    
+
     // Aparentemente usar Transactional torna essa linha desnecessária??
     processoComissaoRepository.save(new ProcessoComissao(processoCriado, userEntity));
     processoCriado.getComissaoOrganizadora().add(userEntity);
@@ -207,6 +208,10 @@ public class ProcessoSeletivoService {
 
     User user = userService.getUserById(dto.userId());
 
+    if (!user.getPerfil().equals(Perfil.COORDENADOR)) {
+      userService.upgradeToAssistente(user.getId());
+    }
+
     if (!processoSeletivo.getComissaoOrganizadora().contains(user)) {
       processoSeletivo.getComissaoOrganizadora().add(user);
       repository.save(processoSeletivo);
@@ -227,6 +232,12 @@ public class ProcessoSeletivoService {
 
     if (processoComissao.getDeletedAt() != null) {
       throw new NotFoundException("Membro já removido");
+    }
+
+    User user = userService.getUserById(dto.userId());
+
+    if (!user.getPerfil().equals(Perfil.COORDENADOR)) {
+      userService.downgradeToUser(user.getId());
     }
 
     processoComissao.setDeletedAt(LocalDateTime.now());

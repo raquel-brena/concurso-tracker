@@ -90,6 +90,10 @@ public class UserService {
 
     public UserResponseDTO updateUser(String userId, UpdateUserDTO user) {
         verificarPermissaoDeCriacaoOuAlteracao(userId);
+
+        this.verificarLogicaDePerfil(user);
+
+
         User userToUpdate = this.getUserById(userId);
         userToUpdate.setLogin(user.login());
         userToUpdate.setNome(user.nome());
@@ -107,7 +111,42 @@ public class UserService {
             user.setPerfil(Perfil.COORDENADOR);
             this.repository.save(user);
         }
+    }
 
+    public void upgradeToAssistente(String id) {
+        User user = this.getUserById(id);
+
+        if (!user.getPerfil().equals(Perfil.ADMIN)) {
+            user.setPerfil(Perfil.ASSISTENTE);
+            this.repository.save(user);
+        }
+    }
+
+    public void downgradeToUser(String id) {
+        User user = this.getUserById(id);
+
+        if (!user.getPerfil().equals(Perfil.ADMIN)) {
+            user.setPerfil(Perfil.USER);
+            this.repository.save(user);
+        }
+    }
+
+    private void verificarLogicaDePerfil(UpdateUserDTO user) {
+        User userEntity = this.getUserById(user.userId());
+
+        if (userEntity.getPerfil().equals(Perfil.valueOf(user.perfil()))) {
+            return;
+        }
+
+        if (user.perfil() == Perfil.ADMIN.toString()) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil para ADMIN");
+        }
+        if (user.perfil() == Perfil.COORDENADOR.toString()) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil para COORDENADOR");
+        }
+        if (user.perfil() == Perfil.ASSISTENTE.toString()) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil para ASSISTENTE");
+        }
     }
 
 }
