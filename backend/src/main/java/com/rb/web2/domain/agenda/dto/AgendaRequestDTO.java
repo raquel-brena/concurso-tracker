@@ -26,7 +26,10 @@ public record AgendaRequestDTO(
 
         @NotNull(message = "A data do resultado final é obrigatória.") @Future(message = "A data do resultado final deve estar no futuro.") LocalDate resultadoFinal,
 
-        @NotNull(message = "O prazo de convocação é obrigatório.") @Future(message = "O prazo de convocação deve estar no futuro.") LocalDate prazoConvocacao) {
+        @NotNull(message = "O prazo de convocação é obrigatório.") @Future(message = "O prazo de convocação deve estar no futuro.") LocalDate prazoConvocacao,
+
+        @NotNull(message = "O campo 'processoSeletivo' não pode ser vazio.") String processoSeletivoId) {
+
     public boolean isConsistent() {
         return inicioVigencia.isBefore(fimVigencia) &&
                 inicioInscricao.isBefore(fimInscricao) &&
