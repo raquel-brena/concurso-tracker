@@ -9,4 +9,5 @@ import com.rb.web2.domain.processoComissao.ProcessoComissaoId;
 @Repository
 public interface ProcessoComissaoRepository extends JpaRepository<ProcessoComissao, ProcessoComissaoId> {
     ProcessoComissao findByProcessoSeletivoIdIgnoreCaseAndUserIdIgnoreCase(String processoSeletivoId, String userId);
+    ProcessoComissao findByProcessoSeletivoIdAndUserId(String processoSeletivoId, String userId);
 }

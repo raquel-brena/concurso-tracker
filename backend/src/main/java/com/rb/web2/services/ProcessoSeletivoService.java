@@ -3,10 +3,12 @@ package com.rb.web2.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.rb.web2.domain.agenda.Agenda;
 import com.rb.web2.domain.documento.Documento;
@@ -18,13 +20,17 @@ import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.domain.vaga.Vaga;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.AgendaRepository;
 import com.rb.web2.repositories.ProcessoComissaoRepository;
 import com.rb.web2.repositories.ProcessoSeletivoRepository;
 import com.rb.web2.repositories.VagaRepository;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class ProcessoSeletivoService {
@@ -48,17 +54,55 @@ public class ProcessoSeletivoService {
   @Autowired
   private DocumentoService documentoService;
 
+  @Autowired
+  private AuthenticationService authenticationService;
+
+  private AuthorizationUtil authorizationUtil;
+
+  @PostConstruct
+  public void init() {
+    this.authorizationUtil = new AuthorizationUtil(userService);
+  }
+
+  private void verificarPermissaoDeCriacaoOuAlteracao(String processoId) {
+    authorizationUtil.<String>verificarPermissaoOuComissao(
+        processoId,
+        "EDIT_PROCESSO_SELETIVO",
+        id -> repository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Processo Seletivo não encontrado.")),
+        (entity, user) -> {
+          ProcessoSeletivo processo = (ProcessoSeletivo) entity;
+          List<User> comissaoOrganizadora = processo.getComissaoOrganizadora();
+          return comissaoOrganizadora != null && comissaoOrganizadora.contains(user);
+        });
+  }
+
+  @Transactional
   public ProcessoResponseDTO create(ProcessoRequestDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao(null);
+
     if (dto.titulo() == null || dto.validade() == null) {
       throw new NotFoundException("Titulo do processo seletivo não pode ser nulo");
     }
-    ProcessoSeletivo existeProcesso = this.getProcessoSeletivoByTitulo(dto.titulo());
 
-    if (existeProcesso != null) {
+    Optional<ProcessoSeletivo> existeProcessoOpt = repository.findByTitulo(dto.titulo());
+
+    if (existeProcessoOpt.isPresent()) {
       throw new NotFoundException("Processo seletivo com o nome " + dto.titulo() + " já existe");
     }
 
+    UserResponseDTO user = authenticationService.getUsuarioAutenticado();
+    userService.upgradeToCoordenador(user.id());
+    User userEntity = userService.getUserById(user.id());
+
     ProcessoSeletivo processoCriado = repository.save(ProcessoSeletivoMapper.toEntity(dto));
+    if (processoCriado.getComissaoOrganizadora() == null) {
+      processoCriado.setComissaoOrganizadora(new ArrayList<>());
+    }
+    
+    // Aparentemente usar Transactional torna essa linha desnecessária??
+    processoComissaoRepository.save(new ProcessoComissao(processoCriado, userEntity));
+    processoCriado.getComissaoOrganizadora().add(userEntity);
 
     return ProcessoResponseDTO.from(processoCriado);
   }
@@ -90,6 +134,8 @@ public class ProcessoSeletivoService {
   }
 
   public ProcessoResponseDTO update(String processoId) {
+    verificarPermissaoDeCriacaoOuAlteracao(processoId);
+
     ProcessoSeletivo processo = repository.findById(processoId)
         .orElseThrow(() -> new NotFoundException("Processo não encontrado"));
 
@@ -144,6 +190,8 @@ public class ProcessoSeletivoService {
   }
 
   public void adicionarMembroComissao(MembroComissaoRequestDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao(dto.processoSeletivoId());
+
     ProcessoSeletivo processoSeletivo = repository.findById(dto.processoSeletivoId())
         .orElseThrow(() -> new RuntimeException("Processo Seletivo não encontrado"));
 
@@ -158,6 +206,8 @@ public class ProcessoSeletivoService {
   }
 
   public void removerMembroComissao(MembroComissaoRequestDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao(dto.processoSeletivoId());
+
     ProcessoComissao processoComissao = processoComissaoRepository
         .findByProcessoSeletivoIdIgnoreCaseAndUserIdIgnoreCase(dto.processoSeletivoId(), dto.userId());
 
@@ -174,6 +224,8 @@ public class ProcessoSeletivoService {
   }
 
   public String deleteById(String id) {
+    verificarPermissaoDeCriacaoOuAlteracao(id);
+
     ProcessoSeletivo processo = this.getProcessoSeletivoById(id);
     processo.setDeletadoEm(LocalDateTime.now());
     return repository.save(processo).getId();
@@ -184,6 +236,8 @@ public class ProcessoSeletivoService {
   }
 
   public ProcessoResponseDTO atualizar(String id, UpdateProcessoDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao(id);
+
     ProcessoSeletivo processo = this.getProcessoSeletivoById(id);
 
     if (dto.titulo() != null) {

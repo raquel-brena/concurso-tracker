@@ -32,4 +32,8 @@ public record InstituicaoResponseDTO(
                 instituicao.getAtualizadoEm()
         );
     }
+
+    public static String getId(InstituicaoResponseDTO instituicao) {
+        return instituicao.id();
+    }
 }
