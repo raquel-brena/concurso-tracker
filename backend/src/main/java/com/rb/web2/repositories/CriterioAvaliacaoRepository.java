@@ -11,7 +11,7 @@ import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
 
 @Repository
 public interface CriterioAvaliacaoRepository extends JpaRepository<CriterioAvaliacao, Long> {
-    Optional<CriterioAvaliacao> findAllByIdIn(List<String> ids);
+    Optional<CriterioAvaliacao> findAllByIdIn(List<Long> ids);
     Optional<CriterioAvaliacao> findByIdIn(List<Long> avaliacoes);
     Optional<List<CriterioAvaliacao>> findByEtapaProcessoSeletivoId(String processoSeletivoId);
     List<CriterioResponseDTO> findByPontuacoesInscricaoId(String inscricaoId);

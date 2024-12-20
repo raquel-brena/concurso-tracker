@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,9 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private UserService userService;
 
     private AuthorizationUtil authorizationUtil;
 
@@ -58,6 +62,21 @@ public class UserService {
                 });
     }
 
+    private void verificarPermissaoDeLeitura(String userId) {
+        authorizationUtil.<String>verificarPermissaoOuComissao(
+                userId,
+                "VIEW_USER",
+                id -> repository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("Usuário não encontrado.")),
+                (entity, user) -> {
+                    User usuario = (User) entity;
+                    var isUserAdmin = usuario.getPerfil().equals(Perfil.ADMIN);
+                    var isUserCoordenador = usuario.getPerfil().equals(Perfil.COORDENADOR);
+                    var isUser = usuario.equals(user);
+                    return !isUserAdmin && !isUserCoordenador && !isUser;
+                });
+    }
+
     public User create(User user) {
       verificarPermissaoDeCriacaoOuAlteracao(null);
         return this.repository.save(user);
@@ -69,6 +88,8 @@ public class UserService {
     }
 
     public User getUserById(String userId) {
+        verificarPermissaoDeLeitura(userId);
+
         User user = repository.findById(userId).orElseThrow(
                 () -> new NotFoundException(userId));
 
@@ -106,9 +127,10 @@ public class UserService {
     public UserResponseDTO updateUser(String userId, UpdateUserDTO user) {
         verificarPermissaoDeCriacaoOuAlteracao(userId);
 
-        this.verificarLogicaDePerfil(user);
-
         User userToUpdate = this.getUserById(userId);
+
+        this.verificarLogicaDePerfil(userToUpdate.getPerfil(), user.getPerfilEnum());
+
         userToUpdate.setLogin(user.login());
         userToUpdate.setNome(user.nome());
         userToUpdate.setEmail(user.email());
@@ -122,7 +144,12 @@ public class UserService {
     public void editarPerfil(String id, UpdatePerfilDTO perfilDto) {
         verificarPermissaoDeAlterarUsuarios(null);
 
-        User user = this.getUserById(id);
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = repository.findByLogin(login).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+        verificarLogicaDePerfil(user.getPerfil(), UpdatePerfilDTO.getPerfilEnum(perfilDto.perfil()));
+
+        user = this.getUserById(id);
 
         if (!user.getPerfil().equals(Perfil.ADMIN)) {
             try {
@@ -162,22 +189,18 @@ public class UserService {
         }
     }
 
-    private void verificarLogicaDePerfil(UpdateUserDTO user) {
-        User userEntity = this.getUserById(user.userId());
-
-        if (userEntity.getPerfil().equals(Perfil.valueOf(user.perfil()))) {
-            return;
-        }
-
-        if (user.perfil() == Perfil.ADMIN.toString()) {
-            throw new IllegalArgumentException("Não é possível alterar o perfil para ADMIN");
-        }
-        if (user.perfil() == Perfil.COORDENADOR.toString()) {
-            throw new IllegalArgumentException("Não é possível alterar o perfil para COORDENADOR");
-        }
-        if (user.perfil() == Perfil.ASSISTENTE.toString()) {
-            throw new IllegalArgumentException("Não é possível alterar o perfil para ASSISTENTE");
-        }
+    private void verificarLogicaDePerfil(Perfil perfilEditor, Perfil perfilEditado) {
+        if (perfilEditado.equals(Perfil.ADMIN) && !perfilEditor.equals(Perfil.ADMIN)) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um administrador");
+        } else if (perfilEditado.equals(Perfil.COORDENADOR) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um coordenador");
+        } else if (perfilEditado.equals(Perfil.ASSISTENTE) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um assistente");
+        } else if (perfilEditado.equals(Perfil.USER) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um usuário");
+        }  else if (perfilEditado.equals(Perfil.CANDIDATO)) {
+            throw new IllegalArgumentException("Não é possível alterar o perfil de um candidato");
+        } 
     }
 
 }

@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 import com.rb.web2.domain.pontuacaoCriterio.dto.PontuacaoRequestDTO;
 import com.rb.web2.domain.pontuacaoCriterio.dto.PontuacaoResponseDTO;
 import com.rb.web2.infra.util.AuthorizationUtil;
+import com.rb.web2.repositories.CriterioAvaliacaoRepository;
+import com.rb.web2.repositories.InscricaoRepository;
 import com.rb.web2.repositories.PontuacaoCriterioRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
@@ -28,6 +31,12 @@ public class PontuacaoCriterioService {
 
     @Autowired
     private CriterioAvaliacaoService criterioAvaliacaoService;
+
+    @Autowired
+    private CriterioAvaliacaoRepository criterioAvaliacaoRepository;
+
+    @Autowired
+    private InscricaoRepository inscricaoRepository;
 
     @Autowired
     private InscricaoService inscricaoService;
@@ -55,6 +64,55 @@ public class PontuacaoCriterioService {
                 });
     }
 
+    private void verificarPermissaoDeLeituraPorPontuacao(Long pontuacaoId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                pontuacaoId,
+                "VIEW_PONTUACOES",
+                id -> pontuacaoCriterioRepository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Pontuação não encontrada.")),
+                (entity, user) -> {
+                    PontuacaoCriterio pontuacao = (PontuacaoCriterio) entity;
+                    var isParticipante = pontuacao.getInscricao().getCandidato().equals(user);
+                    var isComissao = pontuacao.getCriterio().getEtapa().getProcessoSeletivo().getComissaoOrganizadora()
+                            .contains(user);
+
+                    return isParticipante || isComissao;
+                });
+    }
+
+    private void verificarPermissaoDeLeituraPorInscricao(String criterioId) {
+        authorizationUtil.<String>verificarPermissaoOuComissao(
+                criterioId,
+                "VIEW_PONTUACOES",
+                id -> inscricaoRepository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Pontuação não encontrada.")),
+                (entity, user) -> {
+                    Inscricao inscricao = (Inscricao) entity;
+                    var isParticipante = inscricao.getCandidato().equals(user);
+
+                    return isParticipante;
+                });
+    }
+
+    private void verificarPermissaoDeLeituraPorCriterio(Long criterioId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                criterioId,
+                "VIEW_PONTUACOES",
+                id -> criterioAvaliacaoRepository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Pontuação não encontrada.")),
+                (entity, user) -> {
+                    CriterioAvaliacao criterio = (CriterioAvaliacao) entity;
+                
+                var isParticipante = criterio.getPontuacoes().stream()
+                        .anyMatch(pontuacao -> pontuacao.getInscricao().getCandidato().equals(user));
+                
+                var isComissao = criterio.getEtapa().getProcessoSeletivo().getComissaoOrganizadora()
+                        .contains(user);
+
+                return isParticipante || isComissao;
+                });
+    }
+
     public PontuacaoResponseDTO create(PontuacaoRequestDTO dto) {
         verificarPermissaoDeCriacaoOuAlteracao(null);
         if (dto.criterioId() == null) {
@@ -71,6 +129,8 @@ public class PontuacaoCriterioService {
     }
 
     public Optional<PontuacaoResponseDTO> getPontuacaoCriterioById(Long id) {
+        verificarPermissaoDeLeituraPorPontuacao(id);
+
         return pontuacaoCriterioRepository.findById(id)
                 .map(PontuacaoResponseDTO::new);
     }
@@ -90,6 +150,7 @@ public class PontuacaoCriterioService {
     }
 
     public List<PontuacaoResponseDTO> findByCriterio(Long criterioId) {
+        verificarPermissaoDeLeituraPorCriterio(criterioId);
         boolean exists = criterioAvaliacaoService.existsByCriterioId(criterioId);
         if (!exists) {
             throw new NotFoundException("Critério de Avaliação não encontrado");
@@ -101,6 +162,7 @@ public class PontuacaoCriterioService {
     }
 
     public List<PontuacaoResponseDTO> findByInscricao(String inscricaoId) {
+        verificarPermissaoDeLeituraPorInscricao(inscricaoId);
         boolean exists = inscricaoService.existsByInscricaoId(inscricaoId);
         if (!exists) {
             throw new NotFoundException("Inscrição não encontrada");

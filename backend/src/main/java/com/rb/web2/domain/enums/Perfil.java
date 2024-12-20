@@ -98,6 +98,7 @@ public enum Perfil {
         Permissao.VIEW_INSCRICAO,
         Permissao.EDIT_INSCRICAO,
         Permissao.VIEW_RESULTADO,
+        Permissao.VIEW_PONTUACOES,
         Permissao.VIEW_DOCUMENTOS,
         Permissao.EDIT_DOCUMENTOS,
         Permissao.VIEW_PROCESSO_SELETIVO

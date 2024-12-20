@@ -89,7 +89,7 @@ public class DocumentoController {
 
     // @TODO: Checar resposta do download
     @GetMapping("/download/{id}/{filename:.+}")
-    public ResponseEntity<?> downloadFile(@PathVariable String filename, @PathVariable String id,
+    public ResponseEntity<?> downloadFile(@PathVariable String filename, @PathVariable Long id,
             HttpServletRequest request) throws IOException {
 
         Resource resource = this.service.downloadFile(filename, id, "documentos", String.valueOf(id));
