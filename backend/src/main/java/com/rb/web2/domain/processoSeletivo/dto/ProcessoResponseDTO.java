@@ -66,4 +66,8 @@ public record ProcessoResponseDTO(
 
                 );
         }
+
+        public static String getId(ProcessoResponseDTO processo) {
+                return processo.id();
+        }
 }
