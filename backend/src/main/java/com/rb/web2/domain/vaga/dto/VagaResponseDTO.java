@@ -21,4 +21,8 @@ public record VagaResponseDTO(
                 vaga.getDescricao(), vaga.getTaxaInscricao(), vaga.isAtivo(), vaga.getCriadoEm(),
                 vaga.getAtualizadoEm());
     }
+
+    public static String getId(VagaResponseDTO vaga) {
+        return vaga.id().toString();
+    }
 }

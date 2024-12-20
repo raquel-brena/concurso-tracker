@@ -31,8 +31,7 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Rotas públicas (não requerem autenticação)
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Permite acesso ao Swagger
-                                                                                          // UI
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/buscar/**").permitAll()
 
@@ -40,11 +39,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/user/**").hasAuthority("VIEW_USER")
                         .requestMatchers(HttpMethod.POST, "/api/user/**").hasAuthority("REGISTER_USER")
                         .requestMatchers(HttpMethod.PUT, "/api/user/**").hasAuthority("EDIT_USER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/user/**").hasAuthority("EDIT_USERS")
 
                         // Rotas relacionadas a processos seletivos
                         .requestMatchers(HttpMethod.GET, "/api/processo/**").hasAuthority("VIEW_PROCESSO_SELETIVO")
-                        .requestMatchers(HttpMethod.POST, "/api/processo/**")
-                        .hasAuthority("EDIT_PROCESSO_SELETIVO")
+                        .requestMatchers(HttpMethod.POST, "/api/processo/**").hasAuthority("EDIT_PROCESSO_SELETIVO")
                         .requestMatchers(HttpMethod.PUT, "/api/processo/**").hasAuthority("EDIT_PROCESSO_SELETIVO")
 
                         // Rotas relacionadas a critérios
@@ -72,6 +71,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/**").hasAuthority("ROLE_ADMIN")
 
                         // Qualquer outra rota requer autenticação
                         .anyRequest().authenticated())

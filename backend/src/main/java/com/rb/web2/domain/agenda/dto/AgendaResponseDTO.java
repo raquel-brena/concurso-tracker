@@ -1,6 +1,7 @@
 package com.rb.web2.domain.agenda.dto;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import com.rb.web2.domain.agenda.Agenda;
 
@@ -33,5 +34,9 @@ public record AgendaResponseDTO(
                                 agenda.getResultadoPreliminar(),
                                 agenda.getResultadoFinal(),
                                 agenda.getPrazoConvocacao());
+        }
+
+        public Map<String, Long> getId() {
+                return Map.of("id", id);
         }
 }

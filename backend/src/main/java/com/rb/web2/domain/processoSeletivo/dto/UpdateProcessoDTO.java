@@ -3,6 +3,7 @@ package com.rb.web2.domain.processoSeletivo.dto;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record UpdateProcessoDTO(
         @NotBlank(message = "O título do processo seletivo não pode ser vazio.")
@@ -10,10 +11,10 @@ public record UpdateProcessoDTO(
 
         String descricao,
 
-        @NotBlank(message = "A validade do processo seletivo é obrigatória.")
+        @NotNull(message = "A validade do processo seletivo é obrigatória.")
         int validade,
 
-        @NotBlank(message = "O campo 'temporario' é obrigatório.")
+        @NotNull(message = "O campo 'temporario' é obrigatório.")
         boolean temporario,
         String linkEdital,
         List<Long> vagasIds,

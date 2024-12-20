@@ -11,9 +11,12 @@ import com.rb.web2.domain.documentoInscricao.DocumentoInscricao;
 import com.rb.web2.domain.documentoInscricao.dto.DocInscricaoRequestDTO;
 import com.rb.web2.domain.documentoInscricao.dto.HomologarDocInscricaoRequestDTO;
 import com.rb.web2.domain.inscricao.Inscricao;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.DocumentoInscricaoRepository;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class DocumentoInscricaoService {
@@ -27,7 +30,46 @@ public class DocumentoInscricaoService {
     @Autowired
     private InscricaoService inscricaoService;
 
+    @Autowired
+    private UserService userService;
+
+    private AuthorizationUtil authorizationUtil;
+
+    @PostConstruct
+    public void init() {
+        this.authorizationUtil = new AuthorizationUtil(userService);
+    }
+
+    // @TODO: Fazer a verificação de permissão de Visualização
+
+    private void verificarPermissaoDeCriacaoOuAlteracao(Long documentoInscricaoId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                documentoInscricaoId,
+                // @TODO: verificar permissão
+                "EDIT_DOCUMENTO",
+                id -> repository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Documento de inscrição não encontrado.")),
+                (entity, user) -> {
+                    DocumentoInscricao documentoInscricao = (DocumentoInscricao) entity;
+                    return documentoInscricao.getInscricao().getCandidato().equals(user);
+                });
+    }
+
+    private void verificarPermissaoHomologacao(Long documentoInscricaoId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                documentoInscricaoId,
+                "HOMOLOGAR_DOCUMENTO",
+                id -> repository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("Documento de inscrição não encontrado.")),
+                (entity, user) -> {
+                    DocumentoInscricao documentoInscricao = (DocumentoInscricao) entity;
+                    return documentoInscricao.getInscricao().getVaga().getProcessoSeletivo().getComissaoOrganizadora()
+                            .contains(user);
+                });
+    }
+
     public DocumentoInscricao criarDocumentoInscricao(DocInscricaoRequestDTO dto) {
+        verificarPermissaoDeCriacaoOuAlteracao(null);
         Inscricao inscricao = inscricaoService.buscarInscricaoPorId(dto.inscricaoId());
 
         Documento documento = documentoService.buscarDocumentoPorId(dto.documentoId());
@@ -45,6 +87,8 @@ public class DocumentoInscricaoService {
     }
 
     public DocumentoInscricao homologarDocumento(HomologarDocInscricaoRequestDTO dto) {
+        verificarPermissaoHomologacao(dto.documentoInscricaoId());
+
         DocumentoInscricao documentoInscricao = this.findById(dto.documentoInscricaoId());
         Agenda agenda = documentoInscricao.getInscricao().getVaga().getProcessoSeletivo().getAgenda();
 

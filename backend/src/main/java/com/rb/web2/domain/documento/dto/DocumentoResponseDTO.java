@@ -22,4 +22,8 @@ public record DocumentoResponseDTO(
                 documento.getCriadoEm(),
                 documento.getAtualizadoEm());
     }
+
+    public static String getId(Documento documento) {
+        return documento.getId().toString();
+    }
 }

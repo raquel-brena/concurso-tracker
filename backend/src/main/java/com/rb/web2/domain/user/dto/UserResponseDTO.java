@@ -30,4 +30,8 @@ public record UserResponseDTO(
                                                 .map(permissao -> permissao.toString())
                                                 .collect(Collectors.toList()));
         }
+
+        public static String getId(User user) {
+                return user.getId();
+        }
 }

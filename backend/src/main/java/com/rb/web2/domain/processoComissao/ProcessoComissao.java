@@ -43,4 +43,11 @@ public class ProcessoComissao {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public ProcessoComissao(ProcessoSeletivo processoSeletivo, User user) {
+        this.processoSeletivoId = processoSeletivo.getId();
+        this.userId = user.getId();
+        this.processoSeletivo = processoSeletivo;
+        this.user = user;
+    }
 }

@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.criterioAvaliacao.dto.CriterioRequestDTO;
 import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
-import com.rb.web2.domain.user.User;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.CriterioAvaliacaoRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class CriterioAvaliacaoService {
@@ -22,13 +23,27 @@ public class CriterioAvaliacaoService {
     @Autowired
     private UserService userService;
 
-    private void verificarPermissaoDeCriacaoOuAlteracao() {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = (User) userService.loadUserByUsername(login);
+    private AuthorizationUtil authorizationUtil;
+
+    @PostConstruct
+    public void init() {
+        this.authorizationUtil = new AuthorizationUtil(userService);
+    }
+
+    private void verificarPermissaoDeCriacaoOuAlteracao(Long criterioId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                criterioId,
+                "EDIT_CRITERIOS",
+                id -> repository.findById(id)
+                            .orElseThrow(() -> new NotFoundException("Critério de Avaliação não encontrado.")),
+                (entity, user) -> {
+                    CriterioAvaliacao criterio = (CriterioAvaliacao) entity;
+                    return criterio.getEtapa().getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+                });
     }
 
     public CriterioResponseDTO create(CriterioRequestDTO dto) {
-        verificarPermissaoDeCriacaoOuAlteracao();
+        verificarPermissaoDeCriacaoOuAlteracao(null);
 
         CriterioAvaliacao criterioAvaliacao = new CriterioAvaliacao();
         criterioAvaliacao.setNome(dto.nome());
@@ -49,7 +64,7 @@ public class CriterioAvaliacaoService {
     }
 
     public CriterioResponseDTO update(Long id, CriterioRequestDTO dto) {
-        verificarPermissaoDeCriacaoOuAlteracao();
+        verificarPermissaoDeCriacaoOuAlteracao(id);
         this.repository.existsById(id);
 
         CriterioAvaliacao criterioAvaliacao = this.repository.findById(id)
@@ -87,7 +102,7 @@ public class CriterioAvaliacaoService {
     // }
 
     public void softDelete(Long id) {
-        verificarPermissaoDeCriacaoOuAlteracao();
+        verificarPermissaoDeCriacaoOuAlteracao(id);
         CriterioAvaliacao criterioAvaliacao = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("CriterioAvaliacao not found"));
         criterioAvaliacao.setAtivo(false);
