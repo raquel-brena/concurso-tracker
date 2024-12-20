@@ -1,5 +1,6 @@
 package com.rb.web2.domain.user.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,12 +24,14 @@ public record UserResponseDTO(
                                 user.getEmail(),
                                 user.getCpf(),
                                 user.getTelefone(),
-                                user.getDocumentos().stream()
+                                user.getDocumentos() != null ? 
+                                        user.getDocumentos().stream()
                                                 .map(DocumentoResponseDTO::from)
-                                                .collect(Collectors.toList()),
+                                                .collect(Collectors.toList()) : 
+                                        new ArrayList<>(),
                                 user.getPerfil().getPermissoes().stream()
-                                                .map(permissao -> permissao.toString())
-                                                .collect(Collectors.toList()));
+                                        .map(permissao -> permissao.toString())
+                                        .collect(Collectors.toList()));
         }
 
         public static String getId(User user) {

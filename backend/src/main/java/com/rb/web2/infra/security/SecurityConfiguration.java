@@ -34,6 +34,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/buscar/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/processo/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/agendas/**").permitAll()
 
                         // Rotas de usuário básico (USER role)
                         .requestMatchers(HttpMethod.GET, "/api/user/**").hasAuthority("VIEW_USER")
@@ -42,7 +44,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PATCH, "/api/user/**").hasAuthority("EDIT_USERS")
 
                         // Rotas relacionadas a processos seletivos
-                        .requestMatchers(HttpMethod.GET, "/api/processo/**").hasAuthority("VIEW_PROCESSO_SELETIVO")
                         .requestMatchers(HttpMethod.POST, "/api/processo/**").hasAuthority("EDIT_PROCESSO_SELETIVO")
                         .requestMatchers(HttpMethod.PUT, "/api/processo/**").hasAuthority("EDIT_PROCESSO_SELETIVO")
 
@@ -57,9 +58,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/api/inscricoes/**").hasAuthority("EDIT_INSCRICOES")
 
                         // Rotas relacionadas a agendas
-                        .requestMatchers(HttpMethod.GET, "/api/agenda/**").hasAuthority("VIEW_AGENDA")
-                        .requestMatchers(HttpMethod.POST, "/api/agenda/**").hasAuthority("EDIT_AGENDA")
-                        .requestMatchers(HttpMethod.PUT, "/api/agenda/**").hasAuthority("EDIT_AGENDA")
+                        .requestMatchers(HttpMethod.POST, "/api/agendas/**").hasAuthority("EDIT_AGENDA")
+                        .requestMatchers(HttpMethod.PUT, "/api/agendas/**").hasAuthority("EDIT_AGENDA")
 
                         // Rotas relacionadas a documentos
                         .requestMatchers(HttpMethod.GET, "/api/documentos/**").hasAuthority("VIEW_DOCUMENTOS")

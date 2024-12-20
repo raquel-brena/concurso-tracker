@@ -132,30 +132,4 @@ public class AgendaService {
 
     return true;
   }
-
-  // public Agenda updateAgenda(
-  // String id,
-  // Agenda updatedAgenda
-  // ) {
-  // if (checkAgendaExists(id)) {
-  // updatedAgenda.setId(id);
-  // return repository.save(updatedAgenda);
-  // }
-
-  // return null;
-  // }
-
-  // public boolean deleteInstituicao(String id) {
-  // Optional<Agenda> existingInstituicao = getInstituicaoById(id);
-  // if (checkInstituicaoExists(id)) {
-  // Instituicao instituicao = existingInstituicao.get();
-  // instituicao.setAtivo(false); // Atualiza o campo ativo para false, marcando
-  // como inativa
-
-  // repository.save(instituicao);
-  // return true;
-  // }
-
-  // return false;
-  // }
 }

@@ -59,7 +59,6 @@ public class UserService {
     }
 
     public User create(User user) {
-        verificarPermissaoDeCriacaoOuAlteracao(null);
         return this.repository.save(user);
     }
 
