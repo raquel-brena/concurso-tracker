@@ -36,7 +36,7 @@ public class AgendaController {
 
     @PostMapping("/")
     public ResponseEntity<RestSuccessMessage> createAgenda(@Valid @RequestBody AgendaRequestDTO dto) {
-        System.out.println(authenticationService.getUsuarioAutenticado() + " tentou criar a agenda ");
+
         var agenda = service.create(dto);
 
         var location = ServletUriComponentsBuilder

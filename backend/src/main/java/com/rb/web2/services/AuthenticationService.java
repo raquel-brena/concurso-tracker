@@ -19,10 +19,11 @@ import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
 import com.rb.web2.domain.user.dto.LoginResponseDTO;
-import com.rb.web2.domain.user.dto.RegisterDTO;
+import com.rb.web2.domain.user.dto.RegisterUserDTO;
+import com.rb.web2.domain.user.dto.ReqUserDTO;
 import com.rb.web2.domain.user.dto.UserResponseDTO;
-import com.rb.web2.domain.user.mapper.UserMapper;
 import com.rb.web2.infra.security.TokenService;
+import com.rb.web2.shared.exceptions.BadRequestException;
 
 @Service
 public class AuthenticationService implements UserDetailsService {
@@ -47,12 +48,12 @@ public class AuthenticationService implements UserDetailsService {
         return new LoginResponseDTO(token);
     }
 
-    public UserResponseDTO register(RegisterDTO data) {
+    public UserResponseDTO register(RegisterUserDTO data) {
         this.userService.checkUserExists(data.login());
 
         String encryptedPassword = passwordEncoder.encode(data.password());
-
-        User user = this.userService.create(new User(data.login(), encryptedPassword, Perfil.USER));
+       
+        User user = this.userService.create(new User(data.login(), encryptedPassword, data.perfil()));
         
         return UserResponseDTO.from(user);
     }
@@ -76,8 +77,8 @@ public class AuthenticationService implements UserDetailsService {
         // Imprimir o objeto UserDetails
         System.out.println(userDetails + " foi autenticado");
 
-        UserResponseDTO userResponse = UserMapper.toResponseUserDTO(user);
-        return userResponse;
+      
+        return UserResponseDTO.from(user);
     }
 
     public void logout() {

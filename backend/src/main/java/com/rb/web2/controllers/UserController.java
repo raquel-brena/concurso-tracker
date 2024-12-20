@@ -32,7 +32,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<RestSuccessMessage> getAllUsers() {
         List<UserResponseDTO> users = service.getAllUsers();
-        RestSuccessMessage successMessage = new RestSuccessMessage("Users found successfully", users);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Usuário encontrado com sucesso", users);
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
@@ -43,14 +43,14 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                 .body(null);
         }
-        RestSuccessMessage successMessage = new RestSuccessMessage("User found successfully", user);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Usuário encontrado com sucesso", user);
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @PatchMapping
     public ResponseEntity<RestSuccessMessage> updateUser(@RequestBody UpdatePerfilDTO user) {
         this.service.editarPerfil(user.userId(), user);
-        RestSuccessMessage successMessage = new RestSuccessMessage("User updated successfully");
+        RestSuccessMessage successMessage = new RestSuccessMessage("Usuário atualizado com sucesso");
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 

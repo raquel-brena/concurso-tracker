@@ -42,7 +42,8 @@ public enum Perfil {
         Permissao.VIEW_VAGAS,
         Permissao.EDIT_VAGAS,
         Permissao.VIEW_ETAPAS,
-        Permissao.EDIT_ETAPAS
+        Permissao.EDIT_ETAPAS,
+        Permissao.ADMIN
     )),
     COORDENADOR(EnumSet.of(
         Permissao.LOGIN_USER,
@@ -67,7 +68,8 @@ public enum Perfil {
         Permissao.VIEW_INSTITUICAO,
         Permissao.VIEW_PONTUACOES,
         Permissao.VIEW_VAGAS,
-        Permissao.VIEW_ETAPAS
+        Permissao.VIEW_ETAPAS,
+        Permissao.ADMIN
     )),
     ASSISTENTE(EnumSet.of(
         Permissao.LOGIN_USER,

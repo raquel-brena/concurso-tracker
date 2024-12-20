@@ -69,12 +69,12 @@ public class InscricaoService {
         .toEntity(dto, candidato, vaga);
     inscricaoRepository.save(inscricao);
 
-    return InscricaoMapper.toDTO(inscricao);
+    return InscricaoResponseDTO.from(inscricao);
   }
 
   public InscricaoResponseDTO buscarPorId(String id) {
     return inscricaoRepository.findById(id)
-        .map(InscricaoMapper::toDTO)
+        .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
 
@@ -85,18 +85,15 @@ public class InscricaoService {
 
   public InscricaoResponseDTO getResponseInscricaoDTOById(String id) {
     return inscricaoRepository.findById(id)
-        .map(InscricaoMapper::toDTO)
+        .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
 
   public List<InscricaoResponseDTO> getAllInscricoes() {
     List<Inscricao> inscricoes = inscricaoRepository.findAllByDeletadoEmNull();
     List<InscricaoResponseDTO> applications = inscricoes.stream()
-        .map(inscricao -> new InscricaoResponseDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+    .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
+
         .toList();
     return applications;
   }
@@ -104,11 +101,7 @@ public class InscricaoService {
   public List<InscricaoResponseDTO> getAllInscricoesPorCandidato(String candidatoId) {
     List<Inscricao> inscricoes = inscricaoRepository.findAllByCandidatoId(candidatoId);
     List<InscricaoResponseDTO> applications = inscricoes.stream()
-        .map(inscricao -> new InscricaoResponseDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+    .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .toList();
     return applications;
   }
@@ -116,11 +109,7 @@ public class InscricaoService {
   public List<InscricaoResponseDTO> getAllInscricoesPorVaga(Long vagaId) {
     List<Inscricao> inscricoes = inscricaoRepository.findAllByVagaId(vagaId);
     List<InscricaoResponseDTO> applications = inscricoes.stream()
-        .map(inscricao -> new InscricaoResponseDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+    .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .toList();
     return applications;
   }
@@ -150,7 +139,7 @@ public class InscricaoService {
     // }
 
     inscricaoRepository.save(existingInscricao);
-    return InscricaoMapper.toDTO(existingInscricao);
+    return InscricaoResponseDTO.from(existingInscricao);
   }
 
   public void softDelete(String id) {
@@ -167,11 +156,7 @@ public class InscricaoService {
   public List<InscricaoResponseDTO> findByProcesso(String processoId) {
     List<Inscricao> inscricoes = inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
     List<InscricaoResponseDTO> applications = inscricoes.stream()
-        .map(inscricao -> new InscricaoResponseDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+       .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .toList();
     return applications;
   }
@@ -183,11 +168,7 @@ public class InscricaoService {
   public List<InscricaoResponseDTO> getAllInscricoesPorProcessoSeletivo(String processoId) {
     List<Inscricao> inscricoes = inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
     List<InscricaoResponseDTO> applications = inscricoes.stream()
-        .map(inscricao -> new InscricaoResponseDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+       .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .toList();
     return applications;
   }

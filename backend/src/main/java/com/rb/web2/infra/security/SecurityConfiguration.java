@@ -32,7 +32,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         // Rotas públicas (não requerem autenticação)
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/buscar/**").permitAll()
 
                         // Rotas de usuário básico (USER role)
@@ -65,6 +65,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/documentos/**").hasAuthority("VIEW_DOCUMENTOS")
                         .requestMatchers(HttpMethod.POST, "/api/documentos/**").hasAuthority("EDIT_DOCUMENTOS")
                         .requestMatchers(HttpMethod.PUT, "/api/documentos/**").hasAuthority("EDIT_DOCUMENTOS")
+
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 
                         // Rotas administrativas (ADMIN role)
                         .requestMatchers(HttpMethod.GET, "/api/**").hasAuthority("ROLE_ADMIN")
@@ -99,6 +102,7 @@ public class SecurityConfiguration {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:4200")
                         .allowedHeaders("*")
+                        .exposedHeaders("Authorization")
                         .allowCredentials(true)
                         .maxAge(3600);
             }

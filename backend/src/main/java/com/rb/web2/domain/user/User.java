@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rb.web2.domain.documento.Documento;
 import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.inscricao.Inscricao;
+import com.rb.web2.domain.instituicao.Instituicao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 
 import jakarta.persistence.CascadeType;
@@ -26,7 +27,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -58,6 +61,10 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "instituicao_id")
+    private Instituicao instituicao;
 
     @Enumerated(EnumType.STRING)
     private Perfil perfil;

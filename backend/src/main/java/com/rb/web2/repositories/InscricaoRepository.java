@@ -16,5 +16,5 @@ public interface InscricaoRepository extends JpaRepository<Inscricao, String> {
     List<Inscricao> findAllByVagaId(Long vagaId);
     List<Inscricao> findAllByVagaIdAndDeletadoEmNull(Long vagaId);
     List<Inscricao> findByVagaProcessoSeletivoId(String processoId);
-    Optional<InscricaoResponseDTO> findByCandidatoIdAndVagaId(String candidatoId, Long vagaId);
+    Optional<Inscricao> findByCandidatoIdAndVagaId(String candidatoId, Long vagaId);
 }

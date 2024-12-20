@@ -8,15 +8,6 @@ import com.rb.web2.domain.vaga.Vaga;
 
 public class InscricaoMapper {
 
-    public static InscricaoResponseDTO toDTO(Inscricao inscricao) {
-        return new InscricaoResponseDTO(
-                inscricao.getId(),
-                inscricao.getCandidato().getId(),
-                inscricao.getVaga().getId(),
-                inscricao.getDeletadoEm()
-        );
-    }
-
     public static Inscricao toEntity(
         InscricaoRequestDTO dto,
             User candidato,

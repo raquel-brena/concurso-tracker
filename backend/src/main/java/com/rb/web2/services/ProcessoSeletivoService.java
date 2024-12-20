@@ -92,18 +92,7 @@ public class ProcessoSeletivoService {
       throw new NotFoundException("Processo seletivo com o nome " + dto.titulo() + " já existe");
     }
 
-    UserResponseDTO user = authenticationService.getUsuarioAutenticado();
-    userService.upgradeToCoordenador(user.id());
-    User userEntity = userService.getUserById(user.id());
-
     ProcessoSeletivo processoCriado = repository.save(ProcessoSeletivoMapper.toEntity(dto));
-    if (processoCriado.getComissaoOrganizadora() == null) {
-      processoCriado.setComissaoOrganizadora(new ArrayList<>());
-    }
-
-    // Aparentemente usar Transactional torna essa linha desnecessária??
-    processoComissaoRepository.save(new ProcessoComissao(processoCriado, userEntity));
-    processoCriado.getComissaoOrganizadora().add(userEntity);
 
     return ProcessoResponseDTO.from(processoCriado);
   }

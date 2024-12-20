@@ -2,14 +2,20 @@ package com.rb.web2.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
-import com.rb.web2.domain.user.dto.RegisterDTO;
+import com.rb.web2.domain.user.dto.RegisterUserDTO;
+import com.rb.web2.domain.user.dto.ReqUserAdmDTO;
+import com.rb.web2.domain.user.dto.ReqUserDTO;
 import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.services.AuthenticationService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
@@ -36,17 +42,36 @@ public class AuthenticationController {
 
     @Transactional
     @PostMapping("/register")
-    public ResponseEntity<RestSuccessMessage> register(@RequestBody @Valid RegisterDTO data) {
-            UserResponseDTO newUser = this.authService.register(data);
+    public ResponseEntity<RestSuccessMessage> register(@RequestBody @Valid ReqUserDTO data) {
 
-            var location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(newUser.id())
-                    .toUri();
+        UserResponseDTO newUser = this.authService.register(RegisterUserDTO.fromUserDTO(data));
 
-            RestSuccessMessage successMessage = new RestSuccessMessage("Usuário criado com sucesso", newUser.id());
-            return ResponseEntity.created(location).body(successMessage);
+        var location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newUser.id())
+                .toUri();
+
+        RestSuccessMessage successMessage = new RestSuccessMessage("Usuário criado com sucesso", newUser.id());
+        return ResponseEntity.created(location).body(successMessage);
+    }
+
+    @Transactional
+    @PostMapping("/admin/register")
+    public ResponseEntity<RestSuccessMessage> registerAdmin(@RequestBody @Valid ReqUserAdmDTO data,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        UserResponseDTO newUser = this.authService.register(RegisterUserDTO.fromUserAdmDTO(data));
+
+        var location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newUser.id())
+                .toUri();
+
+        RestSuccessMessage successMessage = new RestSuccessMessage("Usuário administrativo registrado com sucesso",
+                newUser.id());
+        return ResponseEntity.created(location).body(successMessage);
     }
 
     @PostMapping("/logout")

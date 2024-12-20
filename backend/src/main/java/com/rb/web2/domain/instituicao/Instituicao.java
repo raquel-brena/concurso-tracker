@@ -1,12 +1,14 @@
 package com.rb.web2.domain.instituicao;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
+import com.rb.web2.domain.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -44,7 +47,10 @@ public class Instituicao {
     private List<ProcessoSeletivo> processos;
 
     @Column(nullable = false)
-    private boolean ativo = true; // É definido como true antes de ser salvo no banco de dados
+    private boolean ativo = true;
+
+    @OneToMany(mappedBy = "instituicao")
+    private List<User> usuarios = new ArrayList<>();
 
     @Column(name = "criado_em", updatable = false)
     @CreationTimestamp

@@ -70,7 +70,7 @@ public class RestExceptionHandler {
         } else if (ex instanceof BadRequestException || ex instanceof InvalidFormatException
                 || ex instanceof DateTimeParseException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestErrorMessage(
-                    "Dados inválidos fornecidos: " + ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
+                    ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
         } else if (ex instanceof ForbbidenException) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new RestErrorMessage(ex.getMessage(), HttpStatus.FORBIDDEN.value()));

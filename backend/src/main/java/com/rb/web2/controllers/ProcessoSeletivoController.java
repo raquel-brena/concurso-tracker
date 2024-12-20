@@ -33,7 +33,7 @@ public class ProcessoSeletivoController {
         this.service = service;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<RestSuccessMessage> create(@Valid @RequestBody ProcessoRequestDTO dto) {
 
         ProcessoResponseDTO processo = service.create(dto);
@@ -48,7 +48,7 @@ public class ProcessoSeletivoController {
         return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> getProcessoSeletivo(@PathVariable String id) {
         ProcessoResponseDTO processo = this.service.getById(id);
         RestSuccessMessage successMessage = new RestSuccessMessage("Consulta realizada com sucesso", processo);
@@ -101,7 +101,7 @@ public class ProcessoSeletivoController {
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> update(@PathVariable String id,
             @Valid @RequestBody UpdateProcessoDTO dto) {
         ProcessoResponseDTO processo = this.service.atualizar(id, dto);

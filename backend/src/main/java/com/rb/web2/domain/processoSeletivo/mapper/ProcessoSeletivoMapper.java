@@ -11,7 +11,6 @@ public class ProcessoSeletivoMapper {
                 processo.setDescricao(dto.descricao());
                 processo.setValidadeMeses(dto.validade());
                 processo.setTemporario(dto.temporario());
-                // processo.setLinkEdital(dto.linkEdital());
                 return processo;
         }
 }

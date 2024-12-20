@@ -39,4 +39,5 @@ public enum Permissao {
     EDIT_VAGAS, // 36
     VIEW_ETAPAS, // 37
     EDIT_ETAPAS, // 38
+    ADMIN
 }

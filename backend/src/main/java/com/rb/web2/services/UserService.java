@@ -12,9 +12,9 @@ import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.UpdatePerfilDTO;
 import com.rb.web2.domain.user.dto.UpdateUserDTO;
 import com.rb.web2.domain.user.dto.UserResponseDTO;
-import com.rb.web2.domain.user.mapper.UserMapper;
 import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.UserRepository;
+import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
 import jakarta.annotation.PostConstruct;
@@ -59,13 +59,13 @@ public class UserService {
     }
 
     public User create(User user) {
-        verificarPermissaoDeCriacaoOuAlteracao(null);
+      verificarPermissaoDeCriacaoOuAlteracao(null);
         return this.repository.save(user);
     }
 
     public UserResponseDTO getById(String userId) {
         User user = this.getUserById(userId);
-        return UserMapper.toResponseUserDTO(user);
+        return UserResponseDTO.from(user);
     }
 
     public User getUserById(String userId) {
@@ -77,12 +77,12 @@ public class UserService {
 
     public UserDetails loadUserByUsername(String login) {
         return this.repository.findByLogin(login)
-                .orElseThrow(() -> new NotFoundException("User doesn't exist"));
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
     }
 
     public void checkUserExists(String login) {
         if (this.repository.findByLogin(login).isPresent()) {
-            throw new IllegalArgumentException("User already exists");
+            throw new BadRequestException("Já existe usuário com o login informado.");
         }
     }
 
@@ -90,7 +90,7 @@ public class UserService {
         List<User> users = repository.findAll();
         List<UserResponseDTO> usersResponse = new ArrayList<>();
         for (User user : users) {
-            usersResponse.add(UserMapper.toResponseUserDTO(user));
+            usersResponse.add(UserResponseDTO.from(user));
         }
         return usersResponse;
     }
@@ -98,7 +98,7 @@ public class UserService {
     public List<User> findAllById(List<String> ids) {
         List<User> users = this.repository.findAllById(ids);
         if (users.isEmpty()) {
-            throw new NotFoundException("Users doesn't exist");
+            throw new NotFoundException("Nenhum usuário encontrado.");
         }
         return users;
     }
@@ -115,7 +115,8 @@ public class UserService {
         userToUpdate.setCpf(user.cpf());
         userToUpdate.setTelefone(user.telefone());
         userToUpdate.setPerfil(user.getPerfilEnum());
-        return UserMapper.toResponseUserDTO(this.repository.save(userToUpdate));
+        return UserResponseDTO.from(this.repository.save(userToUpdate));
+     
     }
 
     public void editarPerfil(String id, UpdatePerfilDTO perfilDto) {
