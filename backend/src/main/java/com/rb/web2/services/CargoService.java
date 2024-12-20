@@ -4,15 +4,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.cargo.Cargo;
 import com.rb.web2.domain.cargo.dto.CargoRequestDTO;
 import com.rb.web2.domain.cargo.dto.CargoResponseDTO;
-import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.vaga.Vaga;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.CargoRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class CargoService {
@@ -23,13 +25,28 @@ public class CargoService {
     @Autowired
     private UserService userService;
 
-    private void verificarPermissaoDeCriacaoOuAlteracao() {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = (User) userService.loadUserByUsername(login);
+    private AuthorizationUtil authorizationUtil;
+
+    @PostConstruct
+    public void init() {
+        this.authorizationUtil = new AuthorizationUtil(userService);
+    }
+
+    private void verificarPermissaoDeCriacaoOuAlteracao(Long cargoId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                cargoId,
+                "EDIT_CARGOS",
+                id ->repository.findById(id).orElseThrow(() -> new NotFoundException("Cargo não encontrada.")),
+                (entity, user) -> {
+                    Cargo cargo = (Cargo) entity;
+                    Vaga vaga = cargo.getVaga().stream().findFirst()
+                            .orElseThrow(() -> new NotFoundException("Nenhuma vaga associada ao cargo."));
+                    return vaga.getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+                });
     }
 
     public CargoResponseDTO criarCargo(CargoRequestDTO dto) {
-        verificarPermissaoDeCriacaoOuAlteracao();
+        verificarPermissaoDeCriacaoOuAlteracao(null);
 
         Cargo cargo = new Cargo();
 
@@ -57,17 +74,17 @@ public class CargoService {
     public CargoResponseDTO buscarPorId(Long id) {
         Cargo cargo = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cargo não encontrado"));
-                
+
         return CargoResponseDTO.from(cargo);
     }
 
     public Cargo buscarCargoPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cargo não encontrado"));
-    }    
+    }
 
     public CargoResponseDTO atualizar(Long id, CargoRequestDTO cargoAtualizado) {
-        verificarPermissaoDeCriacaoOuAlteracao();
+        verificarPermissaoDeCriacaoOuAlteracao(id);
 
         Cargo cargoExistente = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cargo não encontrado"));
