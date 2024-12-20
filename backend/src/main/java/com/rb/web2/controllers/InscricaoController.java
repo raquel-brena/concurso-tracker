@@ -65,7 +65,6 @@ public class InscricaoController {
     @PostMapping
     public ResponseEntity<RestSuccessMessage> createInscricao(@Valid @RequestBody InscricaoRequestDTO dto) {
         InscricaoResponseDTO inscricaoCriada = service.create(dto);
-        service.create(dto);
         RestSuccessMessage successMessage = new RestSuccessMessage(
                 "Inscrição com ID: " + inscricaoCriada.id() + " criada com sucesso.");
 

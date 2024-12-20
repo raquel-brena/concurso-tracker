@@ -14,6 +14,7 @@ import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.InscricaoRepository;
+import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
 import jakarta.annotation.PostConstruct;
@@ -56,6 +57,10 @@ public class InscricaoService {
 
   public InscricaoResponseDTO create(InscricaoRequestDTO dto) {
     verificarPermissaoDeCriacaoOuAlteracao(dto.candidatoId());
+
+    if (this.inscricaoRepository.findByCandidatoIdAndVagaId(dto.candidatoId(), dto.vagaId()).orElse(null) != null) {
+      throw new BadRequestException("Inscrição já realizada.");
+    }
 
     User candidato = userService.getUserById(dto.candidatoId());
     Vaga vaga = vagaService.buscarVagaPorId(dto.vagaId());
