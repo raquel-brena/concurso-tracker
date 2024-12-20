@@ -122,9 +122,10 @@ public class UserService {
     public UserResponseDTO updateUser(String userId, UpdateUserDTO user) {
         verificarPermissaoDeCriacaoOuAlteracao(userId);
 
-        this.verificarLogicaDePerfil(user);
-
         User userToUpdate = this.getUserById(userId);
+
+        this.verificarLogicaDePerfil(userToUpdate.getPerfil(), user.getPerfilEnum());
+
         userToUpdate.setLogin(user.login());
         userToUpdate.setNome(user.nome());
         userToUpdate.setEmail(user.email());
@@ -177,20 +178,18 @@ public class UserService {
         }
     }
 
-    private void verificarLogicaDePerfil(UpdateUserDTO user) {
-        User userEntity = this.getUserById(user.userId());
-
-        if (userEntity.getPerfil().equals(Perfil.valueOf(user.perfil()))) {
+    private void verificarLogicaDePerfil(Perfil perfilEditor, Perfil perfilEditado) {
+        if (perfilEditor.equals(perfilEditado)) {
             return;
         }
 
-        if (user.perfil() == Perfil.ADMIN.toString()) {
+        if (perfilEditado == Perfil.ADMIN) {
             throw new IllegalArgumentException("Não é possível alterar o perfil para ADMIN");
         }
-        if (user.perfil() == Perfil.COORDENADOR.toString()) {
+        if (perfilEditado == Perfil.COORDENADOR) {
             throw new IllegalArgumentException("Não é possível alterar o perfil para COORDENADOR");
         }
-        if (user.perfil() == Perfil.ASSISTENTE.toString()) {
+        if (perfilEditado == Perfil.ASSISTENTE) {
             throw new IllegalArgumentException("Não é possível alterar o perfil para ASSISTENTE");
         }
     }
