@@ -1,17 +1,20 @@
 package com.rb.web2.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.cargo.Cargo;
 import com.rb.web2.domain.cargo.dto.CargoRequestDTO;
-import com.rb.web2.domain.user.User;
+import com.rb.web2.domain.cargo.dto.CargoResponseDTO;
+import com.rb.web2.domain.vaga.Vaga;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.CargoRepository;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class CargoService {
@@ -22,17 +25,28 @@ public class CargoService {
     @Autowired
     private UserService userService;
 
-    private void verificarPermissaoDeCriacaoOuAlteracao() {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = (User) userService.loadUserByUsername(login);
+    private AuthorizationUtil authorizationUtil;
 
-        if (!user.hasPermissionToCreateCargos()) {
-            throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar cargos.");
-        }
+    @PostConstruct
+    public void init() {
+        this.authorizationUtil = new AuthorizationUtil(userService);
     }
 
-    public Cargo criarCargo(CargoRequestDTO dto) {
-        verificarPermissaoDeCriacaoOuAlteracao();
+    private void verificarPermissaoDeCriacaoOuAlteracao(Long cargoId) {
+        authorizationUtil.<Long>verificarPermissaoOuComissao(
+                cargoId,
+                "EDIT_CARGOS",
+                id ->repository.findById(id).orElseThrow(() -> new NotFoundException("Cargo não encontrada.")),
+                (entity, user) -> {
+                    Cargo cargo = (Cargo) entity;
+                    Vaga vaga = cargo.getVaga().stream().findFirst()
+                            .orElseThrow(() -> new NotFoundException("Nenhuma vaga associada ao cargo."));
+                    return vaga.getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+                });
+    }
+
+    public CargoResponseDTO criarCargo(CargoRequestDTO dto) {
+        verificarPermissaoDeCriacaoOuAlteracao(null);
 
         Cargo cargo = new Cargo();
 
@@ -41,21 +55,36 @@ public class CargoService {
         cargo.setRemuneracao(dto.remuneracao());
         cargo.setTemporario(dto.temporario());
 
-        return repository.save(cargo);
+        repository.save(cargo);
+
+        CargoResponseDTO response = CargoResponseDTO.from(cargo);
+        return response;
     }
 
-    public List<Cargo> listarTodos() {
-        return repository.findAll();
+    public List<CargoResponseDTO> listarTodos() {
+        List<Cargo> cargos = repository.findAll();
+
+        List<CargoResponseDTO> responseList = cargos.stream()
+                .map(CargoResponseDTO::from)
+                .collect(Collectors.toList());
+
+        return (responseList);
     }
 
-    public Cargo buscarPorId(Long id) {
+    public CargoResponseDTO buscarPorId(Long id) {
+        Cargo cargo = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Cargo não encontrado"));
+
+        return CargoResponseDTO.from(cargo);
+    }
+
+    public Cargo buscarCargoPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Cargo não encontrado")); // Exceção caso o cargo não seja
-                                                                                   // encontrado
+                .orElseThrow(() -> new NotFoundException("Cargo não encontrado"));
     }
 
-    public Cargo atualizar(Long id, CargoRequestDTO cargoAtualizado) {
-        verificarPermissaoDeCriacaoOuAlteracao();
+    public CargoResponseDTO atualizar(Long id, CargoRequestDTO cargoAtualizado) {
+        verificarPermissaoDeCriacaoOuAlteracao(id);
 
         Cargo cargoExistente = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cargo não encontrado"));
@@ -65,8 +94,8 @@ public class CargoService {
         cargoExistente.setRemuneracao(cargoAtualizado.remuneracao());
         cargoExistente.setTemporario(cargoAtualizado.temporario());
 
-        return repository.save(cargoExistente);
-    }
+        repository.save(cargoExistente);
 
-    // @TODO: Método para excluir um cargo (caso necessário)
+        return CargoResponseDTO.from(cargoExistente);
+    }
 }

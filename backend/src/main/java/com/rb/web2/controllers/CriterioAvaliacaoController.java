@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
-import com.rb.web2.domain.criterioAvaliacao.dto.RequestCriterioDTO;
-import com.rb.web2.domain.criterioAvaliacao.dto.ResponseCriterioDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.CriterioRequestDTO;
+import com.rb.web2.domain.criterioAvaliacao.dto.CriterioResponseDTO;
 import com.rb.web2.services.CriterioAvaliacaoService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
@@ -31,46 +30,54 @@ public class CriterioAvaliacaoController {
     private CriterioAvaliacaoService criterioAvaliacaoService;
 
     @PostMapping
-    public ResponseEntity<CriterioAvaliacao> criarCriterio(@Valid @RequestBody RequestCriterioDTO requestCriterioDTO) {
-        CriterioAvaliacao criterioSalvo = criterioAvaliacaoService.create(requestCriterioDTO);
-        return new ResponseEntity<>(criterioSalvo, HttpStatus.CREATED);
-
+    public ResponseEntity<RestSuccessMessage> criarCriterio(@Valid @RequestBody CriterioRequestDTO requestCriterioDTO) {
+        CriterioResponseDTO criterioSalvo = criterioAvaliacaoService.create(requestCriterioDTO);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Critério de avaliação criado com sucesso",
+                criterioSalvo);
+        return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
     }
 
     @GetMapping("/processo")
-    public ResponseEntity<List<ResponseCriterioDTO>> buscarCriteriosPorProcessoSeletivo(
+    public ResponseEntity<RestSuccessMessage> buscarCriteriosPorProcessoSeletivo(
             @RequestParam("id") String processoSeletivoId) {
 
-        List<ResponseCriterioDTO> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
-        return new ResponseEntity<>(criterios, HttpStatus.OK);
+        List<CriterioResponseDTO> criterios = criterioAvaliacaoService.findAllByProcessoSeletivo(processoSeletivoId);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Critérios de avaliação encontrados com sucesso",
+                criterios);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/inscricao")
-    public ResponseEntity<List<ResponseCriterioDTO>> buscarCriteriosPorInscricao(
+    public ResponseEntity<RestSuccessMessage> buscarCriteriosPorInscricao(
             @RequestParam("id") String inscricaoId) {
-        List<ResponseCriterioDTO> criterios = criterioAvaliacaoService.findAllByInscricao(inscricaoId);
-        return new ResponseEntity<>(criterios, HttpStatus.OK);
+        List<CriterioResponseDTO> criterios = criterioAvaliacaoService.findAllByInscricao(inscricaoId);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Critérios de avaliação encontrados com sucesso",
+                criterios);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CriterioAvaliacao> buscarCriterioPorId(@PathVariable Long id) {
-        CriterioAvaliacao criterioOptional = criterioAvaliacaoService.getCriterioById(id);
-        return new ResponseEntity<>(criterioOptional, HttpStatus.OK);
-
+    public ResponseEntity<RestSuccessMessage> buscarCriterioPorId(@PathVariable Long id) {
+        CriterioResponseDTO criterioOptional = criterioAvaliacaoService.getById(id);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Critério de avaliação encontrado com sucesso",
+                criterioOptional);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CriterioAvaliacao> atualizarCriterio(@PathVariable Long id,
-            @Valid @RequestBody RequestCriterioDTO requestCriterioDTO) {
+    public ResponseEntity<RestSuccessMessage> atualizarCriterio(@PathVariable Long id,
+            @Valid @RequestBody CriterioRequestDTO requestCriterioDTO) {
 
-        CriterioAvaliacao criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
-        return new ResponseEntity<>(criterioAtualizado, HttpStatus.OK);
-
+        CriterioResponseDTO criterioAtualizado = criterioAvaliacaoService.update(id, requestCriterioDTO);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Critério de avaliação atualizado com sucesso",
+                criterioAtualizado);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> deletarCriterio(@PathVariable Long id) {
         criterioAvaliacaoService.softDelete(id);
-        return ResponseEntity.ok().body(new RestSuccessMessage("Critério de avaliação deletado com sucesso.", id));
+        RestSuccessMessage successMessage = new RestSuccessMessage("Critério de avaliação deletado com sucesso" + id);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 }

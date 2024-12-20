@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rb.web2.domain.inscricao.Inscricao;
-import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.ResponseInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.UpdateReqInscricaoDTO;
-import com.rb.web2.domain.inscricao.mapper.InscricaoMapper;
+import com.rb.web2.domain.inscricao.dto.InscricaoRequestDTO;
+import com.rb.web2.domain.inscricao.dto.InscricaoResponseDTO;
+import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
 import com.rb.web2.services.InscricaoService;
 import com.rb.web2.services.PontuacaoCriterioService;
 import com.rb.web2.shared.RestMessage.RestSuccessMessage;
@@ -39,68 +37,77 @@ public class InscricaoController {
     PontuacaoCriterioService pontuacaoCriterioService;
 
     @GetMapping("/todas")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoes() {
-        List<ResponseInscricaoDTO> applications = service.getAllInscricoes();
-        return ResponseEntity.ok(applications);
+    public ResponseEntity<RestSuccessMessage> getAllInscricoes() {
+        List<InscricaoResponseDTO> applications = service.getAllInscricoes();
+        RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso", applications);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/candidato")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoes(@RequestParam String candidatoId) {
-        List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorCandidato(candidatoId);
-        return ResponseEntity.ok(applications);
+    public ResponseEntity<RestSuccessMessage> getAllInscricoes(@RequestParam String candidatoId) {
+        List<InscricaoResponseDTO> applications = service.getAllInscricoesPorCandidato(candidatoId);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso", applications);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("/vaga")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoes(@RequestParam Long vagaId) {
-        List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorVaga(vagaId);
-        return ResponseEntity.ok(applications);
+    public ResponseEntity<RestSuccessMessage> getAllInscricoes(@RequestParam Long vagaId) {
+        List<InscricaoResponseDTO> applications = service.getAllInscricoesPorVaga(vagaId);
+        if (!applications.isEmpty()) {
+            RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso",
+                    applications);
+            return new ResponseEntity<>(successMessage, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @PostMapping
-    public ResponseEntity<RestSuccessMessage> createInscricao(@Valid @RequestBody RequestInscricaoDTO dto) {
-        Inscricao inscricaoCriada = service.create(dto);
-        service.create(dto);
+    public ResponseEntity<RestSuccessMessage> createInscricao(@Valid @RequestBody InscricaoRequestDTO dto) {
+        InscricaoResponseDTO inscricaoCriada = service.create(dto);
         RestSuccessMessage successMessage = new RestSuccessMessage(
-                "Inscrição com ID: " + inscricaoCriada.getId() + " criada com sucesso.");
+                "Inscrição com ID: " + inscricaoCriada.id() + " criada com sucesso.");
 
-        // Retornando a resposta com status 201 Created
-        return ResponseEntity.status(HttpStatus.CREATED).body(successMessage);
+        return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseInscricaoDTO> getInscricao(@PathVariable String id) {
-        ResponseInscricaoDTO incricao = this.service.getResponseInscricaoDTOById(id);
-        return ResponseEntity.ok(incricao);
+    public ResponseEntity<RestSuccessMessage> getInscricao(@PathVariable String id) {
+        InscricaoResponseDTO incricao = this.service.getResponseInscricaoDTOById(id);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Inscrição encontrada com sucesso", incricao);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseInscricaoDTO> updateInscricao(
+    public ResponseEntity<RestSuccessMessage> updateInscricao(
             @PathVariable String id,
-            @Valid @RequestBody @Validated UpdateReqInscricaoDTO dto) {
+            @Valid @RequestBody @Validated UpdateInscricaoDTO dto) {
 
-        var updatedApplication = this.service.atualizarInscricao(id, dto);
-        ResponseInscricaoDTO responseDTO = InscricaoMapper.toDTO(updatedApplication);
+        InscricaoResponseDTO updatedApplication = this.service.atualizarInscricao(id, dto);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Inscrição atualizada com sucesso", updatedApplication);
 
-        return ResponseEntity.ok(responseDTO);
-
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     @GetMapping("processo")
-    public ResponseEntity<List<ResponseInscricaoDTO>> getAllInscricoesPorProcessoSeletivo(
+    public ResponseEntity<RestSuccessMessage> getAllInscricoesPorProcessoSeletivo(
             @RequestParam("id") String processoId) {
-        List<ResponseInscricaoDTO> applications = service.getAllInscricoesPorProcessoSeletivo(processoId);
+        List<InscricaoResponseDTO> applications = service.getAllInscricoesPorProcessoSeletivo(processoId);
         if (!applications.isEmpty()) {
-            return new ResponseEntity<>(applications, HttpStatus.OK);
+            RestSuccessMessage successMessage = new RestSuccessMessage("Inscrições encontradas com sucesso",
+                    applications);
+            return new ResponseEntity<>(successMessage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
     @GetMapping("/{id}/nota")
-    public ResponseEntity<BigDecimal> calcularNotaTotal(@PathVariable String id) {
+    public ResponseEntity<RestSuccessMessage> calcularNotaTotal(@PathVariable String id) {
         BigDecimal notaTotal = pontuacaoCriterioService.calcularNotaTotal(id);
         if (notaTotal != null) {
-            return new ResponseEntity<>(notaTotal, HttpStatus.OK);
+            RestSuccessMessage successMessage = new RestSuccessMessage("Nota total calculada com sucesso", notaTotal);
+            return new ResponseEntity<>(successMessage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -109,6 +116,7 @@ public class InscricaoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<RestSuccessMessage> deleteInscricao(@PathVariable String id) {
         service.softDelete(id);
-        return new ResponseEntity<>(new RestSuccessMessage("Inscrição deletada com sucesso", id), HttpStatus.OK);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Inscrição deletada com sucesso");
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 }

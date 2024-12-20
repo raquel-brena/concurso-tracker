@@ -3,7 +3,7 @@ package com.rb.web2.domain.criterioAvaliacao.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record RequestCriterioDTO(
+public record CriterioRequestDTO(
     @NotBlank(message="O nome do critério não pode ser vazio.") 
     String nome,
 

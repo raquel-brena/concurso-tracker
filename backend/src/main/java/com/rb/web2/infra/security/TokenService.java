@@ -12,6 +12,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.rb.web2.domain.user.User;
+import com.rb.web2.shared.exceptions.InvalidTokenException;
 
 @Service
 public class TokenService {
@@ -44,7 +45,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException e) {
-            return e.getMessage();
+            throw new InvalidTokenException("Token inválido: " + e.getMessage());
         }
     }
 

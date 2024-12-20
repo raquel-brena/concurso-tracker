@@ -1,7 +1,9 @@
 package com.rb.web2.domain.processoComissao;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
+import com.rb.web2.domain.criterioAvaliacao.CriterioAvaliacao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
 
@@ -43,4 +45,16 @@ public class ProcessoComissao {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public ProcessoComissao(ProcessoSeletivo processoSeletivo, User user) {
+        this.processoSeletivoId = processoSeletivo.getId();
+        this.userId = user.getId();
+        this.processoSeletivo = processoSeletivo;
+        this.user = user;
+    }
+
+    public Optional<CriterioAvaliacao> findByEtapaProcessoSeletivoId(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByEtapaProcessoSeletivoId'");
+    }
 }

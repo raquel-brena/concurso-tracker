@@ -4,18 +4,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.agenda.Agenda;
-import com.rb.web2.domain.agenda.dto.AgendaDTO;
+import com.rb.web2.domain.agenda.dto.AgendaRequestDTO;
 import com.rb.web2.domain.agenda.dto.AgendaResponseDTO;
 import com.rb.web2.domain.agenda.mapper.AgendaMapper;
-import com.rb.web2.domain.user.User;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.AgendaRepository;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 
 @Service
 public class AgendaService {
@@ -26,25 +27,41 @@ public class AgendaService {
   @Autowired
   private UserService userService;
 
-  private void verificarPermissaoDeCriacaoOuAlteracao() {
-    String login = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = (User) userService.loadUserByUsername(login);
+  @Autowired
+  private ProcessoSeletivoService processoSeletivoService;
 
-    if (!user.hasPermissionToCreateAgenda()) {
-      throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar agendas.");
-    }
+  private AuthorizationUtil authorizationUtil;
+
+  @PostConstruct
+  public void init() {
+    this.authorizationUtil = new AuthorizationUtil(userService);
   }
 
-  public Agenda create(AgendaDTO dto) {
+  private void verificarPermissaoDeCriacaoOuAlteracao(Long agendaId) {
+    authorizationUtil.verificarPermissaoOuComissao(
+        agendaId,
+        "EDIT_AGENDA",
+        id -> repository.findById(id).orElseThrow(() -> new NotFoundException("Agenda não encontrada.")),
+        (entity, user) -> {
+          Agenda agenda = (Agenda) entity;
+          return agenda.getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+        });
+  }
+
+  @Transactional
+  public AgendaResponseDTO create(AgendaRequestDTO dto) {
     if (dto == null) {
       throw new IllegalArgumentException("AgendaDTO não pode ser nulo.");
     }
 
-    verificarPermissaoDeCriacaoOuAlteracao();
+    verificarPermissaoDeCriacaoOuAlteracao(null);
 
-    var novaAgenda = AgendaMapper.toEntity(dto);
+    Agenda novaAgenda = AgendaMapper.toEntity(dto);
     this.isConsistent(novaAgenda);
-    return repository.save(novaAgenda);
+    novaAgenda = repository.save(novaAgenda);
+    processoSeletivoService.adicionarAgenda(novaAgenda, dto.processoSeletivoId());
+    
+    return AgendaResponseDTO.from(novaAgenda);
   }
 
   public Agenda getAgendaById(Long id) {
@@ -54,20 +71,20 @@ public class AgendaService {
 
   public List<AgendaResponseDTO> getAllAgendas() {
     List<Agenda> agendas = repository.findAllByAtivoTrue();
-    List<AgendaResponseDTO> agendasDTO = agendas.stream().map(AgendaMapper::toDTO).collect(Collectors.toList());
+    List<AgendaResponseDTO> agendasDTO = agendas.stream().map(AgendaResponseDTO::from).collect(Collectors.toList());
     return agendasDTO;
   }
 
   public void deleteAgenda(Long id) {
-    verificarPermissaoDeCriacaoOuAlteracao();
+    verificarPermissaoDeCriacaoOuAlteracao(id);
 
     var agenda = getAgendaById(id);
     agenda.setAtivo(false);
     repository.save(agenda);
   }
 
-  public AgendaResponseDTO updateAgenda(Long id, AgendaDTO dto) {
-    verificarPermissaoDeCriacaoOuAlteracao();
+  public AgendaResponseDTO updateAgenda(Long id, AgendaRequestDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao(id);
 
     Agenda agenda = getAgendaById(id);
     Agenda agendaAtualizada = AgendaMapper.toEntity(dto);
@@ -75,7 +92,7 @@ public class AgendaService {
     this.isConsistent(agendaAtualizada);
 
     repository.save(agendaAtualizada);
-    AgendaResponseDTO agendaAtualizadaDTO = AgendaMapper.toDTO(agendaAtualizada);
+    AgendaResponseDTO agendaAtualizadaDTO = AgendaResponseDTO.from(agendaAtualizada);
     return agendaAtualizadaDTO;
   }
 
@@ -115,30 +132,4 @@ public class AgendaService {
 
     return true;
   }
-
-  // public Agenda updateAgenda(
-  // String id,
-  // Agenda updatedAgenda
-  // ) {
-  // if (checkAgendaExists(id)) {
-  // updatedAgenda.setId(id);
-  // return repository.save(updatedAgenda);
-  // }
-
-  // return null;
-  // }
-
-  // public boolean deleteInstituicao(String id) {
-  // Optional<Agenda> existingInstituicao = getInstituicaoById(id);
-  // if (checkInstituicaoExists(id)) {
-  // Instituicao instituicao = existingInstituicao.get();
-  // instituicao.setAtivo(false); // Atualiza o campo ativo para false, marcando
-  // como inativa
-
-  // repository.save(instituicao);
-  // return true;
-  // }
-
-  // return false;
-  // }
 }

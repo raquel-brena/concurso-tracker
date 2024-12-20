@@ -11,8 +11,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,9 +23,12 @@ import com.rb.web2.domain.documento.mapper.DocumentoMapper;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.infra.properties.FileStorageProperties;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.DocumentoRepository;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class DocumentoService {
@@ -43,23 +44,51 @@ public class DocumentoService {
   @Autowired
   private ProcessoSeletivoService processoSeletivoService;
 
+  private AuthorizationUtil authorizationUtil;
+
   public DocumentoService(FileStorageProperties fileStorageProperties) {
     this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
         .toAbsolutePath().normalize();
   }
 
-  private void verificarPermissaoDeCriacaoOuAlteracao() {
-    String login = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = (User) userService.loadUserByUsername(login);
+  @PostConstruct
+  public void init() {
+    this.authorizationUtil = new AuthorizationUtil(userService);
+  }
 
-    if (!user.hasPermissionToCreateCriterios()) {
-      throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar critérios.");
-    }
+  // @TODO: Fazer a verificação de permissão de Visualização
+
+  private void verificarPermissaoDeCriacaoOuAlteracao(Long documentoId) {
+    authorizationUtil.<Long>verificarPermissaoOuComissao(
+        documentoId,
+        "EDIT_DOCUMENTO",
+        id -> repository.findById(id)
+              .orElseThrow(() -> new NotFoundException("Documento não encontrado.")),
+        (entity, user) -> {
+          Documento documento = (Documento) entity;
+          boolean isUsuarioCandidato = documento.getUsuario().equals(user);
+          boolean isUsuarioComissao = documento.getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+          return isUsuarioCandidato || isUsuarioComissao;
+        });
+  }
+
+  private void verificarPermissaoDeLeitura(Long documentoId) {
+    authorizationUtil.<Long>verificarPermissaoOuComissao(
+        documentoId,
+        "VIEW_DOCUMENTO",
+        id -> repository.findById(id)
+              .orElseThrow(() -> new NotFoundException("Documento não encontrado.")),
+        (entity, user) -> {
+          Documento documento = (Documento) entity;
+          boolean isUsuarioCandidato = documento.getUsuario().equals(user);
+          boolean isUsuarioComissao = documento.getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+          return isUsuarioCandidato || isUsuarioComissao;
+        });
   }
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
-    verificarPermissaoDeCriacaoOuAlteracao();
-    
+    verificarPermissaoDeCriacaoOuAlteracao(null);
+
     String id = null;
     Documento documento = new Documento();
 
@@ -84,12 +113,18 @@ public class DocumentoService {
   }
 
   public Documento buscarDocumentoPorId(Long id) {
+    verificarPermissaoDeLeitura(id);
     return repository.findById(id).orElseThrow(() -> new NotFoundException("Documento não encontrado. ID: " + id));
   }
 
   public Optional<Documento> getDocumentoByUrl(String link) {
+    Documento documento = repository.findByDownloadUrl(link).orElseThrow(() -> new NotFoundException("Documento não encontrado."));
+    verificarPermissaoDeLeitura(documento.getId());
+
     return repository.findByDownloadUrl(link);
   }
+
+  // Rotas de Admin
 
   public List<Documento> getAllDocumentos() {
     return repository.findAll();
@@ -107,7 +142,11 @@ public class DocumentoService {
     return documentos.stream().map(DocumentoMapper::toDocumentoResponseDTO).toList();
   }
 
+  // Fecha Rotas de Admin
+
   public String uploadFile(MultipartFile file, String id) throws IOException {
+    verificarPermissaoDeCriacaoOuAlteracao(null);
+
     String originalFilename = file.getOriginalFilename();
     if (originalFilename == null || originalFilename.isBlank()) {
       throw new IllegalArgumentException("O arquivo enviado não possui um nome válido.");
@@ -133,8 +172,10 @@ public class DocumentoService {
     return fileDonwloadUri;
   }
 
-  public Resource downloadFile(String filename, String id, String directoryName1, String directoryName2)
+  public Resource downloadFile(String filename, Long id, String directoryName1, String directoryName2)
       throws MalformedURLException {
+
+        verificarPermissaoDeLeitura(id);
 
     Path directory = fileStorageLocation.resolve(directoryName2).normalize();
 

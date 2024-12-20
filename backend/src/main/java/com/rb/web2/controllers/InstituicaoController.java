@@ -1,7 +1,6 @@
 package com.rb.web2.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rb.web2.domain.instituicao.Instituicao;
+import com.rb.web2.domain.instituicao.dto.InstituicaoResponseDTO;
 import com.rb.web2.services.InstituicaoService;
+import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.validation.Valid;
 
@@ -32,37 +33,44 @@ public class InstituicaoController {
 
     // Criar nova instituição
     @PostMapping
-    public ResponseEntity<Instituicao> createInstituicao(@Valid @RequestBody Instituicao instituicao) {
-        Instituicao createdInstituicao = instituicaoService.create(instituicao);
-        return new ResponseEntity<>(createdInstituicao, HttpStatus.CREATED);
+    public ResponseEntity<RestSuccessMessage> createInstituicao(@Valid @RequestBody InstituicaoResponseDTO instituicao) {
+        InstituicaoResponseDTO createdInstituicao = instituicaoService.create(instituicao);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Instituição criada com sucesso",
+                createdInstituicao);
+        return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
     }
 
     // Buscar instituição pelo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Instituicao> getInstituicaoById(@PathVariable String id) {
-        Optional<Instituicao> instituicao = instituicaoService.getInstituicaoById(id);
-        return instituicao.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<RestSuccessMessage> getInstituicaoById(@PathVariable String id) {
+        InstituicaoResponseDTO instituicao = instituicaoService.getById(id);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Instituição encontrada com sucesso", instituicao);
+        return ResponseEntity.ok(successMessage);
     }
 
     // Listar todas as instituições
     @GetMapping
-    public ResponseEntity<List<Instituicao>> getAllInstituicaos() {
-        List<Instituicao> instituicoes = instituicaoService.getAllInstituicaos();
-        return ResponseEntity.ok(instituicoes);
+    public ResponseEntity<RestSuccessMessage> getAllInstituicaos() {
+        List<InstituicaoResponseDTO> instituicoes = instituicaoService.getAllInstituicaos();
+        RestSuccessMessage successMessage = new RestSuccessMessage("Instituições encontradas com sucesso",
+                instituicoes);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     // Atualizar instituição
     @PutMapping("/{id}")
-    public ResponseEntity<Instituicao> updateInstituicao(@PathVariable String id,
+    public ResponseEntity<RestSuccessMessage> updateInstituicao(@PathVariable String id,
             @Valid @RequestBody Instituicao updatedInstituicao) {
-        Instituicao instituicao = instituicaoService.updateInstituicao(id, updatedInstituicao);
-        return instituicao != null ? ResponseEntity.ok(instituicao) : ResponseEntity.notFound().build();
+        InstituicaoResponseDTO instituicao = instituicaoService.updateInstituicao(id, updatedInstituicao);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Instituição atualizada com sucesso", instituicao);
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
     // Excluir instituição
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInstituicao(@PathVariable String id) {
-        return instituicaoService.deleteInstituicao(id) ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+    public ResponseEntity<RestSuccessMessage> deleteInstituicao(@PathVariable String id) {
+        instituicaoService.softDelete(id);
+        RestSuccessMessage successMessage = new RestSuccessMessage("Instituição excluída com sucesso");
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 }

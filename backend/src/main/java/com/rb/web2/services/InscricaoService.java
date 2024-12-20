@@ -3,107 +3,187 @@ package com.rb.web2.services;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.rb.web2.domain.inscricao.Inscricao;
-import com.rb.web2.domain.inscricao.dto.RequestInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.ResponseInscricaoDTO;
-import com.rb.web2.domain.inscricao.dto.UpdateReqInscricaoDTO;
+import com.rb.web2.domain.inscricao.dto.InscricaoRequestDTO;
+import com.rb.web2.domain.inscricao.dto.InscricaoResponseDTO;
+import com.rb.web2.domain.inscricao.dto.UpdateInscricaoDTO;
 import com.rb.web2.domain.inscricao.mapper.InscricaoMapper;
+import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
+import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.InscricaoRepository;
+import com.rb.web2.repositories.ProcessoSeletivoRepository;
+import com.rb.web2.repositories.UserRepository;
+import com.rb.web2.repositories.VagaRepository;
+import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.NotFoundException;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class InscricaoService {
 
+  private AuthorizationUtil authorizationUtil;
   private final InscricaoRepository inscricaoRepository;
   private final UserService userService;
   private final VagaService vagaService;
+  private final ProcessoSeletivoRepository processoRepository;
+  private VagaRepository vagaRepository;
+  private UserRepository userRepository;
 
   public InscricaoService(
       InscricaoRepository inscricaoRepository,
       UserService userService,
       CriterioAvaliacaoService criterioAvaliacaoService,
-      VagaService vagaService) {
+      VagaService vagaService, VagaRepository vagaRepository, ProcessoSeletivoRepository processoRepository, UserRepository userRepository) {
     this.inscricaoRepository = inscricaoRepository;
     this.userService = userService;
     this.vagaService = vagaService;
+    this.vagaRepository = vagaRepository;
+    this.processoRepository = processoRepository;
+    this.userRepository = userRepository;
   }
-  
-  private void verificarPermissaoDeCriacaoOuAlteracao() {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = (User) userService.loadUserByUsername(login);
 
-        if (!user.hasPermissionToCreateCriterios()) {
-            throw new AccessDeniedException("Usuário não tem permissão para criar ou alterar critérios.");
-        }
+  @PostConstruct
+  public void init() {
+    this.authorizationUtil = new AuthorizationUtil(userService);
+  }
+
+  // @TODO: Fazer a verificação de permissão de Visualização
+
+  private void verificarPermissaoDeCriacaoOuAlteracao(String userId) {
+    authorizationUtil.<String>verificarPermissaoOuComissao(
+        userId,
+        "EDIT_INSCRICAO",
+        id -> userService.getUserById(id),
+        (entity, user) -> {
+          User usuario = (User) entity;
+          return usuario.equals(user);
+        });
+  }
+
+  private void verificarPermissaoDeLeitura(String inscricaoId) {
+    authorizationUtil.<String>verificarPermissaoOuComissao(
+        inscricaoId,
+        "VIEW_INSCRICAO",
+        id -> inscricaoRepository.findById(id),
+        (entity, user) -> {
+          Inscricao inscricao = (Inscricao) entity;
+          var isComissao = inscricao.getVaga().getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+          var isParticipante = inscricao.getCandidato().equals(user);
+          
+          return isComissao || isParticipante;
+        });
+  }
+
+  private void verificarPermissaoDeLeituraGeralPorCandidato(String candidatoId) {
+    authorizationUtil.<String>verificarPermissaoOuComissao(
+        candidatoId,
+        "VIEW_INSCRICOES",
+        id -> userRepository.findById(id),
+        (entity, user) -> {
+          User usuario = (User) entity;
+          var isCandidato = usuario.equals(user);
+          return isCandidato;
+        });
+  }
+
+  private void verificarPermissaoDeLeituraGeralPorProcesso(String processoId) {
+    authorizationUtil.<String>verificarPermissaoOuComissao(
+        processoId,
+        "VIEW_INSCRICOES",
+        id -> processoRepository.findById(id),
+        (entity, user) -> {
+          ProcessoSeletivo processo = (ProcessoSeletivo) entity;
+          var isComissao = processo.getComissaoOrganizadora().contains(user);
+          return isComissao;
+        });
+  }
+
+  private void verificarPermissaoDeLeituraGeralPorVaga(Long vagaId) {
+    authorizationUtil.<Long>verificarPermissaoOuComissao(
+        vagaId,
+        "VIEW_INSCRICOES",
+        id -> vagaRepository.findById(id),
+        (entity, user) -> {
+          Vaga vaga = (Vaga) entity;
+          var isComissao = vaga.getProcessoSeletivo().getComissaoOrganizadora().contains(user);
+          return isComissao;
+        });
+  }
+
+  public InscricaoResponseDTO create(InscricaoRequestDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao(dto.candidatoId());
+
+    if (this.inscricaoRepository.findByCandidatoIdAndVagaId(dto.candidatoId(), dto.vagaId()).orElse(null) != null) {
+      throw new BadRequestException("Inscrição já realizada.");
     }
-
-  public Inscricao create(RequestInscricaoDTO dto) {
-    verificarPermissaoDeCriacaoOuAlteracao();
 
     User candidato = userService.getUserById(dto.candidatoId());
     Vaga vaga = vagaService.buscarVagaPorId(dto.vagaId());
 
     Inscricao inscricao = InscricaoMapper
         .toEntity(dto, candidato, vaga);
+    inscricaoRepository.save(inscricao);
 
-    return inscricaoRepository.save(inscricao);
+    return InscricaoResponseDTO.from(inscricao);
   }
 
-  public Inscricao buscarInscricaoPorId(String id) {
-    return inscricaoRepository.findById(id).orElseThrow(() 
-    -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
-  }
- 
-  public ResponseInscricaoDTO getResponseInscricaoDTOById(String id) {
+  public InscricaoResponseDTO buscarPorId(String id) {
     return inscricaoRepository.findById(id)
-        .map(InscricaoMapper::toDTO)
+        .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
   }
 
-  public List<ResponseInscricaoDTO> getAllInscricoes() {
+  public Inscricao buscarInscricaoPorId(String id) {
+    return inscricaoRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
+  }
+
+  public InscricaoResponseDTO getResponseInscricaoDTOById(String id) {
+    verificarPermissaoDeLeitura(id);
+    return inscricaoRepository.findById(id)
+        .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
+        .orElseThrow(() -> new NotFoundException("Inscrição com id " + id + " não encontrada."));
+  }
+
+  // Rotas para ADMIN
+  public List<InscricaoResponseDTO> getAllInscricoes() {
     List<Inscricao> inscricoes = inscricaoRepository.findAllByDeletadoEmNull();
-    List<ResponseInscricaoDTO> applications = inscricoes.stream()
-        .map(inscricao -> new ResponseInscricaoDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+    .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
+
         .toList();
     return applications;
   }
 
-  public List<ResponseInscricaoDTO> getAllInscricoesPorCandidato(String candidatoId) {
+  // Fecha rotas para ADMIN
+
+  public List<InscricaoResponseDTO> getAllInscricoesPorCandidato(String candidatoId) {
+    verificarPermissaoDeLeituraGeralPorCandidato(candidatoId);
     List<Inscricao> inscricoes = inscricaoRepository.findAllByCandidatoId(candidatoId);
-    List<ResponseInscricaoDTO> applications = inscricoes.stream()
-        .map(inscricao -> new ResponseInscricaoDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+    .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .toList();
     return applications;
   }
 
-  public List<ResponseInscricaoDTO> getAllInscricoesPorVaga(Long vagaId) {
+  public List<InscricaoResponseDTO> getAllInscricoesPorVaga(Long vagaId) {
+    verificarPermissaoDeLeituraGeralPorVaga(vagaId);
     List<Inscricao> inscricoes = inscricaoRepository.findAllByVagaId(vagaId);
-    List<ResponseInscricaoDTO> applications = inscricoes.stream()
-        .map(inscricao -> new ResponseInscricaoDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+    .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .toList();
     return applications;
   }
 
-  public Inscricao atualizarInscricao(String id, UpdateReqInscricaoDTO dto) {
-    verificarPermissaoDeCriacaoOuAlteracao();
+
+
+  public InscricaoResponseDTO atualizarInscricao(String id, UpdateInscricaoDTO dto) {
+    verificarPermissaoDeCriacaoOuAlteracao(id);
     Inscricao existingInscricao = this.buscarInscricaoPorId(id);
 
     if (dto.vagaId() != null) {
@@ -111,45 +191,52 @@ public class InscricaoService {
     }
 
     // if (dto.ativo() != null) {
-    //     existingInscricao.setAtivo(dto.ativo());
+    // existingInscricao.setAtivo(dto.ativo());
     // }
 
     // if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
-    //     List<CriterioAvaliacao> criterios = criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
-    //     existingInscricao.setAvaliacoes(criterios);
+    // List<CriterioAvaliacao> criterios =
+    // criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
+    // existingInscricao.setAvaliacoes(criterios);
     // }
 
     // if (dto.avaliacoes() != null && !dto.avaliacoes().isEmpty()) {
-    //   List<CriterioAvaliacao> criterios = criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
-    //   existingInscricao.setAvaliacoes(criterios);
+    // List<CriterioAvaliacao> criterios =
+    // criterioAvaliacaoService.buscarCriteriosPorIds(dto.avaliacoes());
+    // existingInscricao.setAvaliacoes(criterios);
     // }
 
-    return inscricaoRepository.save(existingInscricao);
+    inscricaoRepository.save(existingInscricao);
+    return InscricaoResponseDTO.from(existingInscricao);
   }
 
   public void softDelete(String id) {
-    verificarPermissaoDeCriacaoOuAlteracao();
+    verificarPermissaoDeCriacaoOuAlteracao(id);
     Inscricao inscricao = this.buscarInscricaoPorId(id);
     inscricao.setDeletadoEm(LocalDateTime.now());
     inscricaoRepository.save(inscricao);
   }
 
-  public List<Inscricao> findByProcesso(String processoId) {
+  public List<Inscricao> findInscricaoByProcesso(String processoId) {
     return inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
+  }
+
+  public List<InscricaoResponseDTO> findByProcesso(String processoId) {
+    List<Inscricao> inscricoes = inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+       .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
+        .toList();
+    return applications;
   }
 
   public boolean existsByInscricaoId(String inscricaoId) {
     return inscricaoRepository.existsById(inscricaoId);
   }
 
-  public List<ResponseInscricaoDTO> getAllInscricoesPorProcessoSeletivo(String processoId) {
+  public List<InscricaoResponseDTO> getAllInscricoesPorProcessoSeletivo(String processoId) {
     List<Inscricao> inscricoes = inscricaoRepository.findByVagaProcessoSeletivoId(processoId);
-    List<ResponseInscricaoDTO> applications = inscricoes.stream()
-        .map(inscricao -> new ResponseInscricaoDTO(
-            inscricao.getId(),
-            inscricao.getCandidato().getId(),
-            inscricao.getVaga().getId(),
-            inscricao.getDeletadoEm()))
+    List<InscricaoResponseDTO> applications = inscricoes.stream()
+       .map((inscricao) -> InscricaoResponseDTO.from(inscricao))
         .toList();
     return applications;
   }

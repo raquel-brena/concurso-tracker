@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 import com.rb.web2.domain.pontuacaoCriterio.PontuacaoCriterio;
 
-public record ResponsePontuacaoDTO(
+public record PontuacaoResponseDTO(
         Long id,
         BigDecimal nota,
         Long criterioId,
@@ -13,7 +13,7 @@ public record ResponsePontuacaoDTO(
         boolean ehPublico,
         LocalDateTime criadoEm,
         LocalDateTime atualizadoEm) {
-    public ResponsePontuacaoDTO(PontuacaoCriterio pontuacaoCriterio) {
+    public PontuacaoResponseDTO(PontuacaoCriterio pontuacaoCriterio) {
         this(
                 pontuacaoCriterio.getId(),
                 pontuacaoCriterio.getNota(),

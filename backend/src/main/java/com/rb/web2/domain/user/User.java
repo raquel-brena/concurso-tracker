@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,28 +14,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rb.web2.domain.documento.Documento;
-import com.rb.web2.domain.enums.Permissao;
-import com.rb.web2.domain.enums.Role;
+import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.inscricao.Inscricao;
+import com.rb.web2.domain.instituicao.Instituicao;
 import com.rb.web2.domain.processoSeletivo.ProcessoSeletivo;
-import com.rb.web2.services.PermissaoMapper;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -58,17 +54,20 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String login;
 
-    @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String cpf;
 
     @Column(nullable = false)
     private String password;
 
+    @ManyToOne
+    @JoinColumn(name = "instituicao_id")
+    private Instituicao instituicao;
+
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Perfil perfil;
 
     @Column(unique = true)
     private String email;
@@ -87,11 +86,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Inscricao> inscricoes;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"))
-    private Set<Permissao> permissions;
-
     @Column(nullable = false)
     private boolean ativo = true;
 
@@ -103,22 +97,21 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
 
-    @Transient
-    private PermissaoMapper permissaoMapper;
-
-    public User(String login, String password, Role role) {
+    public User(String login, String password, Perfil perfil) {
         this.login = login;
         this.password = password;
-        this.role = role;
-        this.permissaoMapper = new PermissaoMapper();
+        this.perfil = perfil;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        this.permissaoMapper.getPermissoesPorRole(this.role).forEach(
-                permissao -> authorities.add(new SimpleGrantedAuthority("ROLE_" + permissao.name().toUpperCase())));
+        authorities.addAll(this.perfil.getPermissoes().stream()
+                .map(p -> new SimpleGrantedAuthority(p.name()))
+                .collect(Collectors.toList()));
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.perfil.name().toUpperCase()));
 
         return authorities;
     }
@@ -146,21 +139,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public boolean hasPermissionToCreateAgenda() {
-        return this.permissions.contains(Permissao.EDIT_AGENDA);
-    }
-
-    public boolean hasPermissionToCreateCargos() {
-        return this.permissions.contains(Permissao.EDIT_CARGOS);
-    }
-
-    public boolean hasPermissionToCreateCriterios() {
-        return this.permissions.contains(Permissao.EDIT_CRITERIOS);
-    }
-
-    public boolean hasPermissionToCreateDocumentoInscricao() {
-        return this.permissions.contains(Permissao.EDIT_DOCUMENTO);
     }
 }

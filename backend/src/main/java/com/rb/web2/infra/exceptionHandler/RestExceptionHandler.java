@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.rb.web2.shared.RestMessage.RestErrorMessage;
 import com.rb.web2.shared.exceptions.BadRequestException;
 import com.rb.web2.shared.exceptions.ForbbidenException;
+import com.rb.web2.shared.exceptions.InvalidTokenException;
 import com.rb.web2.shared.exceptions.NotFoundException;
 
 import jakarta.validation.ConstraintViolationException;
@@ -24,9 +25,10 @@ import jakarta.validation.ConstraintViolationException;
 public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RestErrorMessage> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
+    public ResponseEntity<RestErrorMessage> handleValidationExceptions(MethodArgumentNotValidException ex,
+            WebRequest request) {
         StringBuilder errorMessage = new StringBuilder("Erro de validação: ");
-        
+
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             errorMessage.append(fieldError.getDefaultMessage()).append(" ");
         }
@@ -36,14 +38,17 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<RestErrorMessage> handleTypeMismatchException(MethodArgumentTypeMismatchException ex, WebRequest request) {
-        String errorMessage = "Erro de tipo: Parâmetro '" + ex.getName() + "' deve ser do tipo " + ex.getRequiredType().getName();
+    public ResponseEntity<RestErrorMessage> handleTypeMismatchException(MethodArgumentTypeMismatchException ex,
+            WebRequest request) {
+        String errorMessage = "Erro de tipo: Parâmetro '" + ex.getName() + "' deve ser do tipo "
+                + ex.getRequiredType().getName();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RestErrorMessage(errorMessage, HttpStatus.BAD_REQUEST.value()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<RestErrorMessage> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+    public ResponseEntity<RestErrorMessage> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex,
+            WebRequest request) {
         String errorMessage = "Erro de formato: Corpo da requisição inválido.";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RestErrorMessage(errorMessage, HttpStatus.BAD_REQUEST.value()));
@@ -55,7 +60,8 @@ public class RestExceptionHandler {
             ForbbidenException.class,
             InvalidFormatException.class,
             DateTimeParseException.class,
-            ConstraintViolationException.class
+            ConstraintViolationException.class,
+            InvalidTokenException.class
     })
     private ResponseEntity<?> handleCustomExceptions(Exception ex, WebRequest request) {
         if (ex instanceof NotFoundException) {
@@ -64,7 +70,7 @@ public class RestExceptionHandler {
         } else if (ex instanceof BadRequestException || ex instanceof InvalidFormatException
                 || ex instanceof DateTimeParseException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestErrorMessage(
-                    "Dados inválidos fornecidos: " + ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
+                    ex.getMessage(), HttpStatus.BAD_REQUEST.value()));
         } else if (ex instanceof ForbbidenException) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new RestErrorMessage(ex.getMessage(), HttpStatus.FORBIDDEN.value()));
@@ -76,6 +82,9 @@ public class RestExceptionHandler {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new RestErrorMessage(errorMessage.toString(), HttpStatus.BAD_REQUEST.value()));
+        } else if (ex instanceof InvalidTokenException) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new RestErrorMessage(ex.getMessage(), HttpStatus.UNAUTHORIZED.value()));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RestErrorMessage(
                     "Erro inesperado: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value()));

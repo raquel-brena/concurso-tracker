@@ -1,8 +1,13 @@
 package com.rb.web2.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,13 +15,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.rb.web2.domain.enums.Role;
+import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
-import com.rb.web2.domain.user.dto.RegisterDTO;
-import com.rb.web2.domain.user.dto.ResponseLoginDTO;
-import com.rb.web2.domain.user.dto.ResponseUserDTO;
+import com.rb.web2.domain.user.dto.LoginResponseDTO;
+import com.rb.web2.domain.user.dto.RegisterUserDTO;
+import com.rb.web2.domain.user.dto.ReqUserDTO;
+import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.infra.security.TokenService;
+import com.rb.web2.shared.exceptions.BadRequestException;
 
 @Service
 public class AuthenticationService implements UserDetailsService {
@@ -34,20 +41,21 @@ public class AuthenticationService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public ResponseLoginDTO login(AuthenticatedDTO data) {
+    public LoginResponseDTO login(AuthenticatedDTO data) {
         var userNamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(userNamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
-        return new ResponseLoginDTO(token);
-
+        return new LoginResponseDTO(token);
     }
 
-    public User register(RegisterDTO data) {
+    public UserResponseDTO register(RegisterUserDTO data) {
         this.userService.checkUserExists(data.login());
 
         String encryptedPassword = passwordEncoder.encode(data.password());
-
-        return this.userService.create(new User(data.login(), encryptedPassword, Role.USER));
+       
+        User user = this.userService.create(new User(data.login(), encryptedPassword, data.perfil()));
+        
+        return UserResponseDTO.from(user);
     }
 
     @Override
@@ -55,10 +63,22 @@ public class AuthenticationService implements UserDetailsService {
         return this.userService.loadUserByUsername(username);
     }
 
-    public ResponseUserDTO getUsuarioAutenticado() {
+    public UserResponseDTO getUsuarioAutenticado() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = (User) userService.loadUserByUsername(login);
-        return ResponseUserDTO.from(user);
+
+        List<GrantedAuthority> authorities = user.getAuthorities().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.toString())) // Garantir que seja uma String
+                .collect(Collectors.toList());
+
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUsername(),
+                user.getPassword(), authorities);
+
+        // Imprimir o objeto UserDetails
+        System.out.println(userDetails + " foi autenticado");
+
+      
+        return UserResponseDTO.from(user);
     }
 
     public void logout() {
