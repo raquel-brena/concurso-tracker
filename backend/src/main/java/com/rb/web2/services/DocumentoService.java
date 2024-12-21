@@ -172,10 +172,10 @@ public class DocumentoService {
     return fileDonwloadUri;
   }
 
-  public Resource downloadFile(String filename, Long id, String directoryName1, String directoryName2)
+  public Resource downloadFile(String filename, String id, String directoryName1, String directoryName2)
       throws MalformedURLException {
 
-        verificarPermissaoDeLeitura(id);
+        //verificarPermissaoDeLeitura(id);
 
     Path directory = fileStorageLocation.resolve(directoryName2).normalize();
 

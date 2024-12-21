@@ -26,9 +26,6 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    @Autowired
-    private UserService userService;
-
     private AuthorizationUtil authorizationUtil;
 
     @PostConstruct
@@ -184,7 +181,7 @@ public class UserService {
         User user = this.getUserById(id);
 
         if (!user.getPerfil().equals(Perfil.ADMIN)) {
-            user.setPerfil(Perfil.USER);
+            user.setPerfil(Perfil.CANDIDATO);
             this.repository.save(user);
         }
     }
@@ -196,7 +193,7 @@ public class UserService {
             throw new IllegalArgumentException("Não é possível alterar o perfil de um coordenador");
         } else if (perfilEditado.equals(Perfil.ASSISTENTE) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
             throw new IllegalArgumentException("Não é possível alterar o perfil de um assistente");
-        } else if (perfilEditado.equals(Perfil.USER) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
+        } else if (perfilEditado.equals(Perfil.CANDIDATO) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
             throw new IllegalArgumentException("Não é possível alterar o perfil de um usuário");
         }  else if (perfilEditado.equals(Perfil.CANDIDATO)) {
             throw new IllegalArgumentException("Não é possível alterar o perfil de um candidato");
