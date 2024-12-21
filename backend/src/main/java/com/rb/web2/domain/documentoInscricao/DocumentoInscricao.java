@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,11 +26,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "documentos_inscricoes")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@Data
 public class DocumentoInscricao {
 
     @Id

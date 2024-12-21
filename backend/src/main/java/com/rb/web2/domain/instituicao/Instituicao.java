@@ -18,29 +18,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
+@Table(name = "instituicoes")
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id")
-@Table(name = "instituicoes", uniqueConstraints = @UniqueConstraint(columnNames = { "nome", "local" }))
 public class Instituicao {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nome;
 
-    @Column
+    @Column(unique = true)
     private String local;
 
     @ManyToMany
