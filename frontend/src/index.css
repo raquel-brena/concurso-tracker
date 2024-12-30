@@ -1,8 +1,9 @@
+
+@import url('https://fonts.cdnfonts.com/css/rawline');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.cdnfonts.com/css/rawline');
 
 #root {
   font-family:Rawline, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
