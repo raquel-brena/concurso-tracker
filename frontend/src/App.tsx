@@ -1,10 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Input } from "./components/input/Input";
-import MenubarDemo from "./components/MenuBarPrincipal/MenuBar";
-import { Separator } from "./components/separator/separator";
 import { FaRegIdCard, FaPersonBooth } from "react-icons/fa";
-import { IoPersonSharp } from "react-icons/io5";
-import { PersonIcon } from "@radix-ui/react-icons";
 import { MdOutlinePersonOutline, MdOutlinePhoneAndroid } from "react-icons/md";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { Step } from "./components/step/Step";
