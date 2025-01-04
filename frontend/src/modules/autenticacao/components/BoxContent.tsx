@@ -12,9 +12,8 @@ export const BoxContent = ({
 }: MenuBarRootProps) => {
   return (
     <div
-      className={`flex flex-col relative bg-white shadow-md p-8 ${
-        className || ""
-      }`}
+      className={`flex flex-col relative bg-white shadow-md p-8
+        ${className}`}
       {...props}
     >
       {children}
