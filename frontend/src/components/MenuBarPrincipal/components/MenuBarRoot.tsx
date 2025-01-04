@@ -6,7 +6,7 @@ interface MenuBarRootProps {
 
 export const MenuBarRoot = ({ children }: MenuBarRootProps) => {
   return (
-    <Menubar.Root className="flex bg-white pt-2 shadow-md w-full h-12 z-10">
+    <Menubar.Root className="flex bg-white pt-2 shadow-md w-full h-12 ">
       {children}
     </Menubar.Root>
   );
