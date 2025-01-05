@@ -12,11 +12,14 @@ import {
 } from "../../components/MenuBarPrincipal/MenuItems";
 import { Home } from "./Home";
 import { Editais } from "./Editais";
+import { useNavigate } from "react-router-dom";
+import { Noticias } from "./Noticias";
 
 
 function Portal() {
     const [menuItemSelected, setMenuItemSelected] = useState(MENU_ITEMS[0].label);
 
+    const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center w-screen min-h-screen relative overflow-x-hidden ">
       <Menubar
@@ -26,6 +29,7 @@ function Portal() {
 
       {menuItemSelected === EnumMenuItems.PAGINA_INICIAL && <Home />}
       {menuItemSelected === EnumMenuItems.EDITAIS && <Editais />}
+      {menuItemSelected === EnumMenuItems.NOTICIAS && <Noticias />}
       <Footer />
     </div>
   );

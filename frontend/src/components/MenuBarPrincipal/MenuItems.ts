@@ -2,7 +2,7 @@ export enum EnumMenuItems {
   PAGINA_INICIAL = "Página Inicial",
   EDITAIS = "Editais",
   ESTATISTICAS = "Estatísticas",
-  NOTICIAS = "Notícias",
+  NOTICIAS = "Noticias",
   EQUIPE = "Equipe",
 }
 
@@ -14,6 +14,7 @@ export const MENU_ITEMS = [
   },
   {
     label: EnumMenuItems.EDITAIS,
+    link: "/editais",
     items: [
       {
         label: "Processos seletivos",
@@ -73,7 +74,6 @@ export const MENU_ITEMS = [
   },
   {
     label: EnumMenuItems.NOTICIAS,
-    link: "/Notícias",
     items: [
       {
         label: "Cadastrar notícia",

@@ -44,7 +44,7 @@ const Login = () => {
               <TextInput />
             </div>
 
-            <Button title="Continuar" type={1}/>
+            <Button title="Continuar" type={1} className="w-fit self-end"/>
 
             <a className="text-sm font-medium text-red-500 self-center">
               Termo de Uso e Aviso de Privacidade
