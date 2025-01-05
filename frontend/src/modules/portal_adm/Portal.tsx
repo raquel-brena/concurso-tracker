@@ -14,6 +14,7 @@ import { Home } from "./Home";
 import { Editais } from "./Editais";
 import { useNavigate } from "react-router-dom";
 import { Noticias } from "./Noticias";
+import { Inscricoes } from "./Inscricoes";
 
 
 function Portal() {
@@ -30,6 +31,8 @@ function Portal() {
       {menuItemSelected === EnumMenuItems.PAGINA_INICIAL && <Home />}
       {menuItemSelected === EnumMenuItems.EDITAIS && <Editais />}
       {menuItemSelected === EnumMenuItems.NOTICIAS && <Noticias />}
+      {menuItemSelected === EnumMenuItems.EQUIPE && <Inscricoes />}
+
       <Footer />
     </div>
   );

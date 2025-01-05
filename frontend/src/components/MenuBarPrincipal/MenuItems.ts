@@ -91,20 +91,19 @@ export const MENU_ITEMS = [
   },
   {
     label: EnumMenuItems.EQUIPE,
-    link: "/Equipe",
-    items: [
-      {
-        label: "Cadastrar notícia",
-        shortcurt: "",
-        subitems: [],
-        separator: false,
-      },
-      {
-        label: "Visualizar notícias",
-        shortcurt: "",
-        subitems: [],
-        separator: false,
-      },
-    ],
+    // items: [
+    //   {
+    //     label: "Cadastrar notícia",
+    //     shortcurt: "",
+    //     subitems: [],
+    //     separator: false,
+    //   },
+    //   {
+    //     label: "Visualizar notícias",
+    //     shortcurt: "",
+    //     subitems: [],
+    //     separator: false,
+    //   },
+    // ],
   },
 ];

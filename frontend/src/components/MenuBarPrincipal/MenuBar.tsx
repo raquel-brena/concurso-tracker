@@ -35,7 +35,7 @@ export const Menubar = ({menuItemSelected, setMenuItemSelected}:MenuBarProps) =>
               setMenuItemSelected(menu.label);
             }}
           >
-            {menu.label} {!menu.link && <ChevronDownIcon />}
+            {menu.label} {menu.items && <ChevronDownIcon />}
           </MenuItemTrigger>
           {menu.items && (
             <mb.Portal>
