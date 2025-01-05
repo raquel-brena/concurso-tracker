@@ -32,4 +32,15 @@ export const router = createBrowserRouter([
     ),
     errorElement: <div>Not Found</div>,
   },
+  {
+    path: "/editais",
+    element: (
+      <ProtectedRoute>
+        {/* <ContainerCentral> */}
+        <Portal />
+        {/* </ContainerCentral> */}
+      </ProtectedRoute>
+    ),
+    errorElement: <div>Not Found</div>,
+  },
 ]);

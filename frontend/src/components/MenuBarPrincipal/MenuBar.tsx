@@ -11,11 +11,15 @@ import { MenuBarItem } from "./components/MenuBarItem";
 import { MenuBarSeparator } from "./components/MenuBarSeparator";
 import { MenuItemSubTrigger } from "./components/MenuItemSubTrigger";
 import { MenuItemTrigger } from "./components/MenuItemTrigger copy";
-import { MENU_ITEMS } from "./MenuItems";
+import { MENU_ITEMS, EnumMenuItems } from "./MenuItems";
 import { useNavigate } from "react-router-dom";
 
-export const Menubar = () => {
-  const [checkedSelection, setCheckedSelection] = useState(MENU_ITEMS[0].label);
+type MenuBarProps = {
+  menuItemSelected: EnumMenuItems;
+  setMenuItemSelected: (value: EnumMenuItems) => void;
+};
+
+export const Menubar = ({menuItemSelected, setMenuItemSelected}:MenuBarProps) => {
 
   const navigate = useNavigate();
   return (
@@ -25,10 +29,10 @@ export const Menubar = () => {
       {MENU_ITEMS.map((menu) => (
         <mb.Menu key={menu.label}>
           <MenuItemTrigger
-            selected={checkedSelection === menu.label}
+            selected={menuItemSelected === menu.label}
             onClick={() => {
               if (menu.link) navigate(menu.link);
-              setCheckedSelection(menu.label)
+              setMenuItemSelected(menu.label);
             }}
           >
             {menu.label} {!menu.link && <ChevronDownIcon />}
@@ -39,7 +43,7 @@ export const Menubar = () => {
                 {menu.items.map((item) => (
                   <React.Fragment key={item.label}>
                     {item.subitems ? (
-                      <mb.Sub  >
+                      <mb.Sub>
                         <MenuItemSubTrigger>
                           {item.label}
                           <div className="ml-auto pl-5 text-mauve9 group-data-[disabled]:text-mauve8 group-data-[highlighted]:text-white">

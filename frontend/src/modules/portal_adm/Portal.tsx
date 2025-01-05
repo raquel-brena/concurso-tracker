@@ -1,58 +1,31 @@
 
+import { useState } from "react";
 import { ContentButton } from "../../components/buttons/ContentButton";
 import { Footer } from "../../components/Footer";
 import { Menubar } from "../../components/MenuBarPrincipal/MenuBar";
 import { ChamadasContent } from "./components/ChamadasContent";
 import { Content } from "./components/Content";
 import { NoticiasContent } from "./components/NoticiasContent";
+import {
+  MENU_ITEMS,
+  EnumMenuItems,
+} from "../../components/MenuBarPrincipal/MenuItems";
+import { Home } from "./Home";
+import { Editais } from "./Editais";
 
-const buttons = [
-  "Equipe",
-  "Editais",
-  "Vagas",
-  "Candidatos",
-  "Convocações",
-  "Configurações",
-];
 
 function Portal() {
+    const [menuItemSelected, setMenuItemSelected] = useState(MENU_ITEMS[0].label);
+
   return (
     <div className="flex flex-col items-center w-screen min-h-screen relative overflow-x-hidden ">
-      <Menubar />
-      <div className="flex h-44 w-screen bg-[#FCF7F5] -z-10">.</div>
-      {/* <Header
-        title="Gerenciar processos seletivos"
-        subtitle="GERENCIAR NOTÍCIAS"
-        description="Gerencie todos os concursos cadastrados no sistema, você pode
-        visualizar, editar e organizar as informações de cada concurso."
-      /> */}
+      <Menubar
+        menuItemSelected={menuItemSelected}
+        setMenuItemSelected={setMenuItemSelected}
+      />
 
-      <Content title="Gerenciar" className="gap-8 pb-4 my-2">
-        <div
-          className="grid md:grid-cols-3 md:grid-rows-2
-         grid-cols-2 grid-rows-3 gap-8 md:w-fit w-full justify-center items-center px-4 md:px-0"
-        >
-          {buttons.map((buttonTitle) => (
-            <ContentButton title={buttonTitle} />
-          ))}
-        </div>
-      </Content>
-
-      <Content title="Gereciamento rápido" className="gap-8 pb-4 my-2">
-        <div
-          className="grid md:grid-cols-3 md:grid-rows-2 
-        grid-cols-2 grid-rows-3 gap-8 md:w-fit w-full justify-center items-center px-4 md:px-0"
-        >
-          {buttons.map((buttonTitle) => (
-            <ContentButton title={buttonTitle} />
-          ))}
-        </div>
-      </Content>
-
-      <NoticiasContent />
-
-      <ChamadasContent />
-
+      {menuItemSelected === EnumMenuItems.PAGINA_INICIAL && <Home />}
+      {menuItemSelected === EnumMenuItems.EDITAIS && <Editais />}
       <Footer />
     </div>
   );

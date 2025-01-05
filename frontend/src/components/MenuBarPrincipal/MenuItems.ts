@@ -1,11 +1,19 @@
+export enum EnumMenuItems {
+  PAGINA_INICIAL = "Página Inicial",
+  EDITAIS = "Editais",
+  ESTATISTICAS = "Estatísticas",
+  NOTICIAS = "Notícias",
+  EQUIPE = "Equipe",
+}
+
 export const MENU_ITEMS = [
   {
-    label: "Página Inicial",
+    label: EnumMenuItems.PAGINA_INICIAL,
     link: "/adm",
     separator: true,
   },
   {
-    label: "Editais",
+    label: EnumMenuItems.EDITAIS,
     items: [
       {
         label: "Processos seletivos",
@@ -52,7 +60,7 @@ export const MENU_ITEMS = [
     ],
   },
   {
-    label: "Estatísticas",
+    label: EnumMenuItems.ESTATISTICAS,
     link: "/Estatísticas",
     items: [
       {
@@ -64,7 +72,7 @@ export const MENU_ITEMS = [
     ],
   },
   {
-    label: "Notícias",
+    label: EnumMenuItems.NOTICIAS,
     link: "/Notícias",
     items: [
       {
@@ -82,7 +90,7 @@ export const MENU_ITEMS = [
     ],
   },
   {
-    label: "Equipe",
+    label: EnumMenuItems.EQUIPE,
     link: "/Equipe",
     items: [
       {
