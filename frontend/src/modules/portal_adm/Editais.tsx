@@ -1,5 +1,5 @@
 import { Button } from "../../components/buttons/Button";
-import { CardProcessoSeletivo } from "../../components/CardProcessoSeletivo";
+import { CardProcessoSeletivo } from "../../components/cards/CardProcessoSeletivo";
 import { Header } from "../../components/header/Header";
 
 export const Editais = () => {

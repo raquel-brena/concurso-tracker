@@ -1,10 +1,6 @@
 import { useState } from "react";
-import { ContentButton } from "../../components/buttons/ContentButton";
 import { Footer } from "../../components/Footer";
 import { Menubar } from "../../components/MenuBarPrincipal/MenuBar";
-import { ChamadasContent } from "./components/ChamadasContent";
-import { Content } from "./components/Content";
-import { NoticiasContent } from "./components/NoticiasContent";
 import {
   MENU_ITEMS,
   EnumMenuItems,
@@ -14,7 +10,6 @@ import { Editais } from "./Editais";
 import { useNavigate } from "react-router-dom";
 import { Noticias } from "./Noticias";
 import { Inscricoes } from "./Inscricoes";
-import { RegisterForm } from "../autenticacao/register/RegisterForm";
 
 function Portal() {
   const [menuItemSelected, setMenuItemSelected] = useState(MENU_ITEMS[0].label);

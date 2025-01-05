@@ -1,5 +1,4 @@
 import { Button } from "../../components/buttons/Button";
-import { CardProcessoSeletivo } from "../../components/CardProcessoSeletivo";
 import { Header } from "../../components/header/Header";
 import noticias2  from "../../assets/noticia2.svg"
 

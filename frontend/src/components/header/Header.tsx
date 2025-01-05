@@ -17,10 +17,10 @@ export const Header = ({ title, subtitle, description }: HeaderProps) => {
         </p>
       </div>
       <p className="text-2xl text-[#B41313] font-medium">{title}</p>
-      <div className="w-screen flex h-px bg-[#F3F3F3]" />
+      <Separator/>
       <p>{description}</p>
       <p className="font-semibold pt-6 uppercase">{subtitle}</p>
-      <div className="w-screen flex h-px bg-[#F3F3F3]" />
+      <Separator/>
     </div>
   );
 };
