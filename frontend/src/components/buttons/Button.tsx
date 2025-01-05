@@ -9,7 +9,7 @@ export const Button = ({ title, className, type, ...props }: ButtonProps) => {
   return (
     <button
       className={`
-         px-8 py-2 shadow-sm rounded-full text-sm  font-medium  transition-all duration-200
+         px-8 py-2 shadow-sm rounded-full text-sm  font-medium transition-all duration-200
         ${
           type === 1 &&
           `bg-red-600  hover:bg-red-700 
