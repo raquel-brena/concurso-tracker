@@ -74,6 +74,7 @@ public class SecurityConfiguration {
 
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/cpf/**").permitAll()
                         // Rotas relacionadas a cargos
                         .requestMatchers(HttpMethod.POST, "/api/cargo/**").hasAuthority("EDIT_CARGOS")
                         .requestMatchers(HttpMethod.PUT, "/api/cargo/**").hasAuthority("EDIT_CARGOS")
@@ -87,7 +88,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/api/instituicoes/**").hasAuthority("EDIT_INSTITUICAO")
 
                         // Rotas relacionadas aos documentos de inscrição
-                        .requestMatchers(HttpMethod.POST, "/api/documentos-inscricao/**").hasAuthority("HOMOLOGAR_DOCUMENTO_INSCRICAO")
+                        .requestMatchers(HttpMethod.POST, "/api/documentos-inscricao/**")
+                        .hasAuthority("HOMOLOGAR_DOCUMENTO_INSCRICAO")
 
                         // Rotas relacionadas a pontuação
                         .requestMatchers(HttpMethod.GET, "/api/pontuacao/**").hasAuthority("VIEW_PONTUACOES")
@@ -126,7 +128,8 @@ public class SecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedOrigins("http://localhost:5173")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization")
                         .allowCredentials(true)

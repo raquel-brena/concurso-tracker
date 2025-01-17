@@ -51,12 +51,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false, unique = true)
-    private String login;
-
     private String nome;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String cpf;
 
     @Column(nullable = false)
@@ -98,7 +95,7 @@ public class User implements UserDetails {
     private LocalDateTime atualizadoEm;
 
     public User(String login, String password, Perfil perfil) {
-        this.login = login;
+        this.cpf = login;
         this.password = password;
         this.perfil = perfil;
     }
@@ -118,7 +115,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.login;
+        return this.cpf;
     }
 
     @Override

@@ -6,15 +6,25 @@ type InputProps = {
   title: string;
   placeholder?: string;
   icon: any;
+  input: string;
+  disabled: boolean | undefined;
+  type: string | undefined;
+  register: any;
+  className?: string;
+  classNameInput?: string;
 };
-export const InputWithIcon = ({ title, placeholder, icon }: InputProps) => {
+export const TextInputWithIcon = ({className, classNameInput, title, placeholder, icon, register, input, type, disabled}: InputProps) => {
   return (
-    <div className="flex items-center space-x-2 mt-4">
+    <div className="flex items-center space-x-2 mt-4" >
       {icon}
 
-      <div className="flex flex-col">
+      <div className={`flex flex-col ${className}`}>
         <p className="font-medium text-sm text-red-500 uppercase">{title}</p>
-        <TextInput className="max-w-72 border border-[#888888] py-2 px-3 rounded-md" />
+        <TextInput 
+        disabled={disabled}
+        type={type}
+        className={`w-72 border border-[#888888] py-2 px-3 rounded-md ${classNameInput} ${disabled ? 'bg-gray-200' : ''}`}
+          {...register(input, { required: true })} />
       </div>
     </div>
   );

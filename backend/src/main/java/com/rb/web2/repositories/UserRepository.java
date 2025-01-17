@@ -9,6 +9,6 @@ import com.rb.web2.domain.user.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-    Optional<User> findByLogin(String login);
+    Optional<User> findByCpf(String cpf);
     Optional<User> findByEmail(String email);
 }

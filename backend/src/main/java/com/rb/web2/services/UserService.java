@@ -2,6 +2,7 @@ package com.rb.web2.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -93,13 +94,24 @@ public class UserService {
         return user;
     }
 
-    public UserDetails loadUserByUsername(String login) {
-        return this.repository.findByLogin(login)
+    public UserDetails loadUserByUsername(String cpf) {
+        return this.repository.findByCpf(cpf)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
     }
 
-    public void checkUserExists(String login) {
-        if (this.repository.findByLogin(login).isPresent()) {
+    public UserResponseDTO findByCPF(String cpf) {
+        Optional<User> user = this.repository.findByCpf(cpf);
+
+        if (user.isPresent()) {   
+            var userDTO = UserResponseDTO.from(user.get());
+            return userDTO;
+        }
+    
+        return null;
+    }
+
+    public void checkUserExists(String cpf) {
+        if (this.repository.findByCpf(cpf).isPresent()) {
             throw new BadRequestException("Já existe usuário com o login informado.");
         }
     }
@@ -128,7 +140,7 @@ public class UserService {
 
         this.verificarLogicaDePerfil(userToUpdate.getPerfil(), user.getPerfilEnum());
 
-        userToUpdate.setLogin(user.login());
+        userToUpdate.setCpf(user.login());
         userToUpdate.setNome(user.nome());
         userToUpdate.setEmail(user.email());
         userToUpdate.setCpf(user.cpf());
@@ -142,7 +154,7 @@ public class UserService {
         verificarPermissaoDeAlterarUsuarios(null);
 
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = repository.findByLogin(login).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+        User user = repository.findByCpf(login).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
         verificarLogicaDePerfil(user.getPerfil(), UpdatePerfilDTO.getPerfilEnum(perfilDto.perfil()));
 

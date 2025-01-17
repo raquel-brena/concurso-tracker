@@ -4,10 +4,12 @@ interface ButtonProps {
   title: string;
   className?: string;
   type: 1 | 2 | 3 | 4;
+  onClick?: () => void;
 }
-export const Button = ({ title, className, type, ...props }: ButtonProps) => {
+export const Button = ({ title, className, type, onClick, ...props }: ButtonProps) => {
   return (
     <button
+    onClick={onClick}
       className={`
          px-8 py-2 shadow-sm rounded-full text-sm  font-medium transition-all duration-200
         ${

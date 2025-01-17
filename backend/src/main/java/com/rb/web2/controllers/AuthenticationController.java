@@ -22,6 +22,9 @@ import com.rb.web2.shared.RestMessage.RestSuccessMessage;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -72,6 +75,15 @@ public class AuthenticationController {
         RestSuccessMessage successMessage = new RestSuccessMessage("Usuário administrativo registrado com sucesso",
                 newUser.id());
         return ResponseEntity.created(location).body(successMessage);
+    }
+
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<RestSuccessMessage> verificarCadastro(@PathVariable String cpf) {
+        var usuarioEncontrado = this.authService.findUserByCPF(cpf);
+
+        RestSuccessMessage successMessage = new RestSuccessMessage("Usuário encontrado com sucesso",
+                usuarioEncontrado.id());
+        return ResponseEntity.ok().body(successMessage);
     }
 
     @PostMapping("/logout")

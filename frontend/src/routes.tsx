@@ -1,12 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
-import Login from "./modules/autenticacao/login/Login";
+import Login from "./modules/autenticacao/AuthPage";
 import { ProtectedRoute } from "./modules/autenticacao/components/ProtectedRoute";
 import { RegisterForm } from "./modules/autenticacao/register/RegisterForm";
 import { Portal } from "@radix-ui/react-menubar";
+import AuthPage from "./modules/autenticacao/AuthPage";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <AuthPage />,
     errorElement: <div>Not Found</div>,
   },
   {

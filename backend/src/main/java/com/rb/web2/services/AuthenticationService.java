@@ -48,6 +48,14 @@ public class AuthenticationService implements UserDetailsService {
         return new LoginResponseDTO(token);
     }
 
+    public UserResponseDTO findUserByCPF(String cpf) { 
+        var user = this.userService.findByCPF(cpf);
+        if (user == null) {
+            throw new BadRequestException("Usuário não existe");
+        }
+        return user;
+    }
+
     public UserResponseDTO register(RegisterUserDTO data) {
         this.userService.checkUserExists(data.login());
 
