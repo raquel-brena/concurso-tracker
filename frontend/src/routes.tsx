@@ -2,8 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Login from "./modules/autenticacao/login/Login";
 import { ProtectedRoute } from "./modules/autenticacao/components/ProtectedRoute";
 import { RegisterForm } from "./modules/autenticacao/register/RegisterForm";
-import Portal from "./modules/portal_adm/Portal";
-
+import { Portal } from "@radix-ui/react-menubar";
 export const router = createBrowserRouter([
   {
     path: "/",
