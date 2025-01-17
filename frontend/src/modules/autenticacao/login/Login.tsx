@@ -4,6 +4,19 @@ import { BoxContent } from "../components/BoxContent";
 import { TextInput } from "../../../components/inputs/TextInput";
 import { Button } from "../../../components/buttons/Button";
 const Login = () => {
+  const unmaskCpf = (value: string) => {
+    return value.replace(/\D/g, "");
+  };
+
+  const cpfMask = (value: string) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})/, "$1-$2")
+      .replace(/(-\d{2})\d+?$/, "$1");
+  };
+
   return (
     <div className="flex flex-col w-screen h-screen ">
       <MenuBarRoot>
@@ -41,10 +54,15 @@ const Login = () => {
               <p className="text-sm">
                 Digite seu CPF para criar ou acessar sua conta
               </p>
-              <TextInput />
+              <TextInput
+                maxLength={14}
+                onChange={(e: any) => {
+                  e.target.value = cpfMask(e.target.value);
+                }}
+              />
             </div>
 
-            <Button title="Continuar" type={1} className="w-fit self-end"/>
+            <Button title="Continuar" type={1} className="w-fit self-end" />
 
             <a className="text-sm font-medium text-red-500 self-center">
               Termo de Uso e Aviso de Privacidade
