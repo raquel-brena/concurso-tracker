@@ -11,6 +11,9 @@ import { CgPhotoscan } from "react-icons/cg";
 import { PerfilForm } from "./forms/PerfilForm";
 import { DadosPessoaisForm } from "./forms/DadosPessoaisForm";
 import { DadosAcademicosForm } from "./forms/DadosAcademicosForm";
+import { DadosProfissionaisForm } from "./forms/DadosProfissionaisForm";
+import { FinalizarForm } from "./forms/FinalizarForm";
+import { useNavigate } from "react-router-dom";
 
 
 export const RegisterForm = ({
@@ -32,16 +35,30 @@ export const RegisterForm = ({
       {
         id: 2,
         stepForm: "Dados acadêmicos",
-        last: true,
+        last: false,
         children: <DadosAcademicosForm register={register}/>
+      },
+      {
+        id: 3,
+        stepForm: "Dados profissionais",
+        last: false,
+        children: <DadosProfissionaisForm register={register}/>
+      },
+      {
+        id: 4,
+        stepForm: "Finalizar",
+        last: true,
+        children: <FinalizarForm/>
       }
     ]
   
     
-  const { handleRegisterRequest } = useAuth();
+  const { handleRegisterRequest, loading } = useAuth();
   const [step, setStep] = useState(registerInputs[0]);
 
+  const navigate = useNavigate();
   function handleRegister(data: any) {
+    console.log(data)
     data = {
       ...data,
       perfilId: "aa9961fc-12e5-495c-b6ec-440b82c37302"
@@ -54,8 +71,18 @@ export const RegisterForm = ({
 
   }
 
+  const onSubmit = (data: any) => {
+    if (step.id === registerInputs.length - 2) {
+      handleRegister(data);
+      navigate("/adm");
+    } else {
+      //dar update
+      handleNextStep();
+    }
+  }
+
   const handleNextStep = () => {
-    if (step.id === 2) {
+    if (step.id === registerInputs.length - 1) {
       return;
     }
     setStep(registerInputs[step.id + 1]);
@@ -63,6 +90,7 @@ export const RegisterForm = ({
 
   const handlePreviousStep = () => {
     if (step.id === 0) {
+      window.location.reload() 
       return;
     }
     
@@ -70,41 +98,72 @@ export const RegisterForm = ({
   };
 
   return (
-    <div className="flex flex-col relative w-screen h-screen items-center space-y-5 ">
-
+    <div className="flex flex-col relative w-screen h-screen items-center pt-8 space-y-5 ">
       <div className="block w-3/4 ">
         <p className="text-2xl">Seja bem vinda! Vamos completar seu cadastro</p>
         <p className="text-[#6E6D7A]">
           Esses dados ajudarão a tornar suas inscrições em editais mais fáceis!
         </p>
       </div>
-      <form onSubmit={handleSubmit(handleRegister)} className="flex flex-col shadow-md bg-white w-3/4 h-3/4 min-h-fit  
-      py-3 justify-between pt-4">
-        <div className="flex justify-center w-4/5 ">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col shadow-md bg-white w-3/4 h-3/4 min-h-fit  transition-all 
+      py-3 justify-between items-center pt-4"
+      >
+        <div className="flex justify-center w-full">
           {registerInputs.map((inputs) => (
             <Step
               circle={inputs.id < step.id ? 1 : step.id === inputs.id ? 1 : 2}
-              stroke={inputs.last ? 3 : inputs.id < step.id ? 1 : step.id === inputs.id ? 1 : 2}
-              title={inputs.stepForm} />
+              stroke={
+                inputs.last
+                  ? 3
+                  : inputs.id < step.id
+                  ? 1
+                  : step.id === inputs.id
+                  ? 1
+                  : 2
+              }
+              title={inputs.stepForm}
+            />
           ))}
-
         </div>
-        <div className="flex w-full pt-8 px-14 ">
+        <div className="flex w-full items-center justify-center pt-8 px-14 ">
           {step.children}
         </div>
-        <div className="flex justify-between px-4 pt-8 ">
-          <a className="font-medium text-sm text-red-500"
-            onClick={
-              handlePreviousStep
-            }>Voltar</a>
-          <div className="flex gap-4">
-            {/* <Button title="Pular" className="bg-transparent border border-dark_blue text-dark_blue" /> */}
-            <Button title="Avançar" type={1}
-              onClick={
-                handleNextStep
 
-              } />
-          </div>
+        <div className="flex w-full justify-between items-center px-12 py-4 ">
+          <a
+            className="font-medium text-sm text-red-500"
+            onClick={handlePreviousStep}
+          >
+            Voltar
+          </a>
+          {!step.last && (
+            <div className="flex gap-4">
+              {!(step.id === registerInputs.length - 2) && (
+                <Button
+                  type="button"
+                  className="bg-transparent border border-dark_blue text-dark_blue"
+                  style={2}
+                  onClick={() => {
+                    if (step.id === registerInputs.length - 1) {
+                      return;
+                    } else {
+                      handleNextStep();
+                    }
+                  }}
+                >
+                  Pular
+                </Button>
+              )}
+
+              <Button type="submit" style={1}>
+                {!(step.id === registerInputs.length - 1)
+                  ? "Enviar dados"
+                  : "Avançar"}
+              </Button>
+            </div>
+          )}
         </div>
       </form>
     </div>

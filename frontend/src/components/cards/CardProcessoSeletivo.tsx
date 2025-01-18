@@ -1,4 +1,4 @@
-import { Button } from "./buttons/Button";
+import { Button } from "../buttons/Button";
 
 export const CardProcessoSeletivo = () => { 
     return (
@@ -31,12 +31,12 @@ export const CardProcessoSeletivo = () => {
           </div>
         </div>
         <div className="flex flex-col h-full items-end justify-center w-fit gap-2">
-          <Button
-            title="Gerenciar inscrições"
-            type={3}
-            className="rounded-sm w-36"
-          />
-          <Button title="Editar Edital" type={1} className="rounded-sm w-36" />
+          <Button style={3} className="rounded-sm w-36">
+            Gerenciar inscrições
+          </Button>
+          <Button style={1} className="rounded-sm w-36">
+            Editar Edital
+          </Button>
         </div>
       </div>
     );

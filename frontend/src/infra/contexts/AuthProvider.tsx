@@ -10,7 +10,7 @@ export default function AuthProvider({
     children
 }: AuthProviderProps) {
     const [user, setUser] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     // const navigation = useNavigate();
     useEffect(() => {
@@ -25,10 +25,8 @@ export default function AuthProvider({
             }
         };
         fetchData();
+        setLoading(false);
 
-        if (user) {
-            console.log("AuthContext", user);
-        }
 
 
     }, []);
@@ -88,6 +86,7 @@ export default function AuthProvider({
             setLoading(false);
             return response;
         } catch (error) {
+              setLoading(false);
             return null;
         }
     }

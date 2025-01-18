@@ -16,10 +16,11 @@ export const Editais = () => {
           Clique abaixo para cadastrar um novo edital para processo seletivo.
         </p>
         <Button
-          title="Cadastrar novo processo seletivo"
-          type={3}
+          style={3}
           className="w-fit"
-        />
+        >
+          Cadastrar novo processo seletivo
+        </Button>
       </div>
       <div className="w-[80%] flex flex-col items-center gap-2 mb-2">
         <p className="uppercase  flex self-start">
@@ -28,17 +29,15 @@ export const Editais = () => {
           PROCESSO SELETIVO
         </p>
         <div className="flex w-full">
-          <Button title="Todos" type={1} className="flex-grow py-4 font-medium" />
-          <Button
-            title="Em andamento"
-            type={4}
-            className="flex-grow py-4 font-medium "
-          />
-          <Button
-            title="Finalizado"
-            type={4}
-            className="flex-grow py-4 font-medium "
-          />
+          <Button style={1} className="flex-grow py-4 font-medium">
+            Todos
+          </Button>
+          <Button style={4} className="flex-grow py-4 font-medium ">
+            Em andamento
+          </Button>
+          <Button style={4} className="flex-grow py-4 font-medium ">
+            Finalizado
+          </Button>
         </div>
       </div>
       <div className="flex flex-col w-[90%] h-fit gap-4 ">

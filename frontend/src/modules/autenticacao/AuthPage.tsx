@@ -5,19 +5,29 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { RegisterForm } from "./register/RegisterForm";
 import { LoginForm } from "./login/LoginForm";
+import { useAuth } from "../../infra/contexts/UseAuth";
 
 type Inputs = {
   cpf: string;
   senha: string;
   nome?: string;
-  matricula?: string;
-  setor?: string;
-  dn?: string;
-  estadoCivil?: string;
-  sexo?: string;
-  peso?: string;
-  altura?: string;
-}
+  foto?: string;
+  estado?: string;
+  areas?: string[];
+  email?: string;
+  sms?: string;
+  anexoRg?: string;
+  anexoCpf?: string;
+  nivelFormacao?: string;
+  tipoCurso?: string;
+  anoConclusao?: string;
+  anexoDiploma?: string;
+  cargo?: string;
+  empresa?: string;
+  tempoContribuicao?: string;
+  localizacao?: string;
+  vinculo?: string;
+};
 
 const AuthPage = () => {
 
@@ -29,7 +39,7 @@ const AuthPage = () => {
       watch,
       formState: { errors },
   } = useForm<Inputs>()
-
+  
   return (
     <div className="flex flex-col w-screen h-screen ">
       <MenuBarRoot>
@@ -42,10 +52,8 @@ const AuthPage = () => {
 
       {showRegisterForm ? (<>
                 <RegisterForm
-
                     handleSubmit={handleSubmit}
                     register={register} />
-
             </>) : (
 
                 <div className="flex size-full flex-col md:flex-row justify-between md:justify-normal gap-2">

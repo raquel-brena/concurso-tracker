@@ -16,7 +16,9 @@ export const Noticias = () => {
           <p className="text-sm">
             Clique abaixo para cadastrar uma nova notícia.
           </p>
-          <Button title="Cadastrar nova notícias" type={3} className="w-fit" />
+          <Button style={3} className="w-fit">
+            Cadastrar nova notícias
+          </Button>
         </div>
         <img src={noticias2} alt="Logo" className="size-40" />
       </div>
