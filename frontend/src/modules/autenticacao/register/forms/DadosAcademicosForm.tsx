@@ -1,7 +1,7 @@
 import { TextInputWithIcon } from "../../../../components/inputs/TextInputWithIcon";
 import { Button } from "../../../../components/buttons/Button";
 
-export const DadosAcademicosForm = ({ register }: any) => {
+export const DadosAcademicosForm = ({ register, errors }: any) => {
   return (
     <div className="flex justify-between  flex-col   w-full h-full  space-y-4 px-14">
       <div className="flex w-full flex-col h-fit">
@@ -15,6 +15,11 @@ export const DadosAcademicosForm = ({ register }: any) => {
             type="text"
             disabled={false}
           />
+          {errors.nivelFormacao && (
+            <span className="text-red-500">
+              {errors.nivelFormacao?.message}
+            </span>
+          )}
           <TextInputWithIcon
             icon=""
             title="Instituição"
@@ -23,6 +28,9 @@ export const DadosAcademicosForm = ({ register }: any) => {
             type="text"
             disabled={false}
           />
+          {errors.instituicao && (
+            <span className="text-red-500">{errors.instituicao?.message}</span>
+          )}
           <TextInputWithIcon
             icon=""
             title="Tipo de curso"
@@ -31,6 +39,9 @@ export const DadosAcademicosForm = ({ register }: any) => {
             type="text"
             disabled={false}
           />
+          {errors.tipoCurso && (
+            <span className="text-red-500">{errors.tipoCurso?.message}</span>
+          )}
           <TextInputWithIcon
             icon=""
             title="Ano de conclusão"
@@ -53,7 +64,7 @@ export const DadosAcademicosForm = ({ register }: any) => {
           classNameInput="flex min-w-[35rem]"
         />
         <Button
-          type={4}
+          style={4}
           className="w-1/2 h-10 mt-4 rounded-none bg-[#383838] "
           onClick={() => {}}
         >

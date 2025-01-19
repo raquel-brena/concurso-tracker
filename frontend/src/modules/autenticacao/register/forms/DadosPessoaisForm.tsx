@@ -62,44 +62,50 @@ const dadosPessoaisAnexoForm = {
        
     ]
 }
-export const DadosPessoaisForm = ({ register }: any) => {
+export const DadosPessoaisForm = ({ register, errors }: any) => {
 
     return (
-        <div className="flex justify-between w-full h-full  space-y-4 px-14">
-            <div>
-            <p className="font-semibold text-lg">{dadosPessoaisInputForm.stepForm}</p>
-            <div className="grid grid-cols-1 grid-rows-5">
-                {dadosPessoaisInputForm.inputs.map((campo) => (
-                    <TextInputWithIcon
-                        key={campo.var}
-                        icon={campo.icon}
-                        title={campo.title}
-                        register={register}
-                        input={campo.var}
-                        type={campo.type}
-                        disabled={campo.disabled}
-                    />
-                ))}
-            </div>
-            </div>
-            <div>
-            <p className="font-semibold text-lg">Anexos</p>
-            <div className="grid grid-cols-1 grid-rows-5">
-                {dadosPessoaisAnexoForm.inputs.map((campo) => (
-                    <TextInputWithIcon
-                        key={campo.var}
-                        icon={campo.icon}
-                        title={campo.title}
-                        register={register}
-                        input={campo.var}
-                        type={campo.type}
-                        disabled={campo.disabled}
-                    />
-                ))}
-            </div>
-            </div>
+      <div className="flex justify-between w-full h-full  space-y-4 px-14">
+        <div>
+          <p className="font-semibold text-lg">
+            {dadosPessoaisInputForm.stepForm}
+          </p>
+          <div className="grid grid-cols-1 grid-rows-5">
+            {dadosPessoaisInputForm.inputs.map((campo) => (
+              <div key={campo.var}>
+                <TextInputWithIcon
+                  icon={campo.icon}
+                  title={campo.title}
+                  register={register}
+                  input={campo.var}
+                  type={campo.type}
+                  disabled={campo.disabled}
+                />
+                {errors[campo.var] && (
+                  <span className="text-red-500">{errors[campo.var]?.message}</span>
+                )}
+              </div>
+            ))}
+          
+          </div>
         </div>
-
+        <div>
+          <p className="font-semibold text-lg">Anexos</p>
+          <div className="grid grid-cols-1 grid-rows-5">
+            {dadosPessoaisAnexoForm.inputs.map((campo) => (
+              <TextInputWithIcon
+                key={campo.var}
+                icon={campo.icon}
+                title={campo.title}
+                register={register}
+                input={campo.var}
+                type={campo.type}
+                disabled={campo.disabled}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     );
 
 }

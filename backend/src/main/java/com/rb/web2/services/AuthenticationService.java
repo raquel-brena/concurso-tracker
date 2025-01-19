@@ -57,11 +57,11 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public UserResponseDTO register(RegisterUserDTO data) {
-        this.userService.checkUserExists(data.login());
+        this.userService.checkUserExists(data.cpf());
 
         String encryptedPassword = passwordEncoder.encode(data.password());
        
-        User user = this.userService.create(new User(data.login(), encryptedPassword, data.perfil()));
+        User user = this.userService.create(new User(data.cpf(), encryptedPassword, data.perfil()));
         
         return UserResponseDTO.from(user);
     }

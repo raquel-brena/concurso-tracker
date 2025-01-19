@@ -1,7 +1,7 @@
 import { TextInputWithIcon } from "../../../../components/inputs/TextInputWithIcon";
 import { Button } from "../../../../components/buttons/Button";
 
-export const DadosProfissionaisForm = ({ register }: any) => {
+export const DadosProfissionaisForm = ({ register, errors }: any) => {
   return (
     <div className="flex justify-between w-full h-full  space-y-4 px-14">
       <div className="flex w-full flex-col ">
@@ -15,6 +15,9 @@ export const DadosProfissionaisForm = ({ register }: any) => {
             type="text"
             disabled={false}
           />
+          {errors.cargo && (
+            <span className="text-red-500">{errors.cargo?.message}</span>
+          )}
           <TextInputWithIcon
             icon=""
             title="Empresa ou organização"
@@ -23,6 +26,9 @@ export const DadosProfissionaisForm = ({ register }: any) => {
             type="text"
             disabled={false}
           />
+          {errors.organizacao && (
+            <span className="text-red-500">{errors.organizacao?.message}</span>
+          )}
           <TextInputWithIcon
             icon=""
             title="Tempo de contribuição"
@@ -55,7 +61,7 @@ export const DadosProfissionaisForm = ({ register }: any) => {
             Adicionar dados profissionais
           </Button>
         </div>
-      
+
         <div>
           <p className="font-semibold text-lg">
             Formações acadêmicas inseridas (1)

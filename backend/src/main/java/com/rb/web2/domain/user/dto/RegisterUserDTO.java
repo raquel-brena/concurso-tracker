@@ -10,10 +10,6 @@ import com.rb.web2.domain.enums.Perfil;
 
 public record RegisterUserDTO(
 
-    @NotBlank(message = "O login é obrigatório.")
-    @Email(message = "O e-mail deve ser válido.")
-    String login,
-
     @NotBlank(message = "O nome é obrigatório.")
     String nome,
 
@@ -24,7 +20,6 @@ public record RegisterUserDTO(
     @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres.")
     String password,
 
-    
 
     Perfil perfil,
 
@@ -38,7 +33,7 @@ public record RegisterUserDTO(
         Perfil perfil = reqUserAdmDTO.perfil() != null ? Perfil.valueOf(reqUserAdmDTO.perfil()) : null;
 
         return new RegisterUserDTO(
-            reqUserAdmDTO.login(),
+
             reqUserAdmDTO.nome(),
             null, 
             reqUserAdmDTO.password(),
@@ -49,9 +44,8 @@ public record RegisterUserDTO(
     }
     public static RegisterUserDTO fromUserDTO(ReqUserDTO dto) {
         return new RegisterUserDTO(
-            dto.login(),
             null,
-            null, 
+            dto.cpf(), 
             dto.password(),
             Perfil.CANDIDATO,
             null, 

@@ -50,34 +50,39 @@ const AuthPage = () => {
       {/* BOLHA */}
       <div className="w-[120%] h-[100%] absolute md:-left-2/4 md:-top-0 -top-2/4 bg-[#FCF7F5] rounded-full -z-10" />
 
-      {showRegisterForm ? (<>
-                <RegisterForm
-                    handleSubmit={handleSubmit}
-                    register={register} />
-            </>) : (
-
-                <div className="flex size-full flex-col md:flex-row justify-between md:justify-normal gap-2">
-                    {/* ESQUERDA*/}
-                    <div className="flex w-1/2 justify-center">
-                        <div className="flex flex-col w-full justify-center items-end space-y-2">
-                            <p className="font-semibold    uppercase text-sm text-dark_blue ">
-                                Nos conheça
-                            </p>
-                            <div className="flex w-fit justify-center items-center space-x-6">
-                                <div className="h-72 w-36 flex relative bg-white shadow-sm" />
-                                <div className="h-72 w-36 flex relative bg-white shadow-sm" />
-                                <div className="h-72 w-36 flex relative bg-white shadow-sm" />
-                            </div>
-                        </div>
-                    </div>
-                    <LoginForm
-                        showInputPassword={showInputPassword}
-                        setShowInputPassword={setShowInputPassword}
-                        setShowRegisterForm={setShowRegisterForm}
-                        handleSubmit={handleSubmit}
-                        register={register} />
-                </div>
-            )}
+      {showRegisterForm ? (
+        <>
+          <RegisterForm
+            handleSubmit={handleSubmit}
+            register={register}
+            errors={errors}
+          />
+        </>
+      ) : (
+        <div className="flex size-full flex-col md:flex-row justify-between md:justify-normal gap-2">
+          {/* ESQUERDA*/}
+          <div className="flex w-1/2 justify-center">
+            <div className="flex flex-col w-full justify-center items-end space-y-2">
+              <p className="font-semibold    uppercase text-sm text-dark_blue ">
+                Nos conheça
+              </p>
+              <div className="flex w-fit justify-center items-center space-x-6">
+                <div className="h-72 w-36 flex relative bg-white shadow-sm" />
+                <div className="h-72 w-36 flex relative bg-white shadow-sm" />
+                <div className="h-72 w-36 flex relative bg-white shadow-sm" />
+              </div>
+            </div>
+          </div>
+          <LoginForm
+            showInputPassword={showInputPassword}
+            setShowInputPassword={setShowInputPassword}
+            setShowRegisterForm={setShowRegisterForm}
+            handleSubmit={handleSubmit}
+            errors={errors}
+            register={register}
+          />
+        </div>
+      )}
     </div>
   );
 };

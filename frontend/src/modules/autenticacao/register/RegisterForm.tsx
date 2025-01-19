@@ -16,84 +16,90 @@ import { FinalizarForm } from "./forms/FinalizarForm";
 import { useNavigate } from "react-router-dom";
 
 
-export const RegisterForm = ({
-  handleSubmit,
-  register }: any) => {
+export const RegisterForm = ({ handleSubmit, register, errors }: any) => {
+  const registerInputs = [
+    {
+      id: 0,
+      stepForm: "Perfil",
+      children: <PerfilForm  />,
+    },
+    {
+      id: 1,
+      stepForm: "Dados pessoais",
+      last: false,
+      children: <DadosPessoaisForm register={register} errors={errors} />,
+    },
+    {
+      id: 2,
+      stepForm: "Dados acadêmicos",
+      last: false,
+      children: <DadosAcademicosForm register={register} errors={errors} />,
+    },
+    {
+      id: 3,
+      stepForm: "Dados profissionais",
+      last: false,
+      children: <DadosProfissionaisForm register={register} errors={errors} />,
+    },
+    {
+      id: 4,
+      stepForm: "Finalizar",
+      last: true,
+      children: <FinalizarForm />,
+    },
+  ];
 
-    const registerInputs = [
-      {
-        id: 0,
-        stepForm: "Perfil",
-        children: <PerfilForm/>
-      },
-      {
-        id: 1,
-        stepForm: "Dados pessoais",
-        last: false,
-        children: <DadosPessoaisForm register={register}/>
-      },
-      {
-        id: 2,
-        stepForm: "Dados acadêmicos",
-        last: false,
-        children: <DadosAcademicosForm register={register}/>
-      },
-      {
-        id: 3,
-        stepForm: "Dados profissionais",
-        last: false,
-        children: <DadosProfissionaisForm register={register}/>
-      },
-      {
-        id: 4,
-        stepForm: "Finalizar",
-        last: true,
-        children: <FinalizarForm/>
-      }
-    ]
-  
-    
   const { handleRegisterRequest, loading } = useAuth();
   const [step, setStep] = useState(registerInputs[0]);
 
   const navigate = useNavigate();
   function handleRegister(data: any) {
-    console.log(data)
-    data = {
-      ...data,
-      perfilId: "aa9961fc-12e5-495c-b6ec-440b82c37302"
-    }
-    console.log(data)
-    handleRegisterRequest(data)
-      .then((user) => {
-        console.log(user);
-      })
+    console.log(data);
+    // data = {
+    //   ...data,
+    //   perfilId: "aa9961fc-12e5-495c-b6ec-440b82c37302",
+    // };
 
+    data =  {
+      cpf: data.cpf,
+      password: data.senha,
+    }
+
+    console.log(data);
+
+    handleRegisterRequest(data).then((user) => {
+      console.log(user);
+      handleNextStep();
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   const onSubmit = (data: any) => {
+    console.log(data)
+
     if (step.id === registerInputs.length - 2) {
-      handleRegister(data);
-      navigate("/adm");
+     handleRegister(data);
     } else {
       //dar update
       handleNextStep();
     }
-  }
+  };
 
   const handleNextStep = () => {
     if (step.id === registerInputs.length - 1) {
       return;
     }
+
     setStep(registerInputs[step.id + 1]);
   };
 
   const handlePreviousStep = () => {
     if (step.id === 0) {
-      window.location.reload() 
+      window.location.reload();
       return;
     }
-    
+
     setStep(registerInputs[step.id - 1]);
   };
 
@@ -158,7 +164,7 @@ export const RegisterForm = ({
               )}
 
               <Button type="submit" style={1}>
-                {!(step.id === registerInputs.length - 1)
+                {step.id === registerInputs.length - 2
                   ? "Enviar dados"
                   : "Avançar"}
               </Button>

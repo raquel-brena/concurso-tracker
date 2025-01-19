@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record ReqUserDTO(
                 @NotBlank(message = "O campo 'login' não pode ser vazio.") 
-                String login,
+                String cpf,
 
                 @NotBlank(message = "O campo 'senha' não pode ser vazio.") 
                 String password) {

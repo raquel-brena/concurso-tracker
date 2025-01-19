@@ -59,10 +59,9 @@ public class AuthenticationController {
         return ResponseEntity.created(location).body(successMessage);
     }
 
-    @Transactional
+    // @Transactional
     @PostMapping("/admin/register")
-    public ResponseEntity<RestSuccessMessage> registerAdmin(@RequestBody @Valid ReqUserAdmDTO data,
-            @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<RestSuccessMessage> registerAdmin(@RequestBody @Valid ReqUserAdmDTO data) {
 
         UserResponseDTO newUser = this.authService.register(RegisterUserDTO.fromUserAdmDTO(data));
 
