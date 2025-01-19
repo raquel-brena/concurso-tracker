@@ -3,10 +3,14 @@ import { toast } from 'sonner'
 
 export const signInRequest = async (cpf: string, senha: string) => {
     try {
-        const response = await axios.post("http://localhost:8081/api/auth/login", {
+        const response = await axios.post(
+          "http://localhost:8081/api/auth/login",
+          {
             cpf,
-            senha
-        });
+            senha,
+          },
+          
+        );
         toast.success("Login realizado com sucesso");
 
         return response.data;

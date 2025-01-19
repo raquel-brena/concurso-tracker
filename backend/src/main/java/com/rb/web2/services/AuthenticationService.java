@@ -42,10 +42,11 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public LoginResponseDTO login(AuthenticatedDTO data) {
-        var userNamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        var userNamePassword = new UsernamePasswordAuthenticationToken(data.cpf(), data.senha());
         var auth = this.authenticationManager.authenticate(userNamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
-        return new LoginResponseDTO(token);
+
+        return new LoginResponseDTO(token, UserResponseDTO.from((User) auth.getPrincipal()));
     }
 
     public UserResponseDTO findUserByCPF(String cpf) { 

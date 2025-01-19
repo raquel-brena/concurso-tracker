@@ -13,6 +13,7 @@ export const FinalizarForm = () => {
           Mantenha seus dados sempre atualizados e fique à vontade para
           gerenciá-los no seu perfil quando quiser.
         </p>
+        <Button style={3} className="self-end" onClick={()=> window.location.reload()}> Fazer login </Button>
       </div>
     </div>
   );

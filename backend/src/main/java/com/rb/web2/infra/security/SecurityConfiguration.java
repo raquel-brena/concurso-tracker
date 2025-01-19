@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -27,7 +29,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(csrf -> csrf.disable())
+        .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Rotas públicas (não requerem autenticação)
@@ -76,6 +78,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/cpf/**").permitAll()
                         // Rotas relacionadas a cargos
                         .requestMatchers(HttpMethod.POST, "/api/cargo/**").hasAuthority("EDIT_CARGOS")
@@ -108,7 +111,9 @@ public class SecurityConfiguration {
 
                         // Qualquer outra rota requer autenticação
                         .anyRequest().authenticated())
-                .exceptionHandling(Customizer.withDefaults())
+                        .exceptionHandling(e -> e.authenticationEntryPoint((req, res, authException) -> {
+                            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        }))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

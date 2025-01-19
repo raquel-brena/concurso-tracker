@@ -1,19 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import { ContentButton } from "../../components/buttons/ContentButton";
 import { ChamadasContent } from "./components/ChamadasContent";
 import { Content } from "./components/Content";
 import { NoticiasContent } from "./components/NoticiasContent";
 
 const buttons = [
-  "Equipe",
-  "Editais",
-  "Vagas",
-  "Candidatos",
-  "Convocações",
-  "Configurações",
+  { title: "Equipe", link: "/portal/equipe" },
+  { title: "Editais", link: "/portal/editais/cadastrar" },
+  { title: "Vagas", link: "/portal/vagas" },
+  { title: "Candidatos", link: "/portal/candidatos" },
+  { title: "Convocações", link: "/portal/convocacoes" },
+  { title: "Configurações", link: "/portal/configuracoes" },
 ];
 
-
 export const Home = () => { 
+  const navigate = useNavigate();
     return (
       <>
         <div className="flex h-44 w-screen bg-[#FCF7F5] -z-10">.</div>
@@ -29,8 +30,14 @@ export const Home = () => {
             className="grid md:grid-cols-3 md:grid-rows-2
              grid-cols-2 grid-rows-3 gap-8 md:w-fit w-full justify-center items-center px-4 md:px-0"
           >
-            {buttons.map((buttonTitle) => (
-              <ContentButton title={buttonTitle} />
+      
+            {buttons.map((button) => (
+              <ContentButton
+                onClick={() => {
+                  navigate(button.link);
+                }}
+                title={button.title}
+             />
             ))}
           </div>
         </Content>

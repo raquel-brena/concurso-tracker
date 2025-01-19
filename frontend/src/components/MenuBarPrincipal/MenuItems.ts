@@ -14,7 +14,7 @@ export const MENU_ITEMS = [
   },
   {
     label: EnumMenuItems.EDITAIS,
-    link: "/editais",
+  
     items: [
       {
         label: "Processos seletivos",
@@ -64,12 +64,6 @@ export const MENU_ITEMS = [
     label: EnumMenuItems.ESTATISTICAS,
     link: "/Estatísticas",
     items: [
-      {
-        label: "",
-        shortcurt: "",
-        subitems: [],
-        separator: false,
-      },
     ],
   },
   {

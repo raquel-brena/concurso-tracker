@@ -10,8 +10,9 @@ export const ProtectedRoute = ({
 }: ProtectedRouteProps) => {
   const navigate = useNavigate();
 
+  const { token } = localStorage;
   useEffect(() => {
-    if (isPrivate) {
+    if (isPrivate && !token) {
       navigate("/login");
     }
   }, [navigate]);

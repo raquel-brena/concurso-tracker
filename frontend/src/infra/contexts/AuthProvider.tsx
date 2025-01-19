@@ -64,20 +64,19 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     setLoading(true);
 
     console.log(cpf, password);
-    const data = await signInRequest(cpf, password);
-    console.log(data);
-    localStorage.setItem("token", data.user.token);
+    const response = await signInRequest(cpf, password);
+    console.log(response.token);
+    localStorage.setItem("token", response.data.token);
 
     // setTokenSpotify(data.user.userToken.accessToken);
     // setRefreshToken(data.refreshToken);
 
-    setHeaders(`Bearer ${data.user.token}`);
+    setHeaders(`Bearer ${response.data.token}`);
 
-    setUser(data.user);
+    setUser(response.user);
 
     setLoading(false);
-    // navigation("/home");
-    return data;
+    return response.data;
   }
 
   async function handleVerificarCadastro(cpf: string) {

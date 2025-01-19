@@ -4,6 +4,12 @@ import { ProtectedRoute } from "./modules/autenticacao/components/ProtectedRoute
 import { RegisterForm } from "./modules/autenticacao/register/RegisterForm";
 import AuthPage from "./modules/autenticacao/AuthPage";
 import Portal from "./modules/portal_adm/Layout";
+import CadastrarEdital from "./modules/portal_adm/editais/CadastrarEdital";
+import { Home } from "./modules/portal_adm/Home";
+import { Editais } from "./modules/portal_adm/Editais";
+import { Noticias } from "./modules/portal_adm/Noticias";
+import { Inscricoes } from "./modules/portal_adm/Inscricoes";
+import { IndexEditais } from "./modules/portal_adm/editais/IndexEditais";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -22,25 +28,44 @@ export const router = createBrowserRouter([
     errorElement: <div>Not Found</div>,
   },
   {
-    path: "/adm",
-    element: (
-      <ProtectedRoute>
-        {/* <ContainerCentral> */}
-        <Portal />
-        {/* </ContainerCentral> */}
-      </ProtectedRoute>
-    ),
-    errorElement: <div>Not Found</div>,
-  },
-  {
-    path: "/editais",
+    path: "/portal",
     element: (
       <ProtectedRoute isPrivate>
-        {/* <ContainerCentral> */}
         <Portal />
-        {/* </ContainerCentral> */}
       </ProtectedRoute>
     ),
     errorElement: <div>Not Found</div>,
+    children: [
+      {
+        path: "home",
+        element: (
+          <ProtectedRoute isPrivate>
+            <Home />,
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "editais",
+        element: <Editais />,
+        children: [
+          {
+            path: "",
+            element: <IndexEditais/>
+          },
+          {
+            path: "cadastrar",
+            element: <CadastrarEdital />,
+          },
+        ],
+      },
+      {
+        path: "noticias",
+        element: <Noticias />,
+      },
+      {
+        path: "inscricoes",
+        element: <Inscricoes />,
+      },
+    ],
   },
 ]);

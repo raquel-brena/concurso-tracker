@@ -38,11 +38,14 @@ export const LoginForm = ({
   }
 
   function handleLogin(data: any) {
-    handleSignInRequest(data.cpf, data.senha).then((user) => {
-      if (user) {
-        navigate("/home");
+    handleSignInRequest(data.cpf, data.senha).then((data) => {
+      console.log(data);
+      if (data.user.admin) {
+        navigate("/portal/home");
+      } else {
+        navigate("/portal/home");
       }
-      console.log(user);
+      console.log(data);
     });
   }
 

@@ -7,7 +7,7 @@ import {
 } from "../../components/MenuBarPrincipal/MenuItems";
 import { Home } from "./Home";
 import { Editais } from "./Editais";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Noticias } from "./Noticias";
 import { Inscricoes } from "./Inscricoes";
 
@@ -21,12 +21,12 @@ function Portal() {
         menuItemSelected={menuItemSelected}
         setMenuItemSelected={setMenuItemSelected}
       />
-
-      {/* <RegisterForm/> */}
+      <Outlet />
+      {/* <RegisterForm/>
       {menuItemSelected === EnumMenuItems.PAGINA_INICIAL && <Home />}
       {menuItemSelected === EnumMenuItems.EDITAIS && <Editais />}
       {menuItemSelected === EnumMenuItems.NOTICIAS && <Noticias />}
-      {menuItemSelected === EnumMenuItems.EQUIPE && <Inscricoes />}
+      {menuItemSelected === EnumMenuItems.EQUIPE && <Inscricoes />} */}
 
       <Footer />
     </div>
