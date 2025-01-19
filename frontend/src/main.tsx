@@ -3,6 +3,7 @@ import { BrowserRouter, RouterProvider } from "react-router-dom";
 import { router } from "./routes.tsx";
 import React from "react";
 import AuthProvider from "./infra/contexts/AuthProvider.tsx";
+import { Toaster } from "sonner";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -11,7 +12,7 @@ createRoot(document.getElementById("root")!).render(
   // </BrowserRouter>
   <React.StrictMode>
     <AuthProvider>
-      {/* <Toaster /> */}
+      <Toaster />
       <RouterProvider
         router={router}
         fallbackElement={<div>Carregando...</div>}

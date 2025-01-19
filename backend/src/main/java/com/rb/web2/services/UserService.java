@@ -76,8 +76,11 @@ public class UserService {
     }
 
     public User create(User user) {
-      verificarPermissaoDeCriacaoOuAlteracao(null);
-        return this.repository.save(user);
+      //verificarPermissaoDeCriacaoOuAlteracao(null);
+      User novoUsuario = this.repository.save(user);
+novoUsuario.setDocumentos(null);
+novoUsuario.setInscricoes(null);
+        return novoUsuario;
     }
 
     public UserResponseDTO getById(String userId) {

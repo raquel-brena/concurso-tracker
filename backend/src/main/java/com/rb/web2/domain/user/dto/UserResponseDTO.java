@@ -20,16 +20,22 @@ public record UserResponseDTO(
                 List<InscricaoResponseDTO> inscricoes,
                 List<String> permissoes) {
         public static UserResponseDTO from(User user) {
-                List<DocumentoResponseDTO> documentos = user.getDocumentos()
-                                .stream()
-                                .map(documento -> DocumentoMapper.toDocumentoResponseDTO(documento))
-                                .toList();
+                List<DocumentoResponseDTO> documentos = new ArrayList<>();
+                List<InscricaoResponseDTO> inscricoes = new ArrayList<>();
 
-                List<InscricaoResponseDTO> inscricoes = user.getInscricoes()
-                                .stream()
-                                .map(inscricao -> InscricaoResponseDTO.from(inscricao))
-                                .toList();
-
+                if (user.getDocumentos() != null) {
+                        documentos = user.getDocumentos()
+                        .stream()
+                        .map(documento -> DocumentoMapper.toDocumentoResponseDTO(documento))
+                        .toList();
+                }
+               
+                if (user.getInscricoes() != null) {
+                        inscricoes = user.getInscricoes()
+                        .stream()
+                        .map(inscricao -> InscricaoResponseDTO.from(inscricao))
+                        .toList();
+                }
                 return new UserResponseDTO(
                                 user.getId(),
                                 user.isAtivo(),

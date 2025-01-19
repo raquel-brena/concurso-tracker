@@ -21,18 +21,15 @@ export const registerRequest = async (data: any) => {
         const response = await axios.post("http://localhost:8081/api/auth/register",
             data
         );
-        toast.success("Login realizado com sucesso");
+        toast.success(response.data.message);
         return response.data;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         if (error.response.status === 409) {
             toast.error("Usuário já cadastrado");
-        }
-        else if (error.response.status === 404 || error.response.status === 500) {
-            toast.error("Erro ao cadastrar usuário");
         } else {
-            toast.error("Usuário ou senha inválidos");
+            toast.error("Erro ao cadastrar usuário");
         }
+            return error;
     }
 }
 

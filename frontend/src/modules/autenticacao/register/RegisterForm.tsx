@@ -1,7 +1,10 @@
-
 import { useForm } from "react-hook-form";
 import { FaRegIdCard } from "react-icons/fa";
-import { MdOutlineMailOutline, MdOutlinePersonOutline, MdOutlinePhoneAndroid } from "react-icons/md";
+import {
+  MdOutlineMailOutline,
+  MdOutlinePersonOutline,
+  MdOutlinePhoneAndroid,
+} from "react-icons/md";
 import { Step } from "../components/Step";
 import { Button } from "../../../components/buttons/Button";
 import { useAuth } from "../../../infra/contexts/UseAuth";
@@ -14,14 +17,14 @@ import { DadosAcademicosForm } from "./forms/DadosAcademicosForm";
 import { DadosProfissionaisForm } from "./forms/DadosProfissionaisForm";
 import { FinalizarForm } from "./forms/FinalizarForm";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "sonner";
 
 export const RegisterForm = ({ handleSubmit, register, errors }: any) => {
   const registerInputs = [
     {
       id: 0,
       stepForm: "Perfil",
-      children: <PerfilForm  />,
+      children: <PerfilForm />,
     },
     {
       id: 1,
@@ -60,26 +63,29 @@ export const RegisterForm = ({ handleSubmit, register, errors }: any) => {
     //   perfilId: "aa9961fc-12e5-495c-b6ec-440b82c37302",
     // };
 
-    data =  {
+    data = {
       cpf: data.cpf,
       password: data.senha,
-    }
+    };
 
     console.log(data);
 
-    handleRegisterRequest(data).then((user) => {
-      console.log(user);
-      handleNextStep();
-    }).catch((error) => {
-      console.log(error);
-    });
+    handleRegisterRequest(data)
+      .then((user) => {
+        if (user.data) {
+          handleNextStep();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   const onSubmit = (data: any) => {
-    console.log(data)
+    console.log(data);
 
     if (step.id === registerInputs.length - 2) {
-     handleRegister(data);
+      handleRegister(data);
     } else {
       //dar update
       handleNextStep();
@@ -175,4 +181,3 @@ export const RegisterForm = ({ handleSubmit, register, errors }: any) => {
     </div>
   );
 };
-
