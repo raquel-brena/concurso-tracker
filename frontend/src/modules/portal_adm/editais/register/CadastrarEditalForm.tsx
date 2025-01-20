@@ -22,18 +22,37 @@ export const CadastrarEditalForm = () => {
 
     setStep(registerInputs[step.id - 1]);
   };
+
+  const handleNextStep = () => {
+    if (step.id === registerInputs.length - 1) {
+      return;
+    }
+
+    setStep(registerInputs[step.id + 1]);
+  };
   
+  
+  const [processoSeletivo, setProcessoSeletivo] = useState<any>({});
+
   const registerInputs = [
     {
       id: 0,
       stepForm: "Dados gerais",
-      children: <DadosGeraisForm handlePreviousStep={handlePreviousStep} />,
+      children: <DadosGeraisForm 
+      handlePreviousStep={handlePreviousStep} 
+      handleNextStep={handleNextStep}
+      processoSeletivo={processoSeletivo}
+      setProcessoSeletivo={setProcessoSeletivo}/>,
     },
     {
       id: 1,
       stepForm: "Formações e experiências",
       last: false,
-      children: <FormacoesEExperienciasForm />,
+      children: <FormacoesEExperienciasForm 
+      handlePreviousStep={handlePreviousStep} 
+      handleNextStep={handleNextStep}
+      processoSeletivo={processoSeletivo}
+      setProcessoSeletivo={setProcessoSeletivo}/>,
     },
     {
       id: 2,
@@ -51,42 +70,8 @@ export const CadastrarEditalForm = () => {
   const [step, setStep] = useState(registerInputs[0]);
 
   const navigate = useNavigate();
-  function handleRegister(data: any) {
-    console.log(data);
-    // data = {
-    //   ...data,
-    //   perfilId: "aa9961fc-12e5-495c-b6ec-440b82c37302",
-    // };
+ 
 
-    data = {
-      cpf: data.cpf,
-      password: data.senha,
-    };
-
-    console.log(data);
-  }
-
-  const onSubmit = (data: any) => {
-    console.log(data);
-
-    if (step.id === registerInputs.length - 2) {
-      handleRegister(data);
-    } else {
-      //dar update
-      handleNextStep();
-    }
-  };
-
-  const handleNextStep = () => {
-    if (step.id === registerInputs.length - 1) {
-      return;
-    }
-
-    setStep(registerInputs[step.id + 1]);
-  };
-
-
-  
 
   return (
 

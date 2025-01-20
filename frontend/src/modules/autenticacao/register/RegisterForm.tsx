@@ -65,7 +65,7 @@ export const RegisterForm = ({ handleSubmit, register, errors }: any) => {
 
     data = {
       cpf: data.cpf,
-      password: data.senha,
+      senha: data.senha,
     };
 
     console.log(data);

@@ -2,8 +2,33 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/buttons/Button";
 import { CardProcessoSeletivo } from "../../../components/cards/CardProcessoSeletivo";
 import { Separator } from "@radix-ui/react-menubar";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const IndexEditais = ({headerSubTitle, headerDescription}:any) => {
+  const [processosSeletivos, setProcessosSeletivos] = useState([]);
+
+   useEffect(() => {
+    getProcessosSeletivos();
+  }, []); 
+
+  async function getProcessosSeletivos() {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:8081/api/processo/"
+        , {  headers: {
+          Authorization: `Bearer ${token}`,
+        },}
+      );
+      setProcessosSeletivos(response.data.data);
+      console.log(response.data.data)
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+
   const navigate = useNavigate();
   return (
     <>
@@ -46,13 +71,19 @@ export const IndexEditais = ({headerSubTitle, headerDescription}:any) => {
           </Button>
         </div>
       </div>
-      <div className="flex flex-col w-[90%] h-fit gap-4 ">
+      <div className="flex flex-col w-[90%] h-fit gap-4 py-8 ">
+
+{
+  processosSeletivos.map((processoSeletivo:any) => {
+    return <CardProcessoSeletivo key={processoSeletivo.id} processo={processoSeletivo} />
+  })
+}
+        {/* <CardProcessoSeletivo />
         <CardProcessoSeletivo />
         <CardProcessoSeletivo />
         <CardProcessoSeletivo />
         <CardProcessoSeletivo />
-        <CardProcessoSeletivo />
-        <CardProcessoSeletivo />
+        <CardProcessoSeletivo /> */}
       </div>
     </>
   );
