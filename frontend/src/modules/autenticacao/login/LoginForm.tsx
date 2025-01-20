@@ -25,10 +25,12 @@ export const LoginForm = ({
   };
 
   function handleVerificarConta(form: any) {
-    console.log(form);
-    handleVerificarCadastro(form.cpf).then((response) => {
+    const cpfUnmasked = unmaskCpf(form.cpf);
+    console.log(cpfUnmasked);
+    handleVerificarCadastro(cpfUnmasked).then((response) => {
       if (response === null) {
         setShowInputPassword(2);
+        console.log;
         return response.data;
       } else {
         setShowInputPassword(1);
@@ -48,6 +50,19 @@ export const LoginForm = ({
       console.log(data);
     });
   }
+
+  const unmaskCpf = (value: string) => {
+    return value.replace(/\D/g, "");
+  };
+
+  const maskCPF = (value: string | any) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})/, "$1-$2")
+      .replace(/(-\d{2})\d+?$/, "$1");
+  };
 
   return (
     <form
@@ -69,12 +84,17 @@ md:items-center md:justify-center w-full "
               </p>
             </>
           )}
-          <TextInput {...register("cpf")} />
+          <TextInput
+            {...register("cpf")}
+            onChange={(e: any) => {
+              e.target.value = maskCPF(e.target.value);
+            }}
+          />
 
           {showInputPassword != 0 && (
             <p className={`text-base font-medium`}>
               {showInputPassword === 2 ? "Crie sua senha" : "Senha"}
-            </p> 
+            </p>
           )}
 
           {showInputPassword != 0 && (
@@ -86,7 +106,7 @@ md:items-center md:justify-center w-full "
           )}
 
           {showInputPassword != 0 && (
-            <TextInput type="password" {...register("senha")} required={true}/>
+            <TextInput type="password" {...register("senha")} required={true} />
           )}
         </div>
         <Button style={1} className="self-end" onClick={handleSubmit(onSubmit)}>

@@ -4,19 +4,6 @@ import { BoxContent } from "../components/BoxContent";
 import { TextInput } from "../../../components/inputs/TextInput";
 import { Button } from "../../../components/buttons/Button";
 const Login = () => {
-  const unmaskCpf = (value: string) => {
-    return value.replace(/\D/g, "");
-  };
-
-  const cpfMask = (value: string) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/(\d{3})(\d)/, "$1.$2")
-      .replace(/(\d{3})(\d)/, "$1.$2")
-      .replace(/(\d{3})(\d{1,2})/, "$1-$2")
-      .replace(/(-\d{2})\d+?$/, "$1");
-  };
-
   return (
     <div className="flex flex-col w-screen h-screen ">
       <MenuBarRoot>
