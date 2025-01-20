@@ -94,8 +94,8 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
 
-    public User(String login, String password, Perfil perfil) {
-        this.cpf = login;
+    public User(String cpf, String password, Perfil perfil) {
+        this.cpf = cpf;
         this.password = password;
         this.perfil = perfil;
     }
@@ -105,11 +105,13 @@ public class User implements UserDetails {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
         authorities.addAll(this.perfil.getPermissoes().stream()
-                .map(p -> new SimpleGrantedAuthority(p.name()))
+                .map(p -> new SimpleGrantedAuthority("ROLE_" + p.name()))
                 .collect(Collectors.toList()));
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.perfil.name().toUpperCase()));
+        authorities.add(new SimpleGrantedAuthority(
+            "ROLE_" + this.perfil.name().toUpperCase()));
 
+        System.out.println("Authorities: " + authorities);
         return authorities;
     }
 

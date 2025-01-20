@@ -8,5 +8,5 @@ public record ReqUserDTO(
                 String cpf,
 
                 @NotBlank(message = "O campo 'senha' não pode ser vazio.") 
-                String password) {
+                String senha) {
 }

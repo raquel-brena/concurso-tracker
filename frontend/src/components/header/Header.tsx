@@ -3,11 +3,10 @@ import { Separator } from "../separator/separator";
 
 interface HeaderProps {
   title: string;
-  subtitle: string;
-  description: string;
+
 }
 
-export const Header = ({ title, subtitle, description }: HeaderProps) => {
+export const Header = ({ title }: HeaderProps) => {
   return (
     <div className="flex flex-col w-full h-1/4  pt-2 space-y-4">
       <div className="flex text-center items-center text-sm select-none">
@@ -17,10 +16,6 @@ export const Header = ({ title, subtitle, description }: HeaderProps) => {
         </p>
       </div>
       <p className="text-2xl text-[#B41313] font-medium">{title}</p>
-      <Separator/>
-      <p>{description}</p>
-      <p className="font-semibold pt-6 uppercase">{subtitle}</p>
-      <Separator/>
     </div>
   );
 };

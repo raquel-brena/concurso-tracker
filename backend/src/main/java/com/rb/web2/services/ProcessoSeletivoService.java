@@ -80,7 +80,7 @@ public class ProcessoSeletivoService {
 
   @Transactional
   public ProcessoResponseDTO create(ProcessoRequestDTO dto) {
-    verificarPermissaoDeCriacaoOuAlteracao(null);
+    //verificarPermissaoDeCriacaoOuAlteracao(null);
 
     if (dto.titulo() == null || dto.validade() == null) {
       throw new NotFoundException("Titulo do processo seletivo não pode ser nulo");

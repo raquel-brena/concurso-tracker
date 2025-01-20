@@ -33,7 +33,7 @@ public class ProcessoSeletivoController {
         this.service = service;
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<RestSuccessMessage> create(@Valid @RequestBody ProcessoRequestDTO dto) {
 
         ProcessoResponseDTO processo = service.create(dto);
@@ -77,7 +77,7 @@ public class ProcessoSeletivoController {
         return new ResponseEntity<>(successMessage, HttpStatus.OK);
     }
 
-    @GetMapping()
+    @GetMapping("/")
     public ResponseEntity<RestSuccessMessage> getAll() {
         List<ProcessoResponseDTO> processos = this.service.getAllProcessoSeletivos();
         

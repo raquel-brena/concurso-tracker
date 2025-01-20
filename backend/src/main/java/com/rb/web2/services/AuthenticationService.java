@@ -60,7 +60,7 @@ public class AuthenticationService implements UserDetailsService {
     public UserResponseDTO register(RegisterUserDTO data) {
         this.userService.checkUserExists(data.cpf());
 
-        String encryptedPassword = passwordEncoder.encode(data.password());
+        String encryptedPassword = passwordEncoder.encode(data.senha());
        
         User user = this.userService.create(new User(data.cpf(), encryptedPassword, data.perfil()));
         

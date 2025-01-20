@@ -1,11 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/buttons/Button";
 import { CardProcessoSeletivo } from "../../../components/cards/CardProcessoSeletivo";
+import { Separator } from "@radix-ui/react-menubar";
 
-export const IndexEditais = () => {
+export const IndexEditais = ({headerSubTitle, headerDescription}:any) => {
   const navigate = useNavigate();
   return (
     <>
+      <div className="flex flex-col w-full h-1/4  pt-2 space-y-4">
+        <Separator />
+        <p>{headerDescription}</p>
+        <p className="font-semibold pt-6 uppercase">{headerSubTitle}</p>
+        <Separator />
+      </div>
+
       <div className="flex flex-col gap-2 py-8 w-full px-4 ">
         <p className="text-sm">
           Clique abaixo para cadastrar um novo edital para processo seletivo.
@@ -14,7 +22,7 @@ export const IndexEditais = () => {
           style={3}
           className="w-fit"
           onClick={() => {
-            navigate("/editais/cadastrar");
+            navigate("/portal/editais/cadastrar");
           }}
         >
           Cadastrar novo processo seletivo

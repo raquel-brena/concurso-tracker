@@ -50,11 +50,23 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <IndexEditais/>
+            element: (
+              <IndexEditais
+                headerSubTitle="GERENCIAR PROCESSOS SELETIVOS"
+                headerDescription="Gerencie todos os concursos cadastrados no sistema, você pode
+                visualizar, editar e organizar as informações de cada concurso."
+              />
+            ),
           },
           {
             path: "cadastrar",
-            element: <CadastrarEdital />,
+            element: (
+              <CadastrarEdital
+                headerSubTitle="CADASTRAR NOVO PROCESSO SELETIVO"
+                headerDescription="Gerencie todos os concursos cadastrados no sistema, você pode
+                visualizar, editar e organizar as informações de cada concurso."
+              />
+            ),
           },
         ],
       },

@@ -18,8 +18,7 @@ public record RegisterUserDTO(
 
     @NotBlank(message = "A senha é obrigatória.")
     @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres.")
-    String password,
-
+    String senha,
 
     Perfil perfil,
 
@@ -35,18 +34,19 @@ public record RegisterUserDTO(
         return new RegisterUserDTO(
 
             reqUserAdmDTO.nome(),
-            null, 
-            reqUserAdmDTO.password(),
+            reqUserAdmDTO.cpf(), 
+            reqUserAdmDTO.senha(),
             perfil,
             null, 
             reqUserAdmDTO.cargo()
         );
     }
+    
     public static RegisterUserDTO fromUserDTO(ReqUserDTO dto) {
         return new RegisterUserDTO(
             null,
             dto.cpf(), 
-            dto.password(),
+            dto.senha(),
             Perfil.CANDIDATO,
             null, 
             null
