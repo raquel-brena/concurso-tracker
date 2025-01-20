@@ -102,12 +102,6 @@ public enum Perfil {
         Permissao.VIEW_DOCUMENTOS,
         Permissao.EDIT_DOCUMENTOS,
         Permissao.VIEW_PROCESSO_SELETIVO
-    )),
-    USER(EnumSet.of(
-        Permissao.LOGIN_USER,
-        Permissao.LOGOUT_USER,
-        Permissao.VIEW_USER,
-        Permissao.VIEW_PROCESSO_SELETIVO
     ));
 
     private final Set<Permissao> permissoes;

@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 public class ProcessoComissaoId implements Serializable {
 
+    @SuppressWarnings("unused")
     private String processoSeletivoId;
+    
+    @SuppressWarnings("unused")
     private String userId;
 }

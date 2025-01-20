@@ -15,12 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
 import com.rb.web2.domain.user.dto.LoginResponseDTO;
 import com.rb.web2.domain.user.dto.RegisterUserDTO;
-import com.rb.web2.domain.user.dto.ReqUserDTO;
 import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.infra.security.TokenService;
 import com.rb.web2.shared.exceptions.BadRequestException;
@@ -42,18 +40,27 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public LoginResponseDTO login(AuthenticatedDTO data) {
-        var userNamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        var userNamePassword = new UsernamePasswordAuthenticationToken(data.cpf(), data.senha());
         var auth = this.authenticationManager.authenticate(userNamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
-        return new LoginResponseDTO(token);
+
+        return new LoginResponseDTO(token, UserResponseDTO.from((User) auth.getPrincipal()));
+    }
+
+    public UserResponseDTO findUserByCPF(String cpf) { 
+        var user = this.userService.findByCPF(cpf);
+        if (user == null) {
+            throw new BadRequestException("Usuário não existe");
+        }
+        return user;
     }
 
     public UserResponseDTO register(RegisterUserDTO data) {
-        this.userService.checkUserExists(data.login());
+        this.userService.checkUserExists(data.cpf());
 
-        String encryptedPassword = passwordEncoder.encode(data.password());
+        String encryptedPassword = passwordEncoder.encode(data.senha());
        
-        User user = this.userService.create(new User(data.login(), encryptedPassword, data.perfil()));
+        User user = this.userService.create(new User(data.cpf(), encryptedPassword, data.perfil()));
         
         return UserResponseDTO.from(user);
     }

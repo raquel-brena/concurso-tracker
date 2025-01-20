@@ -2,6 +2,7 @@ package com.rb.web2.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,9 +26,6 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
-
-    @Autowired
-    private UserService userService;
 
     private AuthorizationUtil authorizationUtil;
 
@@ -78,8 +76,11 @@ public class UserService {
     }
 
     public User create(User user) {
-      verificarPermissaoDeCriacaoOuAlteracao(null);
-        return this.repository.save(user);
+      //verificarPermissaoDeCriacaoOuAlteracao(null);
+      User novoUsuario = this.repository.save(user);
+novoUsuario.setDocumentos(null);
+novoUsuario.setInscricoes(null);
+        return novoUsuario;
     }
 
     public UserResponseDTO getById(String userId) {
@@ -96,13 +97,24 @@ public class UserService {
         return user;
     }
 
-    public UserDetails loadUserByUsername(String login) {
-        return this.repository.findByLogin(login)
+    public UserDetails loadUserByUsername(String cpf) {
+        return this.repository.findByCpf(cpf)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
     }
 
-    public void checkUserExists(String login) {
-        if (this.repository.findByLogin(login).isPresent()) {
+    public UserResponseDTO findByCPF(String cpf) {
+        Optional<User> user = this.repository.findByCpf(cpf);
+
+        if (user.isPresent()) {   
+            var userDTO = UserResponseDTO.from(user.get());
+            return userDTO;
+        }
+    
+        return null;
+    }
+
+    public void checkUserExists(String cpf) {
+        if (this.repository.findByCpf(cpf).isPresent()) {
             throw new BadRequestException("Já existe usuário com o login informado.");
         }
     }
@@ -131,7 +143,7 @@ public class UserService {
 
         this.verificarLogicaDePerfil(userToUpdate.getPerfil(), user.getPerfilEnum());
 
-        userToUpdate.setLogin(user.login());
+        userToUpdate.setCpf(user.login());
         userToUpdate.setNome(user.nome());
         userToUpdate.setEmail(user.email());
         userToUpdate.setCpf(user.cpf());
@@ -145,7 +157,7 @@ public class UserService {
         verificarPermissaoDeAlterarUsuarios(null);
 
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = repository.findByLogin(login).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+        User user = repository.findByCpf(login).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
         verificarLogicaDePerfil(user.getPerfil(), UpdatePerfilDTO.getPerfilEnum(perfilDto.perfil()));
 
@@ -184,7 +196,7 @@ public class UserService {
         User user = this.getUserById(id);
 
         if (!user.getPerfil().equals(Perfil.ADMIN)) {
-            user.setPerfil(Perfil.USER);
+            user.setPerfil(Perfil.CANDIDATO);
             this.repository.save(user);
         }
     }
@@ -196,7 +208,7 @@ public class UserService {
             throw new IllegalArgumentException("Não é possível alterar o perfil de um coordenador");
         } else if (perfilEditado.equals(Perfil.ASSISTENTE) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
             throw new IllegalArgumentException("Não é possível alterar o perfil de um assistente");
-        } else if (perfilEditado.equals(Perfil.USER) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
+        } else if (perfilEditado.equals(Perfil.CANDIDATO) && !(perfilEditor.equals(Perfil.COORDENADOR) || perfilEditor.equals(Perfil.ADMIN))) {
             throw new IllegalArgumentException("Não é possível alterar o perfil de um usuário");
         }  else if (perfilEditado.equals(Perfil.CANDIDATO)) {
             throw new IllegalArgumentException("Não é possível alterar o perfil de um candidato");

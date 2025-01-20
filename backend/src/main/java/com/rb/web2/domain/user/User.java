@@ -43,12 +43,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false, unique = true)
-    private String login;
-
     private String nome;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String cpf;
 
     @Column(nullable = false)
@@ -89,8 +86,8 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime atualizadoEm;
 
-    public User(String login, String password, Perfil perfil) {
-        this.login = login;
+    public User(String cpf, String password, Perfil perfil) {
+        this.cpf = cpf;
         this.password = password;
         this.perfil = perfil;
     }
@@ -100,17 +97,19 @@ public class User implements UserDetails {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
         authorities.addAll(this.perfil.getPermissoes().stream()
-                .map(p -> new SimpleGrantedAuthority(p.name()))
+                .map(p -> new SimpleGrantedAuthority("ROLE_" + p.name()))
                 .collect(Collectors.toList()));
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.perfil.name().toUpperCase()));
+        authorities.add(new SimpleGrantedAuthority(
+            "ROLE_" + this.perfil.name().toUpperCase()));
 
+        System.out.println("Authorities: " + authorities);
         return authorities;
     }
 
     @Override
     public String getUsername() {
-        return this.login;
+        return this.cpf;
     }
 
     @Override

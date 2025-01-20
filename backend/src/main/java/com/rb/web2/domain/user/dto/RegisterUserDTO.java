@@ -1,18 +1,12 @@
 package com.rb.web2.domain.user.dto;
 
-import jakarta.validation.constraints.Email;
+import com.rb.web2.domain.enums.Perfil;
+
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import com.rb.web2.domain.enums.Perfil;
-
 public record RegisterUserDTO(
-
-    @NotBlank(message = "O login é obrigatório.")
-    @Email(message = "O e-mail deve ser válido.")
-    String login,
 
     @NotBlank(message = "O nome é obrigatório.")
     String nome,
@@ -22,9 +16,7 @@ public record RegisterUserDTO(
 
     @NotBlank(message = "A senha é obrigatória.")
     @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres.")
-    String password,
-
-    
+    String senha,
 
     Perfil perfil,
 
@@ -38,21 +30,21 @@ public record RegisterUserDTO(
         Perfil perfil = reqUserAdmDTO.perfil() != null ? Perfil.valueOf(reqUserAdmDTO.perfil()) : null;
 
         return new RegisterUserDTO(
-            reqUserAdmDTO.login(),
+
             reqUserAdmDTO.nome(),
-            null, 
-            reqUserAdmDTO.password(),
+            reqUserAdmDTO.cpf(), 
+            reqUserAdmDTO.senha(),
             perfil,
             null, 
             reqUserAdmDTO.cargo()
         );
     }
+    
     public static RegisterUserDTO fromUserDTO(ReqUserDTO dto) {
         return new RegisterUserDTO(
-            dto.login(),
             null,
-            null, 
-            dto.password(),
+            dto.cpf(), 
+            dto.senha(),
             Perfil.CANDIDATO,
             null, 
             null

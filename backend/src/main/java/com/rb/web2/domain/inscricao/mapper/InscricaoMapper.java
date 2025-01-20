@@ -2,7 +2,6 @@ package com.rb.web2.domain.inscricao.mapper;
 
 import com.rb.web2.domain.inscricao.Inscricao;
 import com.rb.web2.domain.inscricao.dto.InscricaoRequestDTO;
-import com.rb.web2.domain.inscricao.dto.InscricaoResponseDTO;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.vaga.Vaga;
 

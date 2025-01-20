@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.rb.web2.domain.inscricao.Inscricao;
-import com.rb.web2.domain.inscricao.dto.InscricaoResponseDTO;
 
 @Repository
 public interface InscricaoRepository extends JpaRepository<Inscricao, String> {

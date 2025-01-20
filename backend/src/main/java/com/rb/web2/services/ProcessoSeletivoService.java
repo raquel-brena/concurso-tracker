@@ -21,7 +21,6 @@ import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.AgendaRepository;
@@ -80,7 +79,7 @@ public class ProcessoSeletivoService {
 
   @Transactional
   public ProcessoResponseDTO create(ProcessoRequestDTO dto) {
-    verificarPermissaoDeCriacaoOuAlteracao(null);
+    //verificarPermissaoDeCriacaoOuAlteracao(null);
 
     if (dto.titulo() == null || dto.validade() == null) {
       throw new NotFoundException("Titulo do processo seletivo não pode ser nulo");
