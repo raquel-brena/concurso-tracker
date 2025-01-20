@@ -15,12 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.rb.web2.domain.enums.Perfil;
 import com.rb.web2.domain.user.User;
 import com.rb.web2.domain.user.dto.AuthenticatedDTO;
 import com.rb.web2.domain.user.dto.LoginResponseDTO;
 import com.rb.web2.domain.user.dto.RegisterUserDTO;
-import com.rb.web2.domain.user.dto.ReqUserDTO;
 import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.infra.security.TokenService;
 import com.rb.web2.shared.exceptions.BadRequestException;

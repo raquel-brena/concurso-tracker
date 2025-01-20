@@ -3,7 +3,6 @@ package com.rb.web2.domain.inscricao.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.rb.web2.domain.documento.dto.DocumentoResponseDTO;
 import com.rb.web2.domain.documentoInscricao.dto.DocumentoInscricaoResponseDTO;
 import com.rb.web2.domain.inscricao.Inscricao;
 

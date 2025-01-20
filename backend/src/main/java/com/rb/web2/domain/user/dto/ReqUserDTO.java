@@ -1,6 +1,5 @@
 package com.rb.web2.domain.user.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record ReqUserDTO(

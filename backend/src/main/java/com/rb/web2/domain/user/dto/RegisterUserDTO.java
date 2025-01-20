@@ -1,12 +1,10 @@
 package com.rb.web2.domain.user.dto;
 
-import jakarta.validation.constraints.Email;
+import com.rb.web2.domain.enums.Perfil;
+
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
-import com.rb.web2.domain.enums.Perfil;
 
 public record RegisterUserDTO(
 

@@ -21,7 +21,6 @@ import com.rb.web2.domain.processoSeletivo.dto.ProcessoResponseDTO;
 import com.rb.web2.domain.processoSeletivo.dto.UpdateProcessoDTO;
 import com.rb.web2.domain.processoSeletivo.mapper.ProcessoSeletivoMapper;
 import com.rb.web2.domain.user.User;
-import com.rb.web2.domain.user.dto.UserResponseDTO;
 import com.rb.web2.domain.vaga.Vaga;
 import com.rb.web2.infra.util.AuthorizationUtil;
 import com.rb.web2.repositories.AgendaRepository;
