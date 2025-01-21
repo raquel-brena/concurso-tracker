@@ -37,6 +37,7 @@ import lombok.Data;
 @Table(name = "users")
 @Entity
 @Data
+@lombok.NoArgsConstructor
 public class User implements UserDetails {
 
     @Id

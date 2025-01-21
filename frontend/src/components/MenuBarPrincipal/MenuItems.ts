@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export enum EnumMenuItems {
   PAGINA_INICIAL = "Página Inicial",
   EDITAIS = "Editais",
@@ -47,16 +49,19 @@ export const MENU_ITEMS = [
       {
         label: "Gerenciar cargos",
         shortcurt: "",
+        link: "/portal/editais/cargos",
         separator: false,
       },
       {
         label: "Gerenciar vagas",
         shortcurt: "",
+        link: "/portal/editais/vagas",
         separator: false,
       },
       {
         label: "Gerenciar áreas",
         shortcurt: "",
+        link: "/portal/editais/areas",
         separator: false,
       },
     ],
@@ -73,13 +78,12 @@ export const MENU_ITEMS = [
       {
         label: "Cadastrar notícia",
         shortcurt: "",
-        subitems: [],
         separator: false,
+        link: "/portal/noticias/cadastrar",
       },
       {
         label: "Visualizar notícias",
         shortcurt: "",
-        subitems: [],
         separator: false,
         link: "/portal/noticias",
       },

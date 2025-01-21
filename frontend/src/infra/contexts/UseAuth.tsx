@@ -10,6 +10,7 @@ type AuthContextType = {
     handleVerificarCadastro: (cpf: string) => Promise<any>;
     handleLogout: () => void;
     getUserByToken: (token: string) => Promise<any>;
+    handleUpdateUser: (data: any) => Promise<any>; 
     // handleRegister: (data: UserRegister) => Promise<void>;
     // handleLogout: () => void;
     // setPosts: (posts: any[]) => void;
@@ -24,6 +25,7 @@ export const AuthContext = createContext<AuthContextType | undefined>({
     handleVerificarCadastro: async () => { },
     getUserByToken: async () => { },
     handleLogout: () => { },
+    handleUpdateUser: async () => { },
 } as AuthContextType);
 
 export function useAuth() {

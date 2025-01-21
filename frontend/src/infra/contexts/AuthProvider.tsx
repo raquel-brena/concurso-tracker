@@ -60,10 +60,61 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function handleUpdateUser(data: any) {
+    try {
+      setLoading(true); // Ativar loading enquanto a requisição é realizada
+  
+      // Buscar o ID do usuário pelo CPF
+      const cpfUnmasked = data.cpf.replace(/\D/g, ""); // Remover caracteres não numéricos
+      handleSignInRequest(cpfUnmasked, data.senha);
+      
+      const responseUser = await axios.get(`http://localhost:8080/api/auth/cpf/${cpfUnmasked}`);
+      
+      // Verificar se o usuário foi encontrado
+      if (!responseUser.data) {
+        setLoading(false);
+        throw new Error("Usuário não encontrado.");
+      }
+  
+      const userId = responseUser.data.data; // Obtendo o ID do usuário
+  
+      const updatedData = {
+        userId: userId,
+        ...data,
+      };
+
+      console.log("Atualizando usuário:", updatedData);
+
+
+      const token = localStorage.getItem("token");
+      const updateResponse = await axios.put(
+        `http://localhost:8080/api/usuario`, // Usando o ID do usuário na URL
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Atualizando o estado do usuário com os novos dados
+      if (updateResponse.data) {
+        setUser(updateResponse.data);
+        setLoading(false);
+        return updateResponse.data; // Retorna os dados do usuário atualizados
+      }
+    } catch (error) {
+      setLoading(false); // Desativa o loading em caso de erro
+      console.error("Erro ao atualizar usuário:", error);
+      throw error; // Lança o erro para tratamento posterior
+    }
+  }  
+
   async function handleSignInRequest(cpf: string, password: string) {
     setLoading(true);
+    const cpfUnmasked = cpf.replace(/\D/g, "");
 
-    console.log(cpf, password);
+    console.log(cpfUnmasked, password);
     const response = await signInRequest(cpf, password);
     console.log(response.token);
     localStorage.setItem("token", response.data.token);
@@ -111,6 +162,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         handleVerificarCadastro,
         getUserByToken,
         handleLogout,
+        handleUpdateUser,
       }}
     >
       {children}

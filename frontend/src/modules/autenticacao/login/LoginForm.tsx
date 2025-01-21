@@ -3,6 +3,7 @@ import { useAuth } from "../../../infra/contexts/UseAuth";
 import { BoxContent } from "../components/BoxContent";
 import { TextInput } from "../../../components/inputs/TextInput";
 import { Button } from "../../../components/buttons/Button";
+import { toast } from "sonner";
 
 export const LoginForm = ({
   showInputPassword,
@@ -11,13 +12,19 @@ export const LoginForm = ({
   handleSubmit,
   register,
 }: any) => {
-  const { handleVerificarCadastro, handleSignInRequest, loading } = useAuth();
+  const {
+    handleVerificarCadastro,
+    handleSignInRequest,
+    handleRegisterRequest,
+    loading,
+  } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit = (data: any) => {
     if (showInputPassword === 0) {
       handleVerificarConta(data);
     } else if (showInputPassword === 2) {
+      handleCreatePassword(data);
       setShowRegisterForm(true);
     } else {
       handleLogin(data);
@@ -30,7 +37,6 @@ export const LoginForm = ({
     handleVerificarCadastro(cpfUnmasked).then((response) => {
       if (response === null) {
         setShowInputPassword(2);
-        console.log;
         return response.data;
       } else {
         setShowInputPassword(1);
@@ -39,7 +45,21 @@ export const LoginForm = ({
     });
   }
 
-  function handleLogin(data: any) {
+  const handleCreatePassword = (data: any) => {
+    const cpfUnmasked = unmaskCpf(data.cpf);
+    handleRegisterRequest({
+      cpf: cpfUnmasked,
+      senha: data.senha,
+    })
+      .then((_response) => {
+        toast.success("Senha criada com sucesso");
+      })
+      .catch((_error) => {
+        toast.error("Erro ao criar senha");
+      });
+  };
+
+  const handleLogin = (data: any) => {
     const cpfUnmasked = unmaskCpf(data.cpf);
     handleSignInRequest(cpfUnmasked, data.senha).then((data) => {
       console.log(data);
@@ -50,7 +70,7 @@ export const LoginForm = ({
       }
       console.log(data);
     });
-  }
+  };
 
   const unmaskCpf = (value: string) => {
     return value.replace(/\D/g, "");

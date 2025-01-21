@@ -42,3 +42,14 @@ export const verificarCadastro = async (cpf: string) => {
         console.log(response);
         return response.data;
 }
+
+export const updateUserData = async (data: any) => {
+    try {
+        const response = await axios.put("http://localhost:8080/api/user", data);
+        toast.success("Dados atualizados com sucesso");
+        return response.data;
+    } catch (error: any) {
+        toast.error("Erro ao atualizar dados");
+        return error;
+    }
+}

@@ -52,45 +52,35 @@ export const RegisterForm = ({ handleSubmit, register, errors }: any) => {
     },
   ];
 
-  const { handleRegisterRequest, loading } = useAuth();
+  const { handleRegisterRequest, handleUpdateUser, loading } = useAuth();
   const [step, setStep] = useState(registerInputs[0]);
 
-  const navigate = useNavigate();
-  function handleRegister(data: any) {
-    console.log(data);
-    // data = {
-    //   ...data,
-    //   perfilId: "aa9961fc-12e5-495c-b6ec-440b82c37302",
-    // };
+  // const navigate = useNavigate();
+  // function handleRegister(data: any) {
+  //   console.log(data);
 
-    data = {
-      cpf: data.cpf,
-      senha: data.senha,
-    };
-
-    console.log(data);
-
-    handleRegisterRequest(data)
-      .then((user) => {
-        if (user.data) {
-          handleNextStep();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  //   handleRegisterRequest(data)
+  //     .then((user) => {
+  //       if (user.data) {
+  //         handleNextStep();
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
 
   const onSubmit = (data: any) => {
     console.log(data);
-
+  
     if (step.id === registerInputs.length - 2) {
-      handleRegister(data);
+      handleUpdateUser(data);
     } else {
-      //dar update
+      handleUpdateUser(data);
       handleNextStep();
     }
   };
+  
 
   const handleNextStep = () => {
     if (step.id === registerInputs.length - 1) {

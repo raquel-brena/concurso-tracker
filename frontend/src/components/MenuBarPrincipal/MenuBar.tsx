@@ -19,8 +19,10 @@ type MenuBarProps = {
   setMenuItemSelected: (value: EnumMenuItems) => void;
 };
 
-export const Menubar = ({menuItemSelected, setMenuItemSelected}:MenuBarProps) => {
-
+export const Menubar = ({
+  menuItemSelected,
+  setMenuItemSelected,
+}: MenuBarProps) => {
   const navigate = useNavigate();
   return (
     <mb.Root className="flex bg-white pt-2 shadow-md w-full h-12">
@@ -31,7 +33,9 @@ export const Menubar = ({menuItemSelected, setMenuItemSelected}:MenuBarProps) =>
           <MenuItemTrigger
             selected={menuItemSelected === menu.label}
             onClick={() => {
-              if (menu.link) navigate(menu.link);
+              if (!menu.items && menu.link) {
+                navigate(menu.link);
+              }
               setMenuItemSelected(menu.label);
             }}
           >
@@ -56,7 +60,14 @@ export const Menubar = ({menuItemSelected, setMenuItemSelected}:MenuBarProps) =>
                             alignOffset={-5}
                           >
                             {item.subitems.map((subitem) => (
-                              <MenuBarItem key={subitem.label}>
+                              <MenuBarItem
+                                key={subitem.label}
+                                onClick={() => {
+                                  if (subitem.link) {
+                                    navigate(subitem.link);
+                                  }
+                                }}
+                              >
                                 {subitem.label}
                               </MenuBarItem>
                             ))}
@@ -64,7 +75,14 @@ export const Menubar = ({menuItemSelected, setMenuItemSelected}:MenuBarProps) =>
                         </mb.Portal>
                       </mb.Sub>
                     ) : (
-                      <MenuBarItem>
+                      <MenuBarItem
+                        onClick={() => {
+                          console.log("Item Clicado:", item); // Apenas exibe o item clicado
+                          if (item.link) {
+                            navigate(item.link); // Navega para o link, se existir
+                          }
+                        }}
+                      >
                         {item.label}
                         <div className="ml-auto pl-5 text-mauve9 group-data-[disabled]:text-mauve8 group-data-[highlighted]:text-white">
                           {item.shortcurt} ⌘ N
