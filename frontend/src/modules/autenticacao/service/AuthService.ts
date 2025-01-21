@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 export const signInRequest = async (cpf: string, senha: string) => {
     try {
         const response = await axios.post(
-          "http://localhost:8081/api/auth/login",
+          "http://localhost:8080/api/auth/login",
           {
             cpf,
             senha,
@@ -22,7 +22,7 @@ export const signInRequest = async (cpf: string, senha: string) => {
 
 export const registerRequest = async (data: any) => {
     try {
-        const response = await axios.post("http://localhost:8081/api/auth/register",
+        const response = await axios.post("http://localhost:8080/api/auth/register",
             data
         );
         toast.success(response.data.message);
@@ -38,7 +38,7 @@ export const registerRequest = async (data: any) => {
 }
 
 export const verificarCadastro = async (cpf: string) => {
-        const response = await axios.get(`http://localhost:8081/api/auth/cpf/${cpf}`); 
+        const response = await axios.get(`http://localhost:8080/api/auth/cpf/${cpf}`); 
         console.log(response);
         return response.data;
 }
