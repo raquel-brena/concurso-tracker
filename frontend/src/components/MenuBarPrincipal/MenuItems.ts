@@ -9,7 +9,7 @@ export enum EnumMenuItems {
 export const MENU_ITEMS = [
   {
     label: EnumMenuItems.PAGINA_INICIAL,
-    link: "/adm",
+    link: "/portal/home",
     separator: true,
   },
   {
@@ -63,7 +63,7 @@ export const MENU_ITEMS = [
   },
   {
     label: EnumMenuItems.ESTATISTICAS,
-    link: "/Estatísticas",
+    link: "/estatísticas",
     items: [
     ],
   },
@@ -81,6 +81,7 @@ export const MENU_ITEMS = [
         shortcurt: "",
         subitems: [],
         separator: false,
+        link: "/portal/noticias",
       },
     ],
   },

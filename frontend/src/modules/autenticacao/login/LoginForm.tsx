@@ -40,7 +40,8 @@ export const LoginForm = ({
   }
 
   function handleLogin(data: any) {
-    handleSignInRequest(data.cpf, data.senha).then((data) => {
+    const cpfUnmasked = unmaskCpf(data.cpf);
+    handleSignInRequest(cpfUnmasked, data.senha).then((data) => {
       console.log(data);
       if (data.user.admin) {
         navigate("/portal/home");
