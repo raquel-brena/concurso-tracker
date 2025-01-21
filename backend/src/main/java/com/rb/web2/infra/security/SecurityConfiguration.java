@@ -52,8 +52,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PATCH, "/api/user/**").hasAuthority("ROLE_EDIT_USERS")
 
                         // Rotas relacionadas a processos seletivos
-                        .requestMatchers(HttpMethod.POST, "/api/processo/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/api/processo/**").hasAuthority("ROLE_EDIT_PROCESSO_SELETIVO")
+                        .requestMatchers(HttpMethod.POST, "/api/processo/**").hasAuthority("ROLE_EDIT_PROCESSO_SELETIVO")
                         .requestMatchers(HttpMethod.PUT, "/api/processo/**").hasAuthority("ROLE_EDIT_PROCESSO_SELETIVO")
 
                         // Rotas relacionadas a critérios

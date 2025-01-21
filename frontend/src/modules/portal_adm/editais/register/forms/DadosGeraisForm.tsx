@@ -4,6 +4,7 @@ import { TextInputWithIcon } from "../../../../../components/inputs/TextInputWit
 import { TextInput } from "../../../../../components/inputs/TextInput";
 import { CheckboxIcon } from "@radix-ui/react-icons";
 import axios from "axios";
+import { toast } from "sonner";
 
 type Inputs = {
   titulo: string;
@@ -12,7 +13,15 @@ type Inputs = {
   temporario: boolean;
 };
 
-export const DadosGeraisForm = ({ handlePreviousStep } : any) => {
+
+type DadosGeraisFormProps = {
+  handlePreviousStep: () => void;
+  handleNextStep: () => void;
+  processoSeletivo: any;
+  setProcessoSeletivo: any;
+}
+
+export const DadosGeraisForm = ({ handlePreviousStep,handleNextStep, processoSeletivo, setProcessoSeletivo } : DadosGeraisFormProps) => {
   const {
     register,
     handleSubmit,
@@ -21,21 +30,28 @@ export const DadosGeraisForm = ({ handlePreviousStep } : any) => {
   } = useForm<Inputs>();
 
   async function criarProcessoSeletivo(data: Inputs) {
-    const token = localStorage.getItem("token"); // Recuperar o token do localStorage
- 
-      console.log(token)
-    const response = await axios.post(
-      "http://localhost:8081/api/processo/",
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, // Adicionar o token no cabeçalho
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log(response);
-  }
+
+      const token = localStorage.getItem("token"); 
+      const response = await axios.post(
+        "http://localhost:8081/api/processo/",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((response) => {
+        setProcessoSeletivo(response.data.data);
+        handleNextStep();
+        toast.success("Processo seletivo criado com sucesso!");
+        console.log(response.data);
+      })
+      
+      
+
+}
+
 
   return (
     <form
@@ -99,14 +115,14 @@ export const DadosGeraisForm = ({ handlePreviousStep } : any) => {
           </div>
         </div>
       </div>
-      <div className="flex w-full justify-between items-center py-4 ">
-        <a
+      <div className="flex w-full items-end justify-end  py-4 ">
+        {/* <a
           className="font-medium text-sm text-red-500"
           onClick={handlePreviousStep}
         >
           Voltar
-        </a>
-        <Button className=" flex-end" type="submit" style={1}>
+        </a> */}
+        <Button type="submit" style={1}>
           Salvar
         </Button>
       </div>

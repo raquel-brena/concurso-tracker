@@ -22,6 +22,7 @@ export const MENU_ITEMS = [
         separator: true,
         subitems: [
           {
+            link: "/portal/editais",
             label: "Gerenciar editais",
             shortcurt: "",
           },
