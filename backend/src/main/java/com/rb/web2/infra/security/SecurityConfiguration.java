@@ -45,11 +45,15 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
 
                         // Rotas de usuário básico (USER role)
-                        .requestMatchers(HttpMethod.GET, "/api/user").hasAuthority("ROLE_VIEW_USER")
-                        .requestMatchers(HttpMethod.GET, "/api/user/{id}").hasAuthority("ROLE_VIEW_USER")
+                        .requestMatchers(HttpMethod.GET, "/api/user/**").hasAuthority("ROLE_VIEW_USER")
                         .requestMatchers(HttpMethod.POST, "/api/user/**").hasAuthority("ROLE_REGISTER_USER")
                         .requestMatchers(HttpMethod.PUT, "/api/user/**").hasAuthority("ROLE_EDIT_USER")
                         .requestMatchers(HttpMethod.PATCH, "/api/user/**").hasAuthority("ROLE_EDIT_USERS")
+
+                        .requestMatchers(HttpMethod.GET, "/api/etapa/**").hasAuthority("ROLE_VIEW_ETAPA")
+                        .requestMatchers(HttpMethod.POST, "/api/etapa/**").hasAuthority("ROLE_EDIT_ETAPA")
+                        .requestMatchers(HttpMethod.PUT, "/api/etapa/**").hasAuthority("ROLE_EDIT_ETAPA")
+                        .requestMatchers(HttpMethod.PATCH, "/api/etapa/**").hasAuthority("ROLE_EDIT_ETAPAS")
 
                         // Rotas relacionadas a processos seletivos
                         .requestMatchers(HttpMethod.POST, "/api/processo/**").hasAuthority("ROLE_EDIT_PROCESSO_SELETIVO")

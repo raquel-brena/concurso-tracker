@@ -6,7 +6,7 @@ import { NoticiasContent } from "./components/NoticiasContent";
 
 const buttons = [
   { title: "Equipe", link: "/portal/equipe" },
-  { title: "Editais", link: "/portal/editais/cadastrar" },
+  { title: "Editais", link: "/portal/editais/" },
   { title: "Vagas", link: "/portal/vagas" },
   { title: "Candidatos", link: "/portal/candidatos" },
   { title: "Convocações", link: "/portal/convocacoes" },

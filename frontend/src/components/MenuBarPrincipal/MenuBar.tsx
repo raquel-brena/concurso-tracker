@@ -55,16 +55,19 @@ export const Menubar = ({menuItemSelected, setMenuItemSelected}:MenuBarProps) =>
                             className="min-w-[220px] rounded-md bg-white p-[5px] shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[transform,opacity] [animation-duration:_400ms] [animation-timing-function:_cubic-bezier(0.16,_1,_0.3,_1)]"
                             alignOffset={-5}
                           >
-                            {item.subitems.map((subitem) => (
-                              <MenuBarItem key={subitem.label}>
-                                {subitem.label}
-                              </MenuBarItem>
+                            {item?.subitems?.map((subitem) => (
+                              <MenuBarItem key={subitem.label}></MenuBarItem>
                             ))}
                           </mb.SubContent>
                         </mb.Portal>
                       </mb.Sub>
                     ) : (
-                      <MenuBarItem>
+                      <MenuBarItem
+                        onClick={() => {
+                          if (item.link) navigate(item.link);
+                          setMenuItemSelected(item.label);
+                        }}
+                      >
                         {item.label}
                         <div className="ml-auto pl-5 text-mauve9 group-data-[disabled]:text-mauve8 group-data-[highlighted]:text-white">
                           {item.shortcurt} ⌘ N

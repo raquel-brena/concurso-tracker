@@ -87,7 +87,7 @@ public class DocumentoService {
   }
 
   public Documento create(CreateDocumentoDTO dto, MultipartFile file) throws IOException {
-    verificarPermissaoDeCriacaoOuAlteracao(null);
+    //verificarPermissaoDeCriacaoOuAlteracao(null);
 
     String id = null;
     Documento documento = new Documento();
@@ -145,7 +145,7 @@ public class DocumentoService {
   // Fecha Rotas de Admin
 
   public String uploadFile(MultipartFile file, String id) throws IOException {
-    verificarPermissaoDeCriacaoOuAlteracao(null);
+    //verificarPermissaoDeCriacaoOuAlteracao(null);
 
     String originalFilename = file.getOriginalFilename();
     if (originalFilename == null || originalFilename.isBlank()) {

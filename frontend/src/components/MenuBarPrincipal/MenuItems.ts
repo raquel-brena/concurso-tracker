@@ -9,12 +9,12 @@ export enum EnumMenuItems {
 export const MENU_ITEMS = [
   {
     label: EnumMenuItems.PAGINA_INICIAL,
-    link: "/adm",
+    link: "/portal/home",
     separator: true,
   },
   {
     label: EnumMenuItems.EDITAIS,
-  
+
     items: [
       {
         label: "Processos seletivos",
@@ -64,8 +64,7 @@ export const MENU_ITEMS = [
   {
     label: EnumMenuItems.ESTATISTICAS,
     link: "/Estatísticas",
-    items: [
-    ],
+    items: [],
   },
   {
     label: EnumMenuItems.NOTICIAS,
@@ -73,13 +72,14 @@ export const MENU_ITEMS = [
       {
         label: "Cadastrar notícia",
         shortcurt: "",
-        subitems: [],
+        link: "/portal/noticias",
+        subitems: null,
         separator: false,
       },
       {
         label: "Visualizar notícias",
         shortcurt: "",
-        subitems: [],
+        subitems: null,
         separator: false,
       },
     ],

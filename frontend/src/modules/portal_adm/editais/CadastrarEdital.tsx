@@ -1,11 +1,40 @@
 import { Separator } from "@radix-ui/react-menubar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BoxContent } from "../../autenticacao/components/BoxContent";
 import { CadastrarEditalForm } from "./register/CadastrarEditalForm";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 
 const CadastrarEdital = ({ headerSubTitle, headerDescription }: any) => {
+
+  const [processoSeletivo, setProcessoSeletivo] = useState<any>({});
+
+   const { id } = useParams();
+
+ useEffect(() => {
+   async function fetchProcesso() {
+     try {
+       const token = localStorage.getItem("token");
+       if (id) {
+          const response = await axios.get(
+            `http://localhost:8080/api/processo/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setProcessoSeletivo(response.data.data);
+       }
+     
+     } catch (error) {
+       console.error("Erro ao buscar o processo:", error);
+     }
+   }
+   fetchProcesso();
+ }, [id]);
 
   return (
     <>
@@ -18,11 +47,12 @@ const CadastrarEdital = ({ headerSubTitle, headerDescription }: any) => {
 
       <div className="flex gap-2 py-8 w-full px-4 ">
         <BoxContent className="flex w-1/2 h-fit p-2 overflow-hidden">
-        <CadastrarEditalForm/>
+          <CadastrarEditalForm
+            processoSeletivo={processoSeletivo}
+            setProcessoSeletivo={setProcessoSeletivo}
+          />
         </BoxContent>
-        <BoxContent>
-
-        </BoxContent>
+        <BoxContent></BoxContent>
       </div>
     </>
   );

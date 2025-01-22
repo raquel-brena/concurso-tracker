@@ -5,12 +5,14 @@ import { TextInput } from "../../../../../components/inputs/TextInput";
 import { CheckboxIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 type Inputs = {
   titulo: string;
   descricao: string;
   validade: number;
   temporario: boolean;
+  edital: any;
 };
 
 
@@ -28,29 +30,55 @@ export const DadosGeraisForm = ({ handlePreviousStep,handleNextStep, processoSel
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-
+  const navigate = useNavigate(); 
   async function criarProcessoSeletivo(data: Inputs) {
+    const formData = {
+      titulo: data.titulo,
+      descricao: data.descricao,
+      validade: data.validade,
+      temporario: data.temporario,
+    };
 
-      const token = localStorage.getItem("token"); 
-      const response = await axios.post(
-        "http://localhost:8081/api/processo/",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((response) => {
-        setProcessoSeletivo(response.data.data);
-        handleNextStep();
-        toast.success("Processo seletivo criado com sucesso!");
-        console.log(response.data);
-      })
-      
-      
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      "http://localhost:8080/api/processo/",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-}
+    // 2. Envio do Arquivo do Edital
+    const file = data.edital[0]; // Arquivo selecionado
+    const formDataDocumento = new FormData();
+    formDataDocumento.append("file", file);
+    formDataDocumento.append("nome", file.name);
+    formDataDocumento.append("processoId", response.data.data.id);
+    formDataDocumento.append("observacao", "Edital do processo seletivo");
+
+    const responseDocumento = await axios.post(
+      "http://localhost:8080/api/documentos/",
+      formDataDocumento,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log("Documento enviado com sucesso:", responseDocumento.data);
+    toast.success("Processo seletivo e edital criados com sucesso!");
+    
+    setProcessoSeletivo(response.data.data);
+    handleNextStep();
+    navigate(`/portal/editais/cadastrar/${response.data.data.id}`);
+    toast.success("Processo seletivo criado com sucesso!");
+    console.log(response.data);
+  }
 
 
   return (
@@ -102,6 +130,16 @@ export const DadosGeraisForm = ({ handlePreviousStep,handleNextStep, processoSel
               {...register("validade", { required: true })}
             />
           </div>
+          <div className="flex flex-col">
+            <p className="font-semibold text-sm text-slate-950">
+              Arquivo do edital
+            </p>
+            <input
+              type="file"
+              className="w-1/2 border border-[#888888] py-1 px-2 rounded-md placeholder:text-sm"
+              {...register("edital", { required: true })}
+            />
+          </div>
           <div className="flex items-center gap-4">
             <p
               className="font-semibold text-sm
@@ -109,9 +147,11 @@ export const DadosGeraisForm = ({ handlePreviousStep,handleNextStep, processoSel
             >
               Temporário?
             </p>
-            <input 
-            className="size-4 border"
-            type="checkbox" {...register("temporario")} />
+            <input
+              className="size-4 border"
+              type="checkbox"
+              {...register("temporario")}
+            />
           </div>
         </div>
       </div>

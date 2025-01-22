@@ -87,7 +87,7 @@ public class DocumentoInscricaoService {
     }
 
     public DocumentoInscricao homologarDocumento(HomologarDocInscricaoRequestDTO dto) {
-        verificarPermissaoHomologacao(dto.documentoInscricaoId());
+       // verificarPermissaoHomologacao(dto.documentoInscricaoId());
 
         DocumentoInscricao documentoInscricao = this.findById(dto.documentoInscricaoId());
         Agenda agenda = documentoInscricao.getInscricao().getVaga().getProcessoSeletivo().getAgenda();

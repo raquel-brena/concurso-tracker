@@ -16,7 +16,7 @@ export const IndexEditais = ({headerSubTitle, headerDescription}:any) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:8081/api/processo/"
+        "http://localhost:8080/api/processo/"
         , {  headers: {
           Authorization: `Bearer ${token}`,
         },}

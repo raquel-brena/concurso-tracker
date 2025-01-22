@@ -59,7 +59,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "cadastrar",
+            path: "cadastrar/:id?",
             element: (
               <CadastrarEdital
                 headerSubTitle="CADASTRAR NOVO PROCESSO SELETIVO"

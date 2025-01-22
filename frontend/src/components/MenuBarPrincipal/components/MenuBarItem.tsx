@@ -2,11 +2,13 @@ import * as Menubar from "@radix-ui/react-menubar";
 
 interface MenuBarItemProps {
   children?: React.ReactNode;
+  onClick?: () => void; 
 }
 
-export const MenuBarItem = ({ children }: MenuBarItemProps) => {
+export const MenuBarItem = ({ children, onClick }: MenuBarItemProps) => {
   return (
     <Menubar.Item
+      onClick={onClick}
       className="group relative flex h-[25px] select-none items-center rounded 
     px-2.5 text-[13px] leading-none text-violet11 outline-none
     hover:text-slate-600  
